@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World!</string>
+    <string name="app_name">BridgingGood</string>
+    <string name="bizGoToBizMap">Search in Map</string>
+    <string name="bizListHeader">Places Around You</string>
+    <string name="bizListCellIconDescription">Shop Icon</string>
+    <string name="bizMyLocationLoading">Identifying your location… </string>
+    <string name="bizListLoading">Loading..</string>
+    <string name="bizNoResult">No result found</string>
+    <string name="bizRefreshList">Refresh</string>
+</resources>

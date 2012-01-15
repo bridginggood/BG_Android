@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/bizLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/bizListCellIconDescription"
+        android:gravity="center_vertical"
+        android:src="@drawable/shop_default" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" >
+
+        <!-- FIRST ROW: bizName, distanceAway -->
+
+        <TextView
+            android:id="@+id/bizName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="@string/hello" />
+
+        <TextView
+            android:id="@+id/distanceAway"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/hello" />
+
+        <!-- SECOND ROW: bizAddress, charityLogo -->
+
+        <TextView
+            android:id="@+id/bizAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/bizName"
+            android:layout_below="@id/bizName"
+            android:text="@string/hello" />
+
+        <ImageView
+            android:id="@+id/charityLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/distanceAway"
+            android:layout_below="@id/distanceAway"
+            android:contentDescription="@string/bizListCellIconDescription"
+            android:src="@drawable/charity_icon_default"/>
+    </RelativeLayout>
+
+</LinearLayout>

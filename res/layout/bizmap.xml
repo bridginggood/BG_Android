@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/bizMapHeaderLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="32dp"
+        android:layout_weight="0" >
+
+        <TextView
+            android:id="@+id/txtBizMapHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hello" />
+    </LinearLayout>
+    <!--
+    	Work: "0Xl-E6OnUWprpaFqFsbLMUSoTS5PaM7VI3k6bsA"
+    	Home: "0Xl-E6OnUWprJYt6D4dhvh-Ub-A3Fq2SC3-u8mw"
+    	APK:  "0Xl-E6OnUWpoddXOp2rwyxqXXLOyuYl-Di_M7RQ"
+    -->
+
+    <com.google.android.maps.MapView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/bizMapView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:apiKey="0Xl-E6OnUWpoddXOp2rwyxqXXLOyuYl-Di_M7RQ"
+        android:clickable="true"
+        android:enabled="true" />
+
+    <LinearLayout
+        android:id="@+id/bizMapBottomLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="32dp"
+        android:layout_weight="0" >
+
+        <TextView
+            android:id="@+id/txtBizMapBottom"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hello" />
+    </LinearLayout>
+
+</LinearLayout>
