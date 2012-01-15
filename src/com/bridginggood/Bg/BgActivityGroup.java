@@ -12,6 +12,6 @@ public class BgActivityGroup extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         TextView txtHello = (TextView) findViewById(R.id.txtHello);
-        txtHello.setText("BgMain Tab");
+        txtHello.setText("BgMain Tab!");
     }
 }

@@ -21,14 +21,14 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 public class BizMapController extends MapActivity{ 
-	private MapView mapView;
-	private BizMyLocation myLocation;
-	private ArrayList<Business> bizList;
+	private MapView mMapView;
+	private BizMyLocation mMyLocation;
+	private ArrayList<Business> mBizArrayList;
 	
-	private TextView txtHeaderLoc;
+	private TextView mTxtHeaderLoc;
 	
-	private float myLat = 37.4848f;
-	private float myLng = 126.895f;
+	private float mMyLat = 37.4848f;
+	private float mMyLng = 126.895f;
 
 
 	/** Called when the activity is first created. */
@@ -38,22 +38,22 @@ public class BizMapController extends MapActivity{
 		setContentView(R.layout.bizmap);
 		
 		//Initialize ArrayLists
-		bizList = new ArrayList<Business>();
+		mBizArrayList = new ArrayList<Business>();
 
 		//Initialize mapview
-		mapView = (MapView) findViewById(R.id.bizMapView);
-		mapView.setBuiltInZoomControls(true);
+		mMapView = (MapView) findViewById(R.id.bizMapView);
+		mMapView.setBuiltInZoomControls(true);
 		
 		//Initialize mapview Heading layout
-		txtHeaderLoc = (TextView) findViewById(R.id.txtBizMapHeader);
-		txtHeaderLoc.setText("Getting your location...");
+		mTxtHeaderLoc = (TextView) findViewById(R.id.txtBizMapHeader);
+		mTxtHeaderLoc.setText("Getting your location...");
 		
 		//Initialize myLocation to get current loc
-		myLocation = new BizMyLocation(getParent());
-		myLocation.getLocation(this, locationResult);
+		mMyLocation = new BizMyLocation(getParent());
+		mMyLocation.getLocation(this, locationResult);
 
 		//Get GeoPoints
-		this.setBizList(mapView.getZoomLevel());
+		this.updateBizArrayList(mMapView.getZoomLevel());
 		
 		//Mark on the map
 		this.createOverlay();
@@ -65,26 +65,26 @@ public class BizMapController extends MapActivity{
 		public void gotLocation(final Location location){
 			Log.d("BG", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
 			//Got the location!, store them as current location
-			myLat = (float) location.getLatitude();
-			myLng = (float) location.getLongitude();
+			mMyLat = (float) location.getLatitude();
+			mMyLng = (float) location.getLongitude();
 			
-			txtHeaderLoc.setText("Your location: ("+myLat+" , "+myLng+" )");
+			mTxtHeaderLoc.setText("Your location: ("+mMyLat+" , "+mMyLng+" )");
 			
 			createMyOverlay();
 		}
 	};
 	
 	//Set arraylist of GeoPoints to be marked on the map
-	public void setBizList(int zoomLevel){
-		BizDBController bizDB = new BizDBController(myLat, myLng, zoomLevel);
-		bizList = bizDB.getBizListFromXML();
+	public void updateBizArrayList(int zoomLevel){
+		BizDBController bizDB = new BizDBController(mMyLat, mMyLng, zoomLevel);
+		mBizArrayList = bizDB.getBizListFromXML();
 	}
 	
 	private void createMyOverlay(){
-		GeoPoint myPoint = new GeoPoint (convFloatToIntE6(myLat), convFloatToIntE6(myLng));
-		MapController mapController = mapView.getController();
+		GeoPoint myPoint = new GeoPoint (convFloatToIntE6(mMyLat), convFloatToIntE6(mMyLng));
+		MapController mapController = mMapView.getController();
 		mapController.animateTo(myPoint);
-		Log.d("BG", "createMyOverlay called. Should move to :"+myLat+" , "+myLng);
+		Log.d("BG", "createMyOverlay called. Should move to :"+mMyLat+" , "+mMyLng);
 		
 		// 마커표시
 		MapView.LayoutParams mapMarkerParams = new MapView.LayoutParams(
@@ -94,20 +94,20 @@ public class BizMapController extends MapActivity{
 		ImageView mapMarker = new ImageView(
 				getApplicationContext());
 		mapMarker.setImageResource(R.drawable.icon);
-		mapView.addView(mapMarker, mapMarkerParams);
+		mMapView.addView(mapMarker, mapMarkerParams);
 	}
 
 	//To create overlay on the map
 	private void createOverlay(){
 		Log.d("BG", "CreateOverLay called");
-		List<Overlay> mapOverlays = mapView.getOverlays();
+		List<Overlay> mapOverlays = mMapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.charity_icon_default);
-		BizMapOverlay itemizedOverlay = new BizMapOverlay(drawable, mapView, bizList, getParent());	//getParent() since alert only works on the upper-most context.
+		BizMapOverlay itemizedOverlay = new BizMapOverlay(drawable, mMapView, mBizArrayList, getParent());	//getParent() since alert only works on the upper-most context.
 
 		Log.d("BG", "Ready to make GeoPoint");
 		GeoPoint point = null;
 		OverlayItem overlayItem = null;
-		for(Business biz : bizList){
+		for(Business biz : mBizArrayList){
 			point = new GeoPoint( convFloatToIntE6(biz.getBizLat()) , convFloatToIntE6(biz.getBizLng()));	//Create GeoPoint
 			overlayItem = new OverlayItem(point, biz.getBizName(), biz.getBizAddress());					//Store name and address as descriptions of GeoPoint
 			
@@ -115,7 +115,7 @@ public class BizMapController extends MapActivity{
 			mapOverlays.add(itemizedOverlay);
 		}
 
-		MapController mapController = mapView.getController();
+		MapController mapController = mMapView.getController();
 		mapController.animateTo(point);
 		mapController.setZoom(15);
 	}

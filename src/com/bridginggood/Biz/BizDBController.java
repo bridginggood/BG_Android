@@ -16,14 +16,14 @@ import android.location.Location;
 
 public class BizDBController {
 	
-	private String urlGetBizList = "http://api.bridginggood.com/business/read.xml";
-	private float myLat, myLng, distanceRadius;
+	private String mUrlGetBizList = "http://api.bridginggood.com/business/read.xml";
+	private float mMyLat, mMyLng, mDistanceRadius;
 	
 	public BizDBController (float myLat, float myLng, float distanceRadius){
-		this.myLat = myLat;
-		this.myLng = myLng;
-		this.distanceRadius = distanceRadius;		//in miles
-		this.urlGetBizList = this.urlGetBizList+"?"+"lat="+this.myLat+"&"+"lng="+this.myLng+"&"+"dist="+this.distanceRadius;
+		this.mMyLat = myLat;
+		this.mMyLng = myLng;
+		this.mDistanceRadius = distanceRadius;		//in miles
+		this.mUrlGetBizList = this.mUrlGetBizList+"?"+"lat="+this.mMyLat+"&"+"lng="+this.mMyLng+"&"+"dist="+this.mDistanceRadius;
 	}
 	
 	public ArrayList<Business> getBizListFromXML(){
@@ -32,7 +32,7 @@ public class BizDBController {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(new URL(urlGetBizList).openStream());
+			Document doc = dBuilder.parse(new URL(mUrlGetBizList).openStream());
 
 			doc.getDocumentElement().normalize();
 
@@ -69,8 +69,8 @@ public class BizDBController {
 		
 		//Android function. Returns in Meter 
 		Location myLoc = new Location("myLoc");
-		myLoc.setLatitude(myLat);
-		myLoc.setLongitude(myLng);
+		myLoc.setLatitude(mMyLat);
+		myLoc.setLongitude(mMyLng);
 		
 		Location bizLoc = new Location("bizLoc");
 		bizLoc.setLatitude(bizLat);

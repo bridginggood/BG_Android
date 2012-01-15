@@ -15,30 +15,30 @@ import com.google.android.maps.OverlayItem;
 
 public class BizMapOverlay extends BalloonItemizedOverlay<OverlayItem>{
 
-	private ArrayList<OverlayItem> bizMapOverlays = new ArrayList<OverlayItem>();
-	private ArrayList<Business> bizList = new ArrayList<Business>();
+	private ArrayList<OverlayItem> mOverlayItemArrayList = new ArrayList<OverlayItem>();
+	private ArrayList<Business> mBizArrayList = new ArrayList<Business>();
 	private Context context;
 
 	public BizMapOverlay(Drawable defaultMarker, MapView mapView, ArrayList<Business> bizList, Context context) {
 		super(boundCenterBottom(defaultMarker), mapView);
 		this.context = context;
-		this.bizList = bizList;
+		this.mBizArrayList = bizList;
 	}
 
 	@Override
 	protected OverlayItem createItem(int i) {
-		return bizMapOverlays.get(i);
+		return mOverlayItemArrayList.get(i);
 	}
 
 	@Override
 	public int size() {
-		return bizMapOverlays.size();
+		return mOverlayItemArrayList.size();
 	}
 
 	@Override
 	protected boolean onBalloonTap(int index, OverlayItem item) {
 		//Toast.makeText(this.context, "onBalloonTap for overlay index " + bizList.get(index).getBizName(), Toast.LENGTH_LONG).show();
-		Business biz = bizList.get(index);
+		Business biz = mBizArrayList.get(index);
 		// TODO Auto-generated method stub
 		Intent intent = new Intent(context, BizDetailController.class);
 
@@ -56,7 +56,7 @@ public class BizMapOverlay extends BalloonItemizedOverlay<OverlayItem>{
 	}
 
 	public void addOverlay(OverlayItem overlay) {
-		bizMapOverlays.add(overlay);
+		mOverlayItemArrayList.add(overlay);
 		this.populate();
 	}
 }

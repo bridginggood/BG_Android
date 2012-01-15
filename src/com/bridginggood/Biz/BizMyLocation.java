@@ -14,12 +14,12 @@ public class BizMyLocation {
 	private Timer timer1;
 	private LocationManager locMgr;
 	private LocationResult locResult;
-	private boolean isGpsEnabled=false;
-	private boolean isNetworkEnabled=false;
-	private Context context;
+	private boolean mIsGpsEnabled=false;
+	private boolean mIsNetworkEnabled=false;
+	private Context mContext;
 	
 	public BizMyLocation(Context context){
-		this.context = context;
+		this.mContext = context;
 	}
 
 	public boolean getLocation(Context context, LocationResult result)
@@ -30,16 +30,16 @@ public class BizMyLocation {
 			locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
 		//exceptions will be thrown if provider is not permitted.
-		try{isGpsEnabled=locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ex){}
-		try{isNetworkEnabled=locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER);}catch(Exception ex){}
+		try{mIsGpsEnabled=locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ex){}
+		try{mIsNetworkEnabled=locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER);}catch(Exception ex){}
 
 		//don't start listeners if no provider is enabled
-		if(!isGpsEnabled && !isNetworkEnabled)
+		if(!mIsGpsEnabled && !mIsNetworkEnabled)
 			return false;
 
-		if(isGpsEnabled)
+		if(mIsGpsEnabled)
 			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
-		if(isNetworkEnabled)
+		if(mIsNetworkEnabled)
 			locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
 		timer1=new Timer();
 		timer1.schedule(new GetLastLocation(), 20000);
@@ -54,10 +54,10 @@ public class BizMyLocation {
 			locMgr.removeUpdates(locationListenerNetwork);
 		}
 		public void onProviderDisabled(String provider) {
-			Toast.makeText(context, "GPS is disabled", Toast.LENGTH_SHORT);
+			Toast.makeText(mContext, "GPS is disabled", Toast.LENGTH_SHORT);
 		}
 		public void onProviderEnabled(String provider) {
-			Toast.makeText(context, "GPS is enabled", Toast.LENGTH_SHORT);
+			Toast.makeText(mContext, "GPS is enabled", Toast.LENGTH_SHORT);
 		}
 		public void onStatusChanged(String provider, int status, Bundle extras) {}
 	};
@@ -81,9 +81,9 @@ public class BizMyLocation {
 			locMgr.removeUpdates(locationListenerNetwork);
 
 			Location net_loc=null, gps_loc=null;
-			if(isGpsEnabled)
+			if(mIsGpsEnabled)
 				gps_loc=locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			if(isNetworkEnabled)
+			if(mIsNetworkEnabled)
 				net_loc=locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
 			//if there are both values use the latest one

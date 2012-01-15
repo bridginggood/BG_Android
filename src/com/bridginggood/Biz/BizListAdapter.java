@@ -15,15 +15,15 @@ import com.bridginggood.R;
 
 public class BizListAdapter extends ArrayAdapter<Business>{
 
-    Context context; 
-    int layoutResourceId;    
-    ArrayList<Business> data = null;
+    Context mContext; 
+    int mLayoutResourceId;    
+    ArrayList<Business> mData = null;
     
     public BizListAdapter(Context context, int layoutResourceId, ArrayList<Business> data) {
         super(context, layoutResourceId, data);
-        this.layoutResourceId = layoutResourceId;
-        this.context = context;
-        this.data = data;
+        this.mLayoutResourceId = layoutResourceId;
+        this.mContext = context;
+        this.mData = data;
     }
 
     @Override
@@ -33,8 +33,8 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         
         if(row == null)
         {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
+            LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
+            row = inflater.inflate(mLayoutResourceId, parent, false);
             
             //create temporary holder
             holder = new BusinessHolder();
@@ -52,7 +52,7 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         }
         
         //Get current bizCell
-        Business bizCell = data.get(position);
+        Business bizCell = mData.get(position);
        
         //Update the content of the cell
         holder.updateBizLogo(bizCell.getBizLogo());
