@@ -30,7 +30,7 @@ public class BizListController extends Activity implements OnScrollListener{
 
 	private BizListAdapter mBizListAdapter;			//ListView adapter
 	private ListView mBizListView;					//ListView
-	private View mBizListViewFooter;						//ListView footer - Loading message
+	private View mBizListViewFooter;				//ListView footer - Loading message
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
