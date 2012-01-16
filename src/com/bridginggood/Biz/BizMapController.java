@@ -29,8 +29,11 @@ public class BizMapController extends MapActivity{
 	
 	private float mMyLat = 37.4848f;
 	private float mMyLng = 126.895f;
+	private float mDistanceRadius = 1.0f;
 	
-	private static final int TIME_TO_WAIT_IN_MS = 100;
+	private GeoPoint mMapCenter;
+	
+	private static final int TIME_TO_WAIT_IN_MS = 500;
 
 
 	/** Called when the activity is first created. */
@@ -53,37 +56,7 @@ public class BizMapController extends MapActivity{
 		//Initialize myLocation to get current loc
 		mMyLocation = new BizMyLocation(getParent());
 		mMyLocation.getLocation(this, locationResult);
-
-		//Get GeoPoints
-		this.updateBizArrayList(mMapView.getZoomLevel());
-		
-		//Mark on the map
-		this.createOverlay();
-
-		//Get Spans
-		mMapView.postDelayed(waitForMapTimeTask, TIME_TO_WAIT_IN_MS);
 	}
-	
-	/**
-     * Wait for mapview to become ready.
-     */
-	//[TODO] IMPLEMENT FROM HERE!!!
-    private Runnable waitForMapTimeTask = new Runnable() {
-        public void run() {
-            // If either is true we must wait.
-            if(mMapView.getLatitudeSpan() == 0 || mMapView.getLongitudeSpan() == 360000000)
-            	mMapView.postDelayed(this, TIME_TO_WAIT_IN_MS);
-            
-            Log.d("BG", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mMapView.getMapCenter());
-            float latDiff = mMapView.getLatitudeSpan() / 2;
-            float lngDiff = mMapView.getLongitudeSpan() / 2;
-            GeoPoint ctr = mMapView.getMapCenter();
-            
-            float p1Lat = (float) ((ctr.getLatitudeE6()+latDiff)/1E6);
-            float p1Lng = (float) ((ctr.getLongitudeE6()+lngDiff)/1E6);
-           
-        }
-    };
 
 	//Callback - once you got the location of the user
 	public LocationResult locationResult = new LocationResult(){
@@ -96,13 +69,64 @@ public class BizMapController extends MapActivity{
 			
 			mTxtHeaderLoc.setText("Your location: ("+mMyLat+" , "+mMyLng+" )");
 			
+			//Get Spans
+			mMapView.postDelayed(waitForMapTimeTask, TIME_TO_WAIT_IN_MS);
+			
 			createMyOverlay();
 		}
 	};
 	
+    // Wait for mapview to become ready.
+    private Runnable waitForMapTimeTask = new Runnable() {
+        public void run() {
+            // If either is true we must wait.
+            if(mMapView.getLatitudeSpan() == 0 || mMapView.getLongitudeSpan() == 360000000)
+            	mMapView.postDelayed(this, TIME_TO_WAIT_IN_MS);
+            
+            float latDiff = mMapView.getLatitudeSpan() / 2;
+            float lngDiff = mMapView.getLongitudeSpan() / 2;
+            mMapCenter = mMapView.getMapCenter();
+            
+            Log.d("BG", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mMapCenter);
+            
+            //Find distance using span
+            float p1Lat = (float) ((mMapCenter.getLatitudeE6()+latDiff)/1E6);
+            float p1Lng = (float) ((mMapCenter.getLongitudeE6()+lngDiff)/1E6);
+            float p2Lat = (float) ((mMapCenter.getLatitudeE6()-latDiff)/1E6);
+            float p2Lng = (float) ((mMapCenter.getLongitudeE6()-lngDiff)/1E6);
+            
+            mDistanceRadius = getDistanceAway(p1Lat, p1Lng, p2Lat, p2Lng);
+            Log.d("BG", "Dist: "+ mDistanceRadius);
+            
+            //Get GeoPoints from the Server
+    		updateBizArrayList();
+    		
+    		//Mark on the map
+    		createOverlay();
+        }
+    };
+    
+    public float getDistanceAway(float p1Lat, float p1Lng, float p2Lat, float p2Lng){
+		//Android function. Returns in Meter 
+    	Location loc1 = new Location("Loc1");
+        loc1.setLatitude(p1Lat);
+        loc1.setLongitude(p1Lng);
+        
+        Location loc2 = new Location("Loc2");
+        loc2.setLatitude(p2Lat);
+        loc2.setLongitude(p2Lng);
+        
+        float dist = loc1.distanceTo(loc2);
+        
+		//Convert distanceAway from meter to miles
+        dist = (float) ((float)(dist/1000)/1.6);
+		
+		return dist;
+	}
+
 	//Set arraylist of GeoPoints to be marked on the map
-	public void updateBizArrayList(int zoomLevel){
-		BizDBController bizDB = new BizDBController(mMyLat, mMyLng, zoomLevel);
+	public void updateBizArrayList(){
+		BizDBController bizDB = new BizDBController(mMyLat, mMyLng, mDistanceRadius);
 		mBizArrayList = bizDB.getBizListFromXML();
 	}
 	
@@ -146,6 +170,26 @@ public class BizMapController extends MapActivity{
 		mapController.setZoom(15);
 	}
 	
+
+	//When there is user interaction, check if the user has changed mapview region or not.
+	@Override
+	public void onUserInteraction(){
+		
+		//Compare with previous mMapCenter position.
+		GeoPoint newGeoPoint = mMapView.getMapCenter();
+		if(mMapCenter != null && newGeoPoint != null 
+				&& newGeoPoint.getLatitudeE6() != mMapCenter.getLatitudeE6() 
+				&& newGeoPoint.getLongitudeE6() != mMapCenter.getLongitudeE6())
+		{
+			//If mapView region has changed, 
+			mMapCenter = newGeoPoint;
+			Log.d("BG", "onUserInteraction called!");
+			
+			//Get Spans
+			mMapView.postDelayed(waitForMapTimeTask, TIME_TO_WAIT_IN_MS);
+		}
+	}
+
 	//Convert float lat, lng to int lat lng for geocode
 	private int convFloatToIntE6(float num){
 		return (int)(num*1E6);
