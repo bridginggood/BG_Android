@@ -29,6 +29,8 @@ public class BizMapController extends MapActivity{
 	
 	private float mMyLat = 37.4848f;
 	private float mMyLng = 126.895f;
+	
+	private static final int TIME_TO_WAIT_IN_MS = 100;
 
 
 	/** Called when the activity is first created. */
@@ -57,7 +59,31 @@ public class BizMapController extends MapActivity{
 		
 		//Mark on the map
 		this.createOverlay();
+
+		//Get Spans
+		mMapView.postDelayed(waitForMapTimeTask, TIME_TO_WAIT_IN_MS);
 	}
+	
+	/**
+     * Wait for mapview to become ready.
+     */
+	//[TODO] IMPLEMENT FROM HERE!!!
+    private Runnable waitForMapTimeTask = new Runnable() {
+        public void run() {
+            // If either is true we must wait.
+            if(mMapView.getLatitudeSpan() == 0 || mMapView.getLongitudeSpan() == 360000000)
+            	mMapView.postDelayed(this, TIME_TO_WAIT_IN_MS);
+            
+            Log.d("BG", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mMapView.getMapCenter());
+            float latDiff = mMapView.getLatitudeSpan() / 2;
+            float lngDiff = mMapView.getLongitudeSpan() / 2;
+            GeoPoint ctr = mMapView.getMapCenter();
+            
+            float p1Lat = (float) ((ctr.getLatitudeE6()+latDiff)/1E6);
+            float p1Lng = (float) ((ctr.getLongitudeE6()+lngDiff)/1E6);
+           
+        }
+    };
 
 	//Callback - once you got the location of the user
 	public LocationResult locationResult = new LocationResult(){
