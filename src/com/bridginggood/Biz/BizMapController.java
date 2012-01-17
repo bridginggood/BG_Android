@@ -24,16 +24,16 @@ public class BizMapController extends MapActivity{
 	private MapView mMapView;
 	private BizMyLocation mMyLocation;
 	private ArrayList<Business> mBizArrayList;
-	
-	private TextView mTxtHeaderLoc;
-	
+
 	private float mMyLat = 37.4848f;
 	private float mMyLng = 126.895f;
 	private float mDistanceRadius = 1.0f;
 	
-	private GeoPoint mMapCenter;
+	private Location locTR, locBL;
 	
-	private static final int TIME_TO_WAIT_IN_MS = 500;
+	private boolean mIsLoadingOverlay = false; 
+	
+	private static final int TIME_TO_WAIT_IN_MS = 300;
 
 
 	/** Called when the activity is first created. */
@@ -49,13 +49,26 @@ public class BizMapController extends MapActivity{
 		mMapView = (MapView) findViewById(R.id.bizMapView);
 		mMapView.setBuiltInZoomControls(true);
 		
+		//Initialize location TopRight, BottomLeft for onUserInteraction() - to handle mapview change
+		locTR = new Location("LocationTopRight");
+		locBL = new Location("LocationBottomLeft");
+		
 		//Initialize mapview Heading layout
-		mTxtHeaderLoc = (TextView) findViewById(R.id.txtBizMapHeader);
-		mTxtHeaderLoc.setText("Getting your location...");
+		TextView txtHeaderLoc = (TextView) findViewById(R.id.txtBizMapHeader);
+		txtHeaderLoc.setText("Getting your location...");
 		
 		//Initialize myLocation to get current loc
 		mMyLocation = new BizMyLocation(getParent());
 		mMyLocation.getLocation(this, locationResult);
+		
+		//Initialize trigger
+		mIsLoadingOverlay = false;
+		
+		//Initial map point. Start from NYC!
+		GeoPoint tmpGeoPoint = new GeoPoint(convFloatToIntE6(40.714353f), convFloatToIntE6(-74.005973f));
+		MapController mapController = mMapView.getController();
+		mapController.setZoom(16);
+		mapController.setCenter(tmpGeoPoint);
 	}
 
 	//Callback - once you got the location of the user
@@ -67,35 +80,38 @@ public class BizMapController extends MapActivity{
 			mMyLat = (float) location.getLatitude();
 			mMyLng = (float) location.getLongitude();
 			
-			mTxtHeaderLoc.setText("Your location: ("+mMyLat+" , "+mMyLng+" )");
-			
-			//Get Spans
-			mMapView.postDelayed(waitForMapTimeTask, TIME_TO_WAIT_IN_MS);
-			
+			TextView txtHeaderLoc = (TextView) findViewById(R.id.txtBizMapHeader);
+			txtHeaderLoc.setText("Your location: ("+mMyLat+" , "+mMyLng+" )");
+
 			createMyOverlay();
 		}
 	};
 	
     // Wait for mapview to become ready.
-    private Runnable waitForMapTimeTask = new Runnable() {
+    private Runnable calcMapSpan = new Runnable() {
         public void run() {
-            // If either is true we must wait.
-            if(mMapView.getLatitudeSpan() == 0 || mMapView.getLongitudeSpan() == 360000000)
+        	mIsLoadingOverlay = true;
+            
+        	// If either is true we must wait.
+        	if(mMapView.getLatitudeSpan() == 0 || mMapView.getLongitudeSpan() == 360000000)
             	mMapView.postDelayed(this, TIME_TO_WAIT_IN_MS);
             
             float latDiff = mMapView.getLatitudeSpan() / 2;
             float lngDiff = mMapView.getLongitudeSpan() / 2;
-            mMapCenter = mMapView.getMapCenter();
+            GeoPoint mapCenter = mMapView.getMapCenter();
             
-            Log.d("BG", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mMapCenter);
+            Log.d("BG", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mapCenter);
             
             //Find distance using span
-            float p1Lat = (float) ((mMapCenter.getLatitudeE6()+latDiff)/1E6);
-            float p1Lng = (float) ((mMapCenter.getLongitudeE6()+lngDiff)/1E6);
-            float p2Lat = (float) ((mMapCenter.getLatitudeE6()-latDiff)/1E6);
-            float p2Lng = (float) ((mMapCenter.getLongitudeE6()-lngDiff)/1E6);
+            float p1Lat = (float) ((mapCenter.getLatitudeE6()+latDiff)/1E6);
+            float p1Lng = (float) ((mapCenter.getLongitudeE6()+lngDiff)/1E6);
+            float p2Lat = (float) ((mapCenter.getLatitudeE6()-latDiff)/1E6);
+            float p2Lng = (float) ((mapCenter.getLongitudeE6()-lngDiff)/1E6);
             
-            mDistanceRadius = getDistanceAway(p1Lat, p1Lng, p2Lat, p2Lng);
+            setLocationTR(p1Lat, p1Lng);
+            setLocationBL(p2Lat, p2Lng);
+            
+            mDistanceRadius = getLocationDistanceDifference();
             Log.d("BG", "Dist: "+ mDistanceRadius);
             
             //Get GeoPoints from the Server
@@ -103,24 +119,49 @@ public class BizMapController extends MapActivity{
     		
     		//Mark on the map
     		createOverlay();
+    		
+    		mIsLoadingOverlay = false;
         }
     };
     
-    public float getDistanceAway(float p1Lat, float p1Lng, float p2Lat, float p2Lng){
-		//Android function. Returns in Meter 
-    	Location loc1 = new Location("Loc1");
-        loc1.setLatitude(p1Lat);
-        loc1.setLongitude(p1Lng);
+    //Store it in float
+    private void setLocationTR(float lat, float lng){
+    	locTR.setLatitude(lat);
+    	locTR.setLongitude(lng);
+    }
+    
+    private void setLocationBL(float lat, float lng){
+    	locBL.setLatitude(lat);
+    	locBL.setLongitude(lng);
+    }
+    
+    private boolean isLocationDifferent() 
+    {
+    	// If either is true we must wait.
+    	if(mMapView.getLatitudeSpan() == 0 || mMapView.getLongitudeSpan() == 360000000)
+    		return true;
+    	
+        float latDiff = mMapView.getLatitudeSpan() / 2;
+        float lngDiff = mMapView.getLongitudeSpan() / 2;
+        GeoPoint mapCenter = mMapView.getMapCenter();
         
-        Location loc2 = new Location("Loc2");
-        loc2.setLatitude(p2Lat);
-        loc2.setLongitude(p2Lng);
+        //Find distance using span
+        float p1Lat = (float) ((mapCenter.getLatitudeE6()+latDiff)/1E6);
+        float p1Lng = (float) ((mapCenter.getLongitudeE6()+lngDiff)/1E6);
+        float p2Lat = (float) ((mapCenter.getLatitudeE6()-latDiff)/1E6);
+        float p2Lng = (float) ((mapCenter.getLongitudeE6()-lngDiff)/1E6);
         
-        float dist = loc1.distanceTo(loc2);
-        
+        //If no change in user location
+        if(p1Lat == locTR.getLatitude() && p1Lng == locTR.getLongitude() && p2Lat == locBL.getLatitude() && p2Lng == locBL.getLongitude())
+        	return false;
+       
+        return true;
+    }
+    
+    public float getLocationDistanceDifference(){
+        float dist = locTR.distanceTo(locBL);
 		//Convert distanceAway from meter to miles
         dist = (float) ((float)(dist/1000)/1.6);
-		
 		return dist;
 	}
 
@@ -136,7 +177,7 @@ public class BizMapController extends MapActivity{
 		mapController.animateTo(myPoint);
 		Log.d("BG", "createMyOverlay called. Should move to :"+mMyLat+" , "+mMyLng);
 		
-		// 마커표시
+		// Marker
 		MapView.LayoutParams mapMarkerParams = new MapView.LayoutParams(
 				LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT, myPoint,
@@ -145,6 +186,10 @@ public class BizMapController extends MapActivity{
 				getApplicationContext());
 		mapMarker.setImageResource(R.drawable.icon);
 		mMapView.addView(mapMarker, mapMarkerParams);
+		
+		
+		//Get Spans
+		mMapView.postDelayed(calcMapSpan, TIME_TO_WAIT_IN_MS);
 	}
 
 	//To create overlay on the map
@@ -164,10 +209,6 @@ public class BizMapController extends MapActivity{
 			itemizedOverlay.addOverlay(overlayItem);
 			mapOverlays.add(itemizedOverlay);
 		}
-
-		MapController mapController = mMapView.getController();
-		mapController.animateTo(point);
-		mapController.setZoom(15);
 	}
 	
 
@@ -176,18 +217,18 @@ public class BizMapController extends MapActivity{
 	public void onUserInteraction(){
 		
 		//Compare with previous mMapCenter position.
-		GeoPoint newGeoPoint = mMapView.getMapCenter();
-		if(mMapCenter != null && newGeoPoint != null 
-				&& newGeoPoint.getLatitudeE6() != mMapCenter.getLatitudeE6() 
-				&& newGeoPoint.getLongitudeE6() != mMapCenter.getLongitudeE6())
+		GeoPoint newCenterGeoPoint = mMapView.getMapCenter();
+		if(mIsLoadingOverlay == false && newCenterGeoPoint != null 
+				&& isLocationDifferent())
 		{
 			//If mapView region has changed, 
-			mMapCenter = newGeoPoint;
-			Log.d("BG", "onUserInteraction called!");
+			Log.d("BG", "onUserInteraction called! newGeo:"+newCenterGeoPoint+". Dist:"+mDistanceRadius);
 			
 			//Get Spans
-			mMapView.postDelayed(waitForMapTimeTask, TIME_TO_WAIT_IN_MS);
+			mMapView.postDelayed(calcMapSpan, TIME_TO_WAIT_IN_MS);
 		}
+		else
+			Log.d("BG", "Failed to call onUserInteraction. mIsLoadingOverlay:"+mIsLoadingOverlay+". LocationDiff? "+isLocationDifferent()+" newGeoPoint:"+newCenterGeoPoint);
 	}
 
 	//Convert float lat, lng to int lat lng for geocode
