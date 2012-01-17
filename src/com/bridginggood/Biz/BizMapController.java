@@ -115,7 +115,7 @@ public class BizMapController extends MapActivity{
             Log.d("BG", "Dist: "+ mDistanceRadius);
             
             //Get GeoPoints from the Server
-    		updateBizArrayList();
+    		updateBizArrayList((float)(mapCenter.getLatitudeE6()/1E6), (float)(mapCenter.getLongitudeE6()/1E6));
     		
     		//Mark on the map
     		createOverlay();
@@ -166,8 +166,8 @@ public class BizMapController extends MapActivity{
 	}
 
 	//Set arraylist of GeoPoints to be marked on the map
-	public void updateBizArrayList(){
-		BizDBController bizDB = new BizDBController(mMyLat, mMyLng, mDistanceRadius);
+	public void updateBizArrayList(float lat, float lng){
+		BizDBController bizDB = new BizDBController(lat, lng, mDistanceRadius);
 		mBizArrayList = bizDB.getBizListFromXML();
 	}
 	

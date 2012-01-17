@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:icon="@drawable/icon"
@@ -25,6 +26,7 @@
 
         <!-- Payment -->
         <activity android:name=".Payment.PaymentActivityGroup" />
+        <activity android:name=".Payment.PaymentCamera" />
 
         <!-- Charity -->
         <activity android:name=".Charity.CharityActivityGroup" />
@@ -33,7 +35,7 @@
         <activity android:name=".Biz.BizActivityGroup" />
         <activity android:name=".Biz.BizMapController" />
         <activity android:name=".Biz.BizListController" />
-        <activity android:name=".Biz.BizDetailController"/>
+        <activity android:name=".Biz.BizDetailController" />
 
         <!-- User -->
         <activity android:name=".User.UserActivityGroup" />
@@ -41,9 +43,29 @@
         <!-- Bg -->
         <activity android:name=".Bg.BgActivityGroup" />
 
+        <!-- Google Map -->
         <uses-library
             android:name="com.google.android.maps"
             android:required="true" />
+
+        <!-- ZXing QRCode Scan -->
+        <activity
+            android:name=".com.google.zxing.client.android.CaptureActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateAlwaysHidden" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name=".com.google.zxing.client.android.SCAN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
