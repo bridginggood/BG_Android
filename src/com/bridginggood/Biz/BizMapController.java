@@ -215,7 +215,10 @@ public class BizMapController extends MapActivity{
 	//When there is user interaction, check if the user has changed mapview region or not.
 	@Override
 	public void onUserInteraction(){
-		
+		/*
+		 * NOTE: the if statement returns false when user is zoomed out/in using the map control.
+		 * Why? I have no idea... 
+		 */
 		//Compare with previous mMapCenter position.
 		GeoPoint newCenterGeoPoint = mMapView.getMapCenter();
 		if(mIsLoadingOverlay == false && newCenterGeoPoint != null 
