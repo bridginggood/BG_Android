@@ -22,7 +22,7 @@
     	APK:  "0Xl-E6OnUWpoddXOp2rwyxqXXLOyuYl-Di_M7RQ"
     -->
 
-    <com.google.android.maps.MapView
+    <com.bridginggood.Biz.BizExtendedMapView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/bizMapView"
         android:layout_width="fill_parent"

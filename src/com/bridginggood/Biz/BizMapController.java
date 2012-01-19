@@ -21,7 +21,7 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 public class BizMapController extends MapActivity{ 
-	private MapView mMapView;
+	private BizExtendedMapView mMapView;
 	private BizMyLocation mMyLocation;
 	private ArrayList<Business> mBizArrayList;
 
@@ -46,8 +46,7 @@ public class BizMapController extends MapActivity{
 		mBizArrayList = new ArrayList<Business>();
 
 		//Initialize mapview
-		mMapView = (MapView) findViewById(R.id.bizMapView);
-		mMapView.setBuiltInZoomControls(true);
+		initMapView();
 		
 		//Initialize location TopRight, BottomLeft for onUserInteraction() - to handle mapview change
 		locTR = new Location("LocationTopRight");
@@ -70,9 +69,27 @@ public class BizMapController extends MapActivity{
 		mapController.setZoom(16);
 		mapController.setCenter(tmpGeoPoint);
 	}
+	
+	private void initMapView(){
+		mMapView = (BizExtendedMapView) findViewById(R.id.bizMapView);
+		mMapView.setBuiltInZoomControls(true);
+		mMapView.setClickable(true);
+		
+		Log.d("BG", "Adding listener to the map");
+		//Handle map change - zoom and span
+		mMapView.setOnTouchEventListener(new BizExtendedMapView.OnTouchEventListener() {
+	        @Override
+	        public void onTouchEvent(MapView view, int newZoom, int oldZoom, GeoPoint newMapCenter, GeoPoint oldMapCenter) {
+	            Log.d("BG", "Zoom changed from " + oldZoom + " to " + newZoom + ". GeoPoint:"+newMapCenter+" | "+oldMapCenter);
+	            //Load only when map is not loading any overlays
+	            if(mIsLoadingOverlay == false)
+	            	mMapView.postDelayed(calcMapSpan, TIME_TO_WAIT_IN_MS);
+	        }
+	    });
+	}
 
 	//Callback - once you got the location of the user
-	public LocationResult locationResult = new LocationResult(){
+	private LocationResult locationResult = new LocationResult(){
 		@Override
 		public void gotLocation(final Location location){
 			Log.d("BG", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
@@ -134,31 +151,8 @@ public class BizMapController extends MapActivity{
     	locBL.setLatitude(lat);
     	locBL.setLongitude(lng);
     }
-    
-    private boolean isLocationDifferent() 
-    {
-    	// If either is true we must wait.
-    	if(mMapView.getLatitudeSpan() == 0 || mMapView.getLongitudeSpan() == 360000000)
-    		return true;
-    	
-        float latDiff = mMapView.getLatitudeSpan() / 2;
-        float lngDiff = mMapView.getLongitudeSpan() / 2;
-        GeoPoint mapCenter = mMapView.getMapCenter();
-        
-        //Find distance using span
-        float p1Lat = (float) ((mapCenter.getLatitudeE6()+latDiff)/1E6);
-        float p1Lng = (float) ((mapCenter.getLongitudeE6()+lngDiff)/1E6);
-        float p2Lat = (float) ((mapCenter.getLatitudeE6()-latDiff)/1E6);
-        float p2Lng = (float) ((mapCenter.getLongitudeE6()-lngDiff)/1E6);
-        
-        //If no change in user location
-        if(p1Lat == locTR.getLatitude() && p1Lng == locTR.getLongitude() && p2Lat == locBL.getLatitude() && p2Lng == locBL.getLongitude())
-        	return false;
-       
-        return true;
-    }
-    
-    public float getLocationDistanceDifference(){
+ 
+    private float getLocationDistanceDifference(){
         float dist = locTR.distanceTo(locBL);
 		//Convert distanceAway from meter to miles
         dist = (float) ((float)(dist/1000)/1.6);
@@ -166,7 +160,7 @@ public class BizMapController extends MapActivity{
 	}
 
 	//Set arraylist of GeoPoints to be marked on the map
-	public void updateBizArrayList(float lat, float lng){
+	private void updateBizArrayList(float lat, float lng){
 		BizDBController bizDB = new BizDBController(lat, lng, mDistanceRadius);
 		mBizArrayList = bizDB.getBizListFromXML();
 	}
@@ -211,29 +205,6 @@ public class BizMapController extends MapActivity{
 		}
 	}
 	
-
-	//When there is user interaction, check if the user has changed mapview region or not.
-	@Override
-	public void onUserInteraction(){
-		/*
-		 * NOTE: the if statement returns false when user is zoomed out/in using the map control.
-		 * Why? I have no idea... 
-		 */
-		//Compare with previous mMapCenter position.
-		GeoPoint newCenterGeoPoint = mMapView.getMapCenter();
-		if(mIsLoadingOverlay == false && newCenterGeoPoint != null 
-				&& isLocationDifferent())
-		{
-			//If mapView region has changed, 
-			Log.d("BG", "onUserInteraction called! newGeo:"+newCenterGeoPoint+". Dist:"+mDistanceRadius);
-			
-			//Get Spans
-			mMapView.postDelayed(calcMapSpan, TIME_TO_WAIT_IN_MS);
-		}
-		else
-			Log.d("BG", "Failed to call onUserInteraction. mIsLoadingOverlay:"+mIsLoadingOverlay+". LocationDiff? "+isLocationDifferent()+" newGeoPoint:"+newCenterGeoPoint);
-	}
-
 	//Convert float lat, lng to int lat lng for geocode
 	private int convFloatToIntE6(float num){
 		return (int)(num*1E6);
