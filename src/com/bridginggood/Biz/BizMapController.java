@@ -161,7 +161,7 @@ public class BizMapController extends MapActivity{
 
 	//Set arraylist of GeoPoints to be marked on the map
 	private void updateBizArrayList(float lat, float lng){
-		BizDBController bizDB = new BizDBController(lat, lng, mDistanceRadius);
+		BizReadFromDB bizDB = new BizReadFromDB(lat, lng, mDistanceRadius);
 		mBizArrayList = bizDB.getBizListFromXML();
 	}
 	

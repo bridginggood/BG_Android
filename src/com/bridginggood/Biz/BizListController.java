@@ -117,7 +117,7 @@ public class BizListController extends Activity implements OnScrollListener{
 			mDistanceRadius += 1.0f; 
 
 			//Get new items
-			BizDBController bizDB = new BizDBController(mMyLat, mMyLng, mDistanceRadius);
+			BizReadFromDB bizDB = new BizReadFromDB(mMyLat, mMyLng, mDistanceRadius);
 			mBizArrayList = bizDB.getBizListFromXML();
 
 			Log.d("BG", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+

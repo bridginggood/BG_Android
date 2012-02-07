@@ -13,7 +13,7 @@ import com.bridginggood.Charity.CharityActivityGroup;
 import com.bridginggood.Payment.PaymentActivityGroup;
 import com.bridginggood.User.UserActivityGroup;
 
-public class MainLayoutController extends TabActivity {
+public class MainController extends TabActivity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

@@ -22,9 +22,10 @@ public class Business implements Serializable {
 		setBizCharity("");
 		setBizLat(0.0f);
 		setBizLng(0.0f);
+		setDistanceAway(0.0f);
 	}
 
-	public Business(String bizId, int bizLogo, String bizName, String bizAddress, float bizLat, float bizLng, String bizCharity){
+	public Business(String bizId, int bizLogo, String bizName, String bizAddress, float bizLat, float bizLng, String bizCharity, float distanceAway){
 		setBizId(bizId);
 		setBizLogo(bizLogo);
 		setBizName(bizName);
@@ -32,6 +33,7 @@ public class Business implements Serializable {
 		setBizCharity(bizCharity);
 		setBizLat(bizLat);
 		setBizLng(bizLng);
+		setDistanceAway(distanceAway);
 	}
 
 	public String getBizId() {
