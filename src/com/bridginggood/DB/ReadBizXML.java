@@ -1,4 +1,4 @@
-package com.bridginggood.Biz;
+package com.bridginggood.DB;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,15 +11,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.bridginggood.Biz.Business;
+
 import android.util.Log;
 
 
-public class BizReadFromDB {
+public class ReadBizXML {
 	
 	private String mUrlGetBizList = "http://api.bridginggood.com:8080/business_info/read.xml";
 	private float mMyLat, mMyLng, mDistanceRadius;
 	
-	public BizReadFromDB (float myLat, float myLng, float distanceRadius){
+	public ReadBizXML (float myLat, float myLng, float distanceRadius){
 		this.mMyLat = myLat;
 		this.mMyLng = myLng;
 		this.mDistanceRadius = distanceRadius;		//in miles
@@ -63,27 +65,6 @@ public class BizReadFromDB {
 		}
 		return bizList;
 	}
-	/*
-	public float getDistanceAway(float bizLat, float bizLng){
-		/*float distanceAway = (float) (3958.755864232 * 2 * Math.asin(Math.sqrt(Math.pow(Math.sin((myLat - bizLat) * Math.PI / 180 / 2), 2) + 
-				Math.cos(myLat * Math.PI / 180) * Math.cos(bizLat * Math.PI / 180) * Math.pow(Math.sin((myLng - bizLng) * Math.PI / 180 / 2), 2) )));
-		*
-		
-		//Android function. Returns in Meter 
-		Location myLoc = new Location("myLoc");
-		myLoc.setLatitude(mMyLat);
-		myLoc.setLongitude(mMyLng);
-		
-		Location bizLoc = new Location("bizLoc");
-		bizLoc.setLatitude(bizLat);
-		bizLoc.setLongitude(bizLng);
-		float distanceAway = myLoc.distanceTo(bizLoc); 
-		
-		//Convert distanceAway from meter to miles
-		distanceAway = (float) ((float)(distanceAway/1000)/1.6);
-		
-		return distanceAway;
-	}*/
 
 	private String getTagValue(String sTag, Element eElement) {
 		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();

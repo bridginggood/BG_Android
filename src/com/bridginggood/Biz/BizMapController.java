@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bridginggood.R;
 import com.bridginggood.Biz.BizMyLocation.LocationResult;
+import com.bridginggood.DB.ReadBizXML;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -161,7 +162,7 @@ public class BizMapController extends MapActivity{
 
 	//Set arraylist of GeoPoints to be marked on the map
 	private void updateBizArrayList(float lat, float lng){
-		BizReadFromDB bizDB = new BizReadFromDB(lat, lng, mDistanceRadius);
+		ReadBizXML bizDB = new ReadBizXML(lat, lng, mDistanceRadius);
 		mBizArrayList = bizDB.getBizListFromXML();
 	}
 	
