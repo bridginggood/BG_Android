@@ -8,17 +8,17 @@
  */
 package com.bridginggood;
 
-public class Session {
+public class UserSession {
 
 	private String mLoginToken;
 	private boolean mIsRememberLogin;
 
-	public Session(){
+	public UserSession(){
 		setLoginToken(null);
 		setIsRememberLogin(false);
 	}
 
-	public Session(String loginToken, boolean isRememberLogin){
+	public UserSession(String loginToken, boolean isRememberLogin){
 		setLoginToken(loginToken);
 		setIsRememberLogin(isRememberLogin);
 	}

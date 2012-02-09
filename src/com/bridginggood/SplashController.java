@@ -63,7 +63,7 @@ public class SplashController extends Activity {
 	}
 
 	private boolean hasValidUserToken(){
-		Session userSession = SessionStore.loadUserSession(getApplicationContext());
+		UserSession userSession = SessionStore.loadUserSession(getApplicationContext());
 		if(userSession.isEmptySession())
 			return false;
 		else{
