@@ -9,73 +9,39 @@
 package com.bridginggood;
 
 public class UserSession {
-
 	private String mLoginToken;
-	private String mEmail;
-	private String mPassword;
-	private boolean mIsRememberLogin;
+	private String mType;
 
 	public UserSession(){
 		setLoginToken(null);
-		setEmail(null);
-		setPassword(null);
-		setIsRememberLogin(false);
+		setType(null);
 	}
 
 	/*
-	 * Session by Login Token
+	 * Constructor
 	 */
-	public UserSession(String loginToken, boolean isRememberLogin){
+	public UserSession(String loginToken, String type){
 		setLoginToken(loginToken);
-		setEmail(null);
-		setPassword(null);
-		setIsRememberLogin(isRememberLogin);
+		setType(type);
 	}
 	
-	/*
-	 * Session by email and apssword
-	 */
-	public UserSession(String email, String password, boolean isRememberLogin){
-		setLoginToken(null);
-		setEmail(email);
-		setPassword(password);
-		setIsRememberLogin(isRememberLogin);
-	}
-	
-	/**
-	 * 
-	 * @return true if login token and email does not exist
-	 */
 	public boolean isEmptySession(){
-		return !(getLoginToken()==null && getEmail()==null);
+		return (getLoginToken()==null);
 	}
-	
+
+	public String getType() {
+		return mType;
+	}
+
+	public void setType(String mType) {
+		this.mType = mType;
+	}
+
 	public String getLoginToken() {
 		return mLoginToken;
 	}
-	public void setLoginToken(String loginToken) {
-		this.mLoginToken = loginToken;
-	}
-	public boolean getIsRememberLogin() {
-		return mIsRememberLogin;
-	}
-	public void setIsRememberLogin(boolean isRememberLogin) {
-		this.mIsRememberLogin = isRememberLogin;
-	}
 
-	public String getPassword() {
-		return mPassword;
-	}
-
-	public void setPassword(String mPassword) {
-		this.mPassword = mPassword;
-	}
-
-	public String getEmail() {
-		return mEmail;
-	}
-
-	public void setEmail(String mEmail) {
-		this.mEmail = mEmail;
+	public void setLoginToken(String mLoginToken) {
+		this.mLoginToken = mLoginToken;
 	}
 }

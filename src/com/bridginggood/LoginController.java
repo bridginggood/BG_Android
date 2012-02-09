@@ -26,7 +26,7 @@ public class LoginController extends Activity{
 				EditText edtEmail = (EditText) findViewById(R.id.edtEmail);
 				EditText edtPassword = (EditText) findViewById(R.id.edtPassword);
 				CheckBox chkRememberLogin = (CheckBox)findViewById(R.id.chkRememberLogin);
-				UserSession userSession = new UserSession(edtEmail.getText().toString(), edtPassword.getText().toString(), chkRememberLogin.isChecked());
+				
 			}
 		});
 		
