@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:gravity="center"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -15,12 +16,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.50"
             android:text="@string/lblEmail" />
-
+
         <EditText
-            android:id="@+id/txtEmail"
+            android:id="@+id/edtEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:singleLine="true" >
 
             <requestFocus />
         </EditText>
@@ -37,13 +39,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.50"
             android:text="@string/lblPassword" />
-
+
         <EditText
-            android:id="@+id/txtPassword"
+            android:id="@+id/edtPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:inputType="textPassword" />
+
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/chkRememberLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lblRememberLogin" />
 
     <Button
         android:id="@+id/btnLogin"

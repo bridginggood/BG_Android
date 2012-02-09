@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 
 public class LoginController extends Activity{
 	@Override
@@ -21,6 +23,10 @@ public class LoginController extends Activity{
 		btnLogin.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				Log.d("BG", "Login button Clicked");
+				EditText edtEmail = (EditText) findViewById(R.id.edtEmail);
+				EditText edtPassword = (EditText) findViewById(R.id.edtPassword);
+				CheckBox chkRememberLogin = (CheckBox)findViewById(R.id.chkRememberLogin);
+				UserSession userSession = new UserSession(edtEmail.getText().toString(), edtPassword.getText().toString(), chkRememberLogin.isChecked());
 			}
 		});
 		
