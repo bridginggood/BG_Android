@@ -9,17 +9,21 @@
 package com.bridginggood;
 
 public class UserSession {
-	private String mLoginToken, mType, mEmail, mPassword;
+	private String mLoginToken, mType, mEmail, mPassword, mFirstName, mLastName;
 
 	public UserSession(){
 		setLoginToken(null);
 		setType(null);
 		setEmail(null);
 		setPassword(null);
+		setFirstName(null);
+		setLastName(null);
 	}
 
-	public void createUserSessionForFacebook(String email, String type){
+	public void createUserSessionForFacebook(String email, String firstname, String lastname, String type){
 		setEmail(email);
+		setFirstName(firstname);
+		setLastName(lastname);
 		setType(type);
 	}
 	
@@ -45,7 +49,7 @@ public class UserSession {
 	 *@return true if login was successful.  
 	 */
 	public boolean loginUserSession(){
-		if (getType().equals(CONSTANT.USER_SESSION_TYPE_FACEBOOK))
+		if (getType().equals(CONST.USER_SESSION_TYPE_FACEBOOK))
 		{
 			//Go to Facebook Login
 			return loginUserSessionByFacebook();
@@ -107,5 +111,21 @@ public class UserSession {
 
 	public void setEmail(String mEmail) {
 		this.mEmail = mEmail;
+	}
+
+	public String getLastName() {
+		return mLastName;
+	}
+
+	public void setLastName(String mLastName) {
+		this.mLastName = mLastName;
+	}
+
+	public String getFirstName() {
+		return mFirstName;
+	}
+
+	public void setFirstName(String mFirstName) {
+		this.mFirstName = mFirstName;
 	}
 }

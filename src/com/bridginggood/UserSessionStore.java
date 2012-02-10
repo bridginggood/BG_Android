@@ -10,7 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class SessionStore {
+public class UserSessionStore {
 
 	private static final String TOKEN = "loginToken";					//Token attribute
 	private static final String USER_TYPE = "userType";					//Type of the user
