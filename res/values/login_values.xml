@@ -2,6 +2,5 @@
 <resources>
     <string name="lblEmail">E-mail:</string>
     <string name="lblPassword">Password:</string>
-    <string name="lblRememberLogin">Remember me</string>
     
 </resources>
