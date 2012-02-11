@@ -22,8 +22,8 @@ import android.widget.Toast;
 
 import com.bridginggood.Facebook.BaseRequestListener;
 import com.bridginggood.Facebook.FacebookSessionStore;
-import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.DialogError;
+import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 
@@ -31,7 +31,7 @@ public class LoginController extends Activity{
 	private boolean mLockThread = false;				//Created to put a lock on asynchronous thread
 	private boolean mIsLoginSuccess = false;		//True if login is success
 	private ProgressDialog mProgressDialog;
-	private UserSession mUserSession;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,7 +39,6 @@ public class LoginController extends Activity{
 
 		mLockThread = false;
 		mIsLoginSuccess = false;
-		mUserSession = new UserSession();
 
 		initButtonViews();
 	}
@@ -53,7 +52,7 @@ public class LoginController extends Activity{
 				EditText edtEmail = (EditText) findViewById(R.id.edtEmail);
 				EditText edtPassword = (EditText) findViewById(R.id.edtPassword);
 
-				mUserSession.createUserSessionForBG(edtEmail.getText().toString(), edtPassword.getText().toString(), CONST.USER_SESSION_TYPE_BG);
+				UserInfo.createUserSessionForBG(edtEmail.getText().toString(), edtPassword.getText().toString(), CONST.USER_SESSION_TYPE_BG);
 				startLoginProgressDialog();
 			}
 		});
@@ -63,25 +62,9 @@ public class LoginController extends Activity{
 		btnLoginFB.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				Log.d("BG", "FB Login button Clicked");
+				UserInfo.setUserType(CONST.USER_SESSION_TYPE_FACEBOOK);
 				mLockThread = true;
 				displayFacebookLogin();
-
-				while(mLockThread);	//Wait until facebook login is done
-
-				if(UserInfo.mFacebook.isSessionValid())
-				{
-					//If facebook signin was successful, 
-					mLockThread = true;
-					Bundle params = new Bundle();
-					params.putString("fields", "first_name, last_name, email");
-					UserInfo.mAsyncRunner.request("me", params,new UserInfoRequestListener());
-
-					while(mLockThread);
-					
-					mUserSession.createUserSessionForFacebook(UserInfo.getUserEmail(), UserInfo.getUserFirstName(), 
-							UserInfo.getUserLastName(), CONST.USER_SESSION_TYPE_FACEBOOK);
-					startLoginProgressDialog();
-				}
 			}
 		});
 	}
@@ -90,13 +73,14 @@ public class LoginController extends Activity{
 		mProgressDialog = ProgressDialog.show(this, "Connecting", "Loading. Please wait...", true, false);
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
-				mIsLoginSuccess = mUserSession.loginUserSession();
+				mIsLoginSuccess = UserInfo.loginUserSession(getApplicationContext());
+				Log.d("BG", "mIsLoginSuccess: "+mIsLoginSuccess);
 				handlerLoading.sendEmptyMessage(0);
 			}
 		});
 		thread.start();	
 	}
-	
+
 	private Handler handlerLoading = new Handler() {
 		public void handleMessage(Message msg) {
 			mProgressDialog.dismiss(); // Close dialog
@@ -118,7 +102,46 @@ public class LoginController extends Activity{
 	 */
 	private void displayFacebookLogin(){
 
-		if (UserInfo.mFacebook.isSessionValid()){
+		if (!UserInfo.mFacebook.isSessionValid()){
+			Log.d("BG", "Launching FB DialogListner in attempt to login using FB");
+			UserInfo.mFacebook.authorize(this, CONST.FACEBOOK_PERMISSION, new DialogListener() {
+				@Override
+				public void onComplete(Bundle values) {
+					Log.d("BG", "Facebook Login Success!");
+					Toast.makeText(getApplicationContext(), "Facebook login success!",Toast.LENGTH_SHORT).show();
+					FacebookSessionStore.save(UserInfo.mFacebook, getApplicationContext());
+
+					Bundle params = new Bundle();
+					params.putString("fields", "first_name, last_name, email");
+					UserInfo.mAsyncRunner.request("me", params,new UserInfoRequestListener());
+
+					while(mLockThread);
+
+					startLoginProgressDialog();
+					mLockThread = false;
+				}
+
+				@Override
+				public void onFacebookError(FacebookError error) {
+					Log.d("BG", "Facebook Login Error.");
+					Toast.makeText(getApplicationContext(), "Error occured: "+error,Toast.LENGTH_SHORT).show();
+
+					mLockThread = false;
+				}
+
+				@Override
+				public void onError(DialogError e) {
+					mLockThread = false;
+				}
+
+				@Override
+				public void onCancel() {
+					mLockThread = false;
+				}
+			});
+		}
+		else{
+			//Temp code to logout
 			//TEMP LOGOUT CODE
 			Log.d("BG", "Session was valid! Logging out now!");
 			UserInfo.mAsyncRunner.logout(getApplicationContext(), new RequestListener() {
@@ -143,36 +166,7 @@ public class LoginController extends Activity{
 				public void onFacebookError(FacebookError e, Object state) {}
 			});
 			//TEMP LOGOUT END
-		}
-		else {
-			UserInfo.mFacebook.authorize(this, CONST.FACEBOOK_PERMISSION, new DialogListener() {
-				@Override
-				public void onComplete(Bundle values) {
-					Log.d("BG", "Facebook Login Success!");
-					Toast.makeText(getApplicationContext(), "Facebook login success!",Toast.LENGTH_SHORT).show();
-					FacebookSessionStore.save(UserInfo.mFacebook, getApplicationContext());
-
-					mLockThread = false;
-				}
-
-				@Override
-				public void onFacebookError(FacebookError error) {
-					Log.d("BG", "Facebook Login Error.");
-					Toast.makeText(getApplicationContext(), "Error occured: "+error,Toast.LENGTH_SHORT).show();
-
-					mLockThread = false;
-				}
-
-				@Override
-				public void onError(DialogError e) {
-					mLockThread = false;
-				}
-
-				@Override
-				public void onCancel() {
-					mLockThread = false;
-				}
-			});
+			//Temp code
 		}
 	}
 	/*
@@ -188,6 +182,7 @@ public class LoginController extends Activity{
 				UserInfo.setUserFirstName(jsonObject.getString("first_name"));
 				UserInfo.setUserLastName(jsonObject.getString("last_name"));
 				UserInfo.setUserEmail(jsonObject.getString("email"));
+
 
 				mLockThread = false;
 			} catch (JSONException e) {

@@ -84,6 +84,9 @@ public class BizListController extends Activity implements OnScrollListener{
 	public LocationResult locationResult = new LocationResult(){
 		@Override
 		public void gotLocation(final Location location){
+			if(location == null)
+				return;
+			
 			Log.d("BG", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
 			//Got the location!, store them as current location
 			mMyLat = (float) location.getLatitude();

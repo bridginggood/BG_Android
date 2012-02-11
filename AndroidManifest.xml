@@ -46,6 +46,7 @@
 
         <!-- Bg -->
         <activity android:name=".Bg.BgActivityGroup" />
+        <activity android:name=".Bg.BgAboutController"/>
 
         <!-- Google Map -->
         <uses-library

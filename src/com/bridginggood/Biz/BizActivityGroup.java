@@ -49,6 +49,8 @@ public class BizActivityGroup extends ActivityGroup {
 			setContentView(historyBizActivityGroup.get(historyBizActivityGroup.size()-1)); 
 		} else {   
 			finish(); // Finish tabactivity
+			Log.d("BG", "onDestroy called from "+this.getClass().toString());
+			System.exit(0);
 		}   
 	}  
 
@@ -74,4 +76,10 @@ public class BizActivityGroup extends ActivityGroup {
     public void setHistoryBizActivityGroup(ArrayList<View> historyBizActivityGroup){
     	this.historyBizActivityGroup = historyBizActivityGroup;
     }
+    
+    public void onDestory(){
+		super.onDestroy();
+		Log.d("BG", "onDestroy called from "+this.getClass().toString());
+		System.exit(0);
+	}
 }

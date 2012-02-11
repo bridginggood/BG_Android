@@ -22,19 +22,17 @@ public class UserSessionStore {
 	 * @param context 		Application context to call SharedPreference in
 	 * @param userSession 	Session object to save
 	 */
-	public static boolean saveUserSession(Context context, UserSession userSession) {
+	public static boolean saveUserSession(Context context) {
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
-		editor.putString(TOKEN, userSession.getLoginToken());
-		editor.putString(USER_TYPE, userSession.getType());
+		editor.putString(TOKEN, UserInfo.getTokenString());
+		editor.putString(USER_TYPE, UserInfo.getUserType());
 		return editor.commit();
 	}
 
-	public static UserSession loadUserSession(Context context){
+	public static void loadUserSession(Context context){
 		SharedPreferences savedSession = context.getSharedPreferences(KEY, Context.MODE_PRIVATE);
-		UserSession userSession = new UserSession();
-		userSession.setLoginToken(savedSession.getString(TOKEN, null));
-		userSession.setType(savedSession.getString(USER_TYPE,null));
-		return userSession;
+		UserInfo.setTokenString(savedSession.getString(TOKEN, null));
+		UserInfo.setUserType(savedSession.getString(USER_TYPE,null));
 	}
 
 	public static void clearSession(Context context) {

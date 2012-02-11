@@ -19,16 +19,18 @@ import android.util.Log;
 
 import com.bridginggood.Facebook.BaseRequestListener;
 import com.bridginggood.Facebook.FacebookSessionStore;
+import com.facebook.android.Facebook;
 
 public class SplashController extends Activity {
 	protected final static long SPLASH_DELAY = 1500;	//Minimum time to show Splash in milliseconds
-	private UserSession mUserSession;
 	private boolean mLockThread = false;				//Created to put a lock on asynchronous thread
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash_layout);
+		
+		UserInfo.mFacebook = new Facebook(CONST.FACEBOOK_APP_ID);
 
 		Thread splashTread = new Thread() {
 			@Override
@@ -89,20 +91,18 @@ public class SplashController extends Activity {
 	 */
 	private boolean isUserLoginSuccess(){
 		//Load saved session settings
-		mUserSession = UserSessionStore.loadUserSession(getApplicationContext());
+		UserSessionStore.loadUserSession(getApplicationContext());
 		FacebookSessionStore.restore(UserInfo.mFacebook, getApplicationContext());
 
 		//If session token is not empty, there must have been a login history in the past. 
-		if(!mUserSession.isSessionTokenEmpty()){
+		if(!UserInfo.isTokenStringEmpty()){
 			//If Facebook session is valid, then the user must have logged in using facebook account.
 			if(UserInfo.mFacebook.isSessionValid()){ 
 				updateUserInfoUsingFacebookToken();	//Call Facebook API
-				mUserSession.createUserSessionForFacebook(UserInfo.getUserEmail(), UserInfo.getUserFirstName(),
-						UserInfo.getUserLastName(), CONST.USER_SESSION_TYPE_FACEBOOK);	//Create UserSession for the login
 				Log.d("BG", "Name: "+UserInfo.getUserFirstName()+" "+UserInfo.getUserLastName()+" . "+UserInfo.getUserEmail());
 			}
 			
-			return mUserSession.loginUserSession();
+			return UserInfo.loginUserSession(getApplicationContext());
 		}
 		else{	//No token exists
 			return false;

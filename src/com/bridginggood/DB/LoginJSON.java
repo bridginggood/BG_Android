@@ -3,23 +3,28 @@
  */
 package com.bridginggood.DB;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.json.JSONObject;
 
 import android.util.Log;
 
 import com.bridginggood.CONST;
 import com.bridginggood.UserInfo;
-import com.bridginggood.UserSession;
 
 public class LoginJSON {
 
@@ -29,6 +34,7 @@ public class LoginJSON {
 	private static final String PARAM_USER_PASSWORD = "UserPassword";
 	private static final String PARAM_USER_TYPE = "UserType";
 	private static final String PARAM_TOKEN_STRING = "TokenString";
+	private static final String PARAM_PHONE_TYPE = "PhoneType";
 
 	private static final String PARAM_RESULT_CODE = "resultCode";
 	private static final String PARAM_RESULT_MSG = "resultMsg";
@@ -36,40 +42,72 @@ public class LoginJSON {
 	/*
 	 * returns true if login is successful
 	 */
-	public static boolean loginUserSession(final UserSession userSession, final int LoginType){
+	public static boolean loginUserSession(final int LoginType){
 		try {
-			
-			// Create a new HttpClient and Post Header
-			HttpClient httpClient = new DefaultHttpClient();
-			HttpPost httpPost = null;
+			HttpURLConnection http = null;
+			URL url = null;
+			BufferedReader postRes = null;
+			String postData = "";
+			StringBuilder json = new StringBuilder();
+			String line="";
+			int responseCode=0;
 
-			// Add your data
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			
 			switch(LoginType)
 			{
 			case CONST.LOGIN_TYPE_BG:
-				httpPost = new HttpPost(CONST.LOGIN_BY_BG_URL);
-				nameValuePairs.add(new BasicNameValuePair(PARAM_USER_EMAIL, userSession.getEmail()));
-				nameValuePairs.add(new BasicNameValuePair(PARAM_USER_PASSWORD, userSession.getPassword()));
+				url = new URL(CONST.LOGIN_BY_BG_URL);
+				postData += URLEncoder.encode(PARAM_USER_EMAIL)+"="+URLEncoder.encode(UserInfo.getUserEmail())+"&";
+				postData += URLEncoder.encode(PARAM_USER_PASSWORD)+"="+URLEncoder.encode(UserInfo.getUserPassword())+"&";
 				break;
 			case CONST.LOGIN_TYPE_FACEBOOK:
-				httpPost = new HttpPost(CONST.LOGIN_BY_FACEBOOK_URL);
-				nameValuePairs.add(new BasicNameValuePair(PARAM_USER_EMAIL, userSession.getEmail()));
-				nameValuePairs.add(new BasicNameValuePair(PARAM_USER_FIRSTNAME, userSession.getFirstName()));
-				nameValuePairs.add(new BasicNameValuePair(PARAM_USER_LASTNAME, userSession.getLastName()));
+				url = new URL(CONST.LOGIN_BY_FACEBOOK_URL);
+				postData += URLEncoder.encode(PARAM_USER_EMAIL)+"="+URLEncoder.encode(UserInfo.getUserEmail())+"&";
+				postData += URLEncoder.encode(PARAM_USER_FIRSTNAME)+"="+URLEncoder.encode(UserInfo.getUserFirstName())+"&";
+				postData += URLEncoder.encode(PARAM_USER_LASTNAME)+"="+URLEncoder.encode(UserInfo.getUserLastName())+"&";
 				break;
 			case CONST.LOGIN_TYPE_TOKEN:
-				httpPost = new HttpPost(CONST.LOGIN_BY_TOKEN_URL);
-				nameValuePairs.add(new BasicNameValuePair(PARAM_TOKEN_STRING, userSession.getLoginToken()));
+				url = new URL(CONST.LOGIN_BY_TOKEN_URL);
+				postData += URLEncoder.encode(PARAM_TOKEN_STRING)+"="+URLEncoder.encode(UserInfo.getTokenString())+"&";
 				break;
 			}
-			
-			httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-			// Execute HTTP Post Request
-			HttpResponse response = httpClient.execute(httpPost);
-			JSONObject jsonObject = new JSONObject(response.toString());
+			if (url.getProtocol().toLowerCase().equals("https")) {
+				trustAllHosts();
+				HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+				https.setHostnameVerifier(DO_NOT_VERIFY);
+				http = https;
+			} else {
+				http = (HttpURLConnection) url.openConnection();
+			}
+
+			Log.d("BG", "POSTDATA: "+postData);
+
+			byte[] bytes = postData.getBytes("UTF-8");
+	        http.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+	        http.setRequestMethod("POST");
+	        http.setDoOutput(true);
+	        http.connect();
+	        OutputStream outputStream = http.getOutputStream();
+	        outputStream.write(bytes);
+	        Log.d("BG", "Bytes: "+bytes.toString());
+	        outputStream.close();
+	        
+			responseCode = http.getResponseCode();
+			if(responseCode < 400){
+				postRes = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
+				while ((line = postRes.readLine()) != null){
+					json.append(line);
+				}
+				postRes.close();
+			}
+			else{
+				Log.d("BG", "ResponseCode error: "+responseCode+" . "+http.getErrorStream().toString()+" . "+http.getResponseMessage());
+			}
+			
+
+			Log.d("BG", "HTTPS received: "+json.toString());
+
+			JSONObject jsonObject = new JSONObject(json.toString());
 
 			//TODO: Maybe this needs to be changed later on.
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
@@ -92,5 +130,49 @@ public class LoginJSON {
 		UserInfo.setUserFirstName(jsonObject.getString(PARAM_USER_FIRSTNAME));
 		UserInfo.setUserLastName(jsonObject.getString(PARAM_USER_LASTNAME));
 		UserInfo.setUserType(jsonObject.getString(PARAM_USER_TYPE));
+		UserInfo.setTokenString(jsonObject.getString(PARAM_TOKEN_STRING));
+		UserInfo.setPhoneType(jsonObject.getString(PARAM_PHONE_TYPE));
+		
+		UserInfo.setUserPassword(null);	//Nullify for security reason?!
+		
+		Log.d("BG", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
+				UserInfo.getUserLastName()+", "+UserInfo.getUserType());
+	}
+
+	// always verify the host - dont check for certificate
+	final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+		public boolean verify(String hostname, SSLSession session) {
+			return true;
+		}
+	};
+
+	/**
+	 * Trust every server - dont check for any certificate
+	 */
+	private static void trustAllHosts() {
+		// Create a trust manager that does not validate certificate chains
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return new java.security.cert.X509Certificate[] {};
+			}
+
+			public void checkClientTrusted(X509Certificate[] chain,
+					String authType) throws CertificateException {
+			}
+
+			public void checkServerTrusted(X509Certificate[] chain,
+					String authType) throws CertificateException {
+			}
+		} };
+
+		// Install the all-trusting trust manager
+		try {
+			SSLContext sc = SSLContext.getInstance("TLS");
+			sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection
+			.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

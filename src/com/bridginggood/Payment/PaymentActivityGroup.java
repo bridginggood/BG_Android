@@ -74,4 +74,9 @@ public class PaymentActivityGroup extends ActivityGroup {
     public void setHistoryPaymentActivityGroup(ArrayList<View> historyPaymentActivityGroup){
     	this.historyPaymentActivityGroup = historyPaymentActivityGroup;
     }
+    public void onDestory(){
+		super.onDestroy();
+		Log.d("BG", "onDestroy called from "+this.getClass().toString());
+		System.exit(0);
+	}
 }

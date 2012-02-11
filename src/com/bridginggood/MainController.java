@@ -5,6 +5,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TabHost;
 
 import com.bridginggood.Bg.BgActivityGroup;
@@ -73,5 +74,10 @@ public class MainController extends TabActivity {
 		super.onResume();
 		if(UserInfo.mFacebook != null && UserInfo.mFacebook.isSessionValid())
 			UserInfo.mFacebook.extendAccessTokenIfNeeded(this, null);
+	}
+	public void onDestory(){
+		super.onDestroy();
+		Log.d("BG", "onDestroy called");
+		System.exit(0);
 	}
 }
