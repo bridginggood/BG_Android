@@ -65,4 +65,13 @@ public class MainController extends TabActivity {
 		
 		tabHost.setCurrentTab(2);
 	}
+	
+	/*
+	 * Called to extend mFacebook token, if necessary
+	 */
+	public void onResume() {    
+		super.onResume();
+		if(UserInfo.mFacebook != null && UserInfo.mFacebook.isSessionValid())
+			UserInfo.mFacebook.extendAccessTokenIfNeeded(this, null);
+	}
 }

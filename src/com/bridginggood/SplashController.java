@@ -41,15 +41,15 @@ public class SplashController extends Activity {
 				UserInfo.init();	//Initialize UserInfo
 
 				//Check if saved user token exists or not
-				boolean userWithValidUserToken = hasValidUserToken();
+				boolean isLoginSuccess = isUserLoginSuccess();
 
 				/*
 				 * Decide where to redirect user depending on userWithValidUserToken
 				 */
-				Log.d("BG", "userWithValidUserToken "+userWithValidUserToken);
+				Log.d("BG", "userWithValidUserToken "+isLoginSuccess);
 
 				Class<?> targetClass = null;
-				if(userWithValidUserToken){
+				if(isLoginSuccess){
 					//Go to main tabhost view
 					targetClass = MainController.class;
 				}
@@ -87,7 +87,8 @@ public class SplashController extends Activity {
 	 * Assumption: If FacebookSessionStore exists, then so will UserSessionStore.
 	 * (Since Server will generate token on every login no matter what)
 	 */
-	private boolean hasValidUserToken(){
+	private boolean isUserLoginSuccess(){
+		//Load saved session settings
 		mUserSession = UserSessionStore.loadUserSession(getApplicationContext());
 		FacebookSessionStore.restore(UserInfo.mFacebook, getApplicationContext());
 
@@ -127,16 +128,11 @@ public class SplashController extends Activity {
 			try {
 				jsonObject = new JSONObject(response);
 
-				//String firstname = jsonObject.getString("first_name");
-				//String lastname = jsonObject.getString("last_name");
-				//String email = jsonObject.getString("email");
 				UserInfo.setUserFirstName(jsonObject.getString("first_name"));
 				UserInfo.setUserLastName(jsonObject.getString("last_name"));
 				UserInfo.setUserEmail(jsonObject.getString("email"));
-				//Log.d("BG", "SSS Name: "+UserInfo.getUserFirstName()+" "+UserInfo.getUserLastName()+" . "+UserInfo.getUserEmail());
+
 				mLockThread = false;
-
-
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

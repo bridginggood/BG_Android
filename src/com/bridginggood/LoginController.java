@@ -21,11 +21,17 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 
 public class LoginController extends Activity{
+	private boolean mLockThread = false;				//Created to put a lock on asynchronous thread
+	private boolean isFacebookLoginSuccess = false;		//True if login by facebook api succeeds
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_layout);
 
+		mLockThread = false;
+		isFacebookLoginSuccess = false;
+		
 		initButtonViews();
 	}
 
@@ -49,7 +55,12 @@ public class LoginController extends Activity{
 		btnLoginFB.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				Log.d("BG", "FB Login button Clicked");
+				mLockThread = true;
 				displayFacebookLogin();
+				
+				while(mLockThread);	//Wait until facebook login is done
+				
+				
 			}
 		});
 	}
@@ -59,7 +70,7 @@ public class LoginController extends Activity{
 	 * 
 	 */
 	private void displayFacebookLogin(){
-		String[] permission = {"email", "publish_checkins"};
+		
 		if (UserInfo.mFacebook.isSessionValid()){
 			//TEMP LOGOUT CODE
 			Log.d("BG", "Session was valid! Logging out now!");
@@ -84,27 +95,36 @@ public class LoginController extends Activity{
 				  @Override
 				  public void onFacebookError(FacebookError e, Object state) {}
 				});
+			//TEMP LOGOUT END
 		}
 		else {
-			UserInfo.mFacebook.authorize(this, permission, new DialogListener() {
+			UserInfo.mFacebook.authorize(this, CONST.FACEBOOK_PERMISSION, new DialogListener() {
 				@Override
 				public void onComplete(Bundle values) {
 					Log.d("BG", "Facebook Login Success!");
 					Toast.makeText(getApplicationContext(), "Facebook login success!",Toast.LENGTH_SHORT).show();
 					FacebookSessionStore.save(UserInfo.mFacebook, getApplicationContext());
+					
+					mLockThread = false;
 				}
 
 				@Override
 				public void onFacebookError(FacebookError error) {
 					Log.d("BG", "Facebook Login Error.");
 					Toast.makeText(getApplicationContext(), "Error occured: "+error,Toast.LENGTH_SHORT).show();
+					
+					mLockThread = false;
 				}
 
 				@Override
-				public void onError(DialogError e) {}
+				public void onError(DialogError e) {
+					mLockThread = false;
+				}
 
 				@Override
-				public void onCancel() {}
+				public void onCancel() {
+					mLockThread = false;
+				}
 			});
 		}
 	}
