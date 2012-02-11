@@ -8,18 +8,7 @@
  */
 package com.bridginggood;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import com.bridginggood.DB.LoginJSON;
 
 public class UserSession {
 	private String mLoginToken, mType, mEmail, mPassword, mFirstName, mLastName;
@@ -65,30 +54,16 @@ public class UserSession {
 		if (getType().equals(CONST.USER_SESSION_TYPE_FACEBOOK))
 		{
 			//Go to Facebook Login
-			return loginUserSessionByFacebook();
+			return LoginJSON.loginUserSession(this, CONST.LOGIN_TYPE_FACEBOOK);
 		}
 		else if (getLoginToken() != null){
 			//Go to token login
-			return loginUserSessionByToken();
+			return LoginJSON.loginUserSession(this, CONST.LOGIN_TYPE_TOKEN);
 		}
 		else{
 			//Go to BG login
-			return loginUserSessionByBG();
+			return LoginJSON.loginUserSession(this, CONST.LOGIN_TYPE_BG);
 		}
-	}
-	
-	private boolean loginUserSessionByFacebook(){
-		return false;
-	}
-	
-	private boolean loginUserSessionByToken(){
-		
-	    
-		return false;
-	}
-	
-	private boolean loginUserSessionByBG(){
-		return false;
 	}
 	
 	//Returns whether the login token is empty or not

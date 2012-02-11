@@ -7,7 +7,10 @@ public class CONST {
 
 	//For login: UserType element
 	public static final String USER_SESSION_TYPE_FACEBOOK = "FBOOK";
-	public static final String USER_SESSION_TYPE_BRIDGINGGOOD = "BGOOD";
+	public static final String USER_SESSION_TYPE_BG = "BGOOD";
+	public static final int LOGIN_TYPE_BG = 0;
+	public static final int LOGIN_TYPE_FACEBOOK = 1;
+	public static final int LOGIN_TYPE_TOKEN = 2;
 	
 	//For BridgingGood Database API
 	public static final String LOGIN_BY_TOKEN_URL = "https://api.bridginggood.com:8080/auth/LoginByTokenFromMobile.json";
