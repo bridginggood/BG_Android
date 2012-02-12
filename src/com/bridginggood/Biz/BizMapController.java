@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bridginggood.R;
 import com.bridginggood.Biz.BizMyLocation.LocationResult;
@@ -28,27 +27,22 @@ public class BizMapController extends MapActivity{
 	private ArrayList<Business> mBizArrayList;		//Business list
 
 	private ProgressDialog mProgressDialog;			
-	private long mStartTime;
 
 	private float mMyLat = 37.4848f;
 	private float mMyLng = 126.895f;
 	private float mDistanceRadius = 1.0f;
 
-	private Location mLocTR, mLocBL;
-
 	private boolean mIsLoadingOverlay = false; 		//Lock
 
 	private static final int TIME_TO_WAIT_IN_MS = 300;
-	private static final int CURRENT_POSITION_LOADING_TIME_OUT = 30*1000; //30 seconds
-
-
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bizmap);
 
-		
+		mProgressDialog = ProgressDialog.show(getParent(), "", "Identifying your location...", true, false);
 		//Initialize ArrayLists
 		mBizArrayList = new ArrayList<Business>();
 		//Initialize trigger
@@ -74,19 +68,7 @@ public class BizMapController extends MapActivity{
 
 		Log.d("BG", "Adding listener to the map");
 		//Handle map change - zoom and span
-		mMapView.setOnTouchEventListener(new BizExtendedMapView.OnTouchEventListener() {
-			@Override
-			public void onTouchEvent(MapView view, int newZoom, int oldZoom, GeoPoint newMapCenter, GeoPoint oldMapCenter) {
-				Log.d("BG", "Zoom changed from " + oldZoom + " to " + newZoom + ". GeoPoint:"+newMapCenter+" | "+oldMapCenter);
-				//Load only when map is not loading any overlays
-				if(mIsLoadingOverlay == false)
-					mMapView.postDelayed(calcMapSpan, TIME_TO_WAIT_IN_MS);
-			}
-		});
-
-		//Initialize location TopRight, BottomLeft for onUserInteraction() - to handle mapview change
-		mLocTR = new Location("LocationTopRight");
-		mLocBL = new Location("LocationBottomLeft");
+		mMapView.setOnChangeListener(new MapViewChangeListener());
 	}
 
 	//Callback - once you got the location of the user
@@ -98,80 +80,29 @@ public class BizMapController extends MapActivity{
 			mMyLat = (float) location.getLatitude();
 			mMyLng = (float) location.getLongitude();
 
-			TextView txtHeaderLoc = (TextView) findViewById(R.id.txtBizMapHeader);
-			txtHeaderLoc.setText("Your location: ("+mMyLat+" , "+mMyLng+" )");
-
-			createMyOverlay();
+			createUserPositionOverlayOnMap();
+			mProgressDialog.dismiss();
+			
 			updateBizArrayList();
 		}
 	};
 
-	// Wait for mapview to become ready.
-	private Runnable calcMapSpan = new Runnable() {
-		public void run() {
-			mIsLoadingOverlay = true;
-
-			// If either is true we must wait.
-			if(mMapView.getLatitudeSpan() == 0 || mMapView.getLongitudeSpan() == 360000000)
-				mMapView.postDelayed(this, TIME_TO_WAIT_IN_MS);
-
-			float latDiff = mMapView.getLatitudeSpan() / 2;
-			float lngDiff = mMapView.getLongitudeSpan() / 2;
-			GeoPoint mapCenter = mMapView.getMapCenter();
-
-			Log.d("BG", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mapCenter);
-
-			//Find distance using span
-			float p1Lat = (float) ((mapCenter.getLatitudeE6()+latDiff)/1E6);
-			float p1Lng = (float) ((mapCenter.getLongitudeE6()+lngDiff)/1E6);
-			float p2Lat = (float) ((mapCenter.getLatitudeE6()-latDiff)/1E6);
-			float p2Lng = (float) ((mapCenter.getLongitudeE6()-lngDiff)/1E6);
-
-			setLocationTR(p1Lat, p1Lng);
-			setLocationBL(p2Lat, p2Lng);
-
-			mDistanceRadius = getLocationDistanceDifference();
-			Log.d("BG", "Dist: "+ mDistanceRadius);
-
-			//Get GeoPoints from the Server
-			updateBizArrayList();
-
-			mIsLoadingOverlay = false;
-		}
-	};
-
-	//Store it in float
-	private void setLocationTR(float lat, float lng){
-		mLocTR.setLatitude(lat);
-		mLocTR.setLongitude(lng);
-	}
-
-	private void setLocationBL(float lat, float lng){
-		mLocBL.setLatitude(lat);
-		mLocBL.setLongitude(lng);
-	}
-
-	private float getLocationDistanceDifference(){
-		float dist = mLocTR.distanceTo(mLocBL);
-		//Convert distanceAway from meter to miles
-		dist = (float) ((float)(dist/1000)/1.6);
-		return dist;
-	}
-
-	//Set arraylist of GeoPoints to be marked on the map
+	/**
+	 * Get Arraylist of GeoPoints to be marked on the map
+	 */
 	private void updateBizArrayList(){
 		float lat = convIntE6ToFloat(mMapView.getMapCenter().getLatitudeE6());
 		float lng = convIntE6ToFloat(mMapView.getMapCenter().getLongitudeE6());
 		BusinessJSON bizDB = new BusinessJSON(lat, lng, mDistanceRadius);
 		mBizArrayList = bizDB.getBizListJSON();
-		createOverlay();
+		Log.d("BG", "mBizArrayList:"+mBizArrayList.toString());
 	}
 
-	private void createMyOverlay(){
+	private void createUserPositionOverlayOnMap(){
 		GeoPoint myPoint = new GeoPoint (convFloatToIntE6(mMyLat), convFloatToIntE6(mMyLng));
 		MapController mapController = mMapView.getController();
 		mapController.animateTo(myPoint);
-		Log.d("BG", "createMyOverlay called. Should move to :"+mMyLat+" , "+mMyLng);
+		Log.d("BG", "createUserPositionOverlayOnMap :"+mMyLat+" , "+mMyLng);
 
 		// Marker
 		MapView.LayoutParams mapMarkerParams = new MapView.LayoutParams(
@@ -182,14 +113,10 @@ public class BizMapController extends MapActivity{
 				getApplicationContext());
 		mapMarker.setImageResource(R.drawable.icon);
 		mMapView.addView(mapMarker, mapMarkerParams);
-
-
-		//Get Spans
-		mMapView.postDelayed(calcMapSpan, TIME_TO_WAIT_IN_MS);
 	}
 
 	//To create overlay on the map
-	private void createOverlay(){
+	private void createBusinessOverlayOnMapView(){
 		Log.d("BG", "CreateOverLay called");
 		List<Overlay> mapOverlays = mMapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.charity_icon_default);
@@ -199,6 +126,7 @@ public class BizMapController extends MapActivity{
 		GeoPoint point = null;
 		OverlayItem overlayItem = null;
 		for(Business biz : mBizArrayList){
+			if (biz==null) break;
 			point = new GeoPoint( convFloatToIntE6(biz.getBizLat()) , convFloatToIntE6(biz.getBizLng()));	//Create GeoPoint
 			overlayItem = new OverlayItem(point, biz.getBizName(), biz.getBizAddress());					//Store name and address as descriptions of GeoPoint
 
@@ -227,4 +155,68 @@ public class BizMapController extends MapActivity{
 		BizActivityGroup parent = ((BizActivityGroup)getParent());
 		parent.back();
 	}
+	
+	private void updateMapViewOnMapPositionChange(){
+		Log.d("BG", "Map changed!");
+		updateBizArrayList();
+		createBusinessOverlayOnMapView();
+	}
+	
+	/**
+	 * Update mDistanceRadius to the user's current screen radius for new search
+	 * 
+	 * Calculated by taking Top-Right and Bottom-Left corners of screen
+	 */
+	private void updateDistanceRadius(){
+    	float latDiff = mMapView.getLatitudeSpan() / 2;
+		float lngDiff = mMapView.getLongitudeSpan() / 2;
+		GeoPoint mapCenter = mMapView.getMapCenter();
+
+		Log.d("BG", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mapCenter);
+
+		//Find distance using span
+		float p1Lat = (float) ((mapCenter.getLatitudeE6()+latDiff)/1E6);
+		float p1Lng = (float) ((mapCenter.getLongitudeE6()+lngDiff)/1E6);
+		float p2Lat = (float) ((mapCenter.getLatitudeE6()-latDiff)/1E6);
+		float p2Lng = (float) ((mapCenter.getLongitudeE6()-lngDiff)/1E6);
+
+		Location locTR = new Location("LocationTopRight");
+		Location locBL = new Location("LocationBottomLeft");
+		locTR.setLatitude(p1Lat);
+		locTR.setLongitude(p1Lng);
+		locBL.setLatitude(p2Lat);
+		locBL.setLongitude(p2Lng);
+
+		float dist = locTR.distanceTo(locBL);
+		//Convert distanceAway from meter to miles
+		mDistanceRadius = (float) ((float)(dist/1000)/1.6);
+    }
+	
+	/**
+	 * 
+	 * @author wns349
+	 *
+	 * Listener called when there is a map change by the user.
+	 */
+	private class MapViewChangeListener implements BizExtendedMapView.OnChangeListener
+    {
+ 
+        @Override
+        public void onChange(MapView view, GeoPoint newCenter, GeoPoint oldCenter, int newZoom, int oldZoom)
+        {
+            // Check values
+            if ((!newCenter.equals(oldCenter)) || (newZoom != oldZoom))
+            {
+                // Map Zoom and Pan Detected
+            	Log.d("BG", "Map changed from "+oldCenter+" to "+newCenter+" zoom:"+oldZoom+" -> "+newZoom);
+            	
+            	if(newZoom != oldZoom){
+            		//If zoom level changed, mDistanceRadius must be updated.
+            		updateDistanceRadius();
+            	}
+
+            	updateMapViewOnMapPositionChange();
+            }
+        }
+    }
 }

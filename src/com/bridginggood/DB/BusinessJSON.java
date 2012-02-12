@@ -39,7 +39,7 @@ public class BusinessJSON {
 					{REQUEST_PARAM_LONGITUDE, mMyLng+""}, 
 					{REQUEST_PARAM_DISTANCE, mDistanceRadius+""}};
 			String paramStr = BgHttpHelper.generateParamData(paramData);
-			String jsonStr = BgHttpHelper.requestHttpRequest(CONST.READ_BUSINESS_LIST_URL, paramStr, "GET");
+			String jsonStr = BgHttpHelper.requestHttpRequest(CONST.API_READ_BUSINESS_LIST_URL, paramStr, "GET");
 
 			JSONArray jsonArray = new JSONArray(jsonStr);
 

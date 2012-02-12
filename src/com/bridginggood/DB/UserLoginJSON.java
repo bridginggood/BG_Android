@@ -42,20 +42,20 @@ public class UserLoginJSON {
 			switch(LoginType)
 			{
 			case CONST.LOGIN_TYPE_BG:
-				targetURL = CONST.LOGIN_BY_BG_URL;
+				targetURL = CONST.API_LOGIN_BY_BG_URL;
 				String[][] paramBG = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
 										{PARAM_USER_PASSWORD, UserInfo.getUserPassword()}};
 				requestParam = BgHttpHelper.generateParamData(paramBG);
 				break;
 			case CONST.LOGIN_TYPE_FACEBOOK:
-				targetURL = CONST.LOGIN_BY_FACEBOOK_URL;
+				targetURL = CONST.API_LOGIN_BY_FACEBOOK_URL;
 				String[][] paramFacebook = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
 												{PARAM_USER_FIRSTNAME, UserInfo.getUserFirstName()},
 												{PARAM_USER_LASTNAME, UserInfo.getUserLastName()}};
 				requestParam = BgHttpHelper.generateParamData(paramFacebook);
 				break;
 			case CONST.LOGIN_TYPE_TOKEN:
-				targetURL = CONST.LOGIN_BY_TOKEN_URL;
+				targetURL = CONST.API_LOGIN_BY_TOKEN_URL;
 				String[][] paramToken = {{PARAM_TOKEN_STRING, UserInfo.getTokenString()}};
 				requestParam = BgHttpHelper.generateParamData(paramToken);
 				break;

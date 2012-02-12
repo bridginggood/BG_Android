@@ -182,7 +182,7 @@ public class BizListController extends Activity implements OnScrollListener{
 				Log.d("BG", "Button Clicked");
 				BizActivityGroup bizActivityGroup = ((BizActivityGroup)getParent());
 				View newView = bizActivityGroup.getBizActivityGroup().getLocalActivityManager()
-						.startActivity("BizMap", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+						.startActivity("BizMapController", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 						.getDecorView();
 
 				bizActivityGroup.getBizActivityGroup().replaceView(newView);	//Replace View

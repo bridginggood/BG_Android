@@ -18,9 +18,9 @@ public class CONST {
 	public static final int LOGIN_TYPE_TOKEN = 2;
 	
 	//For BridgingGood Database API
-	public static final String LOGIN_BY_TOKEN_URL = API_URL+"/auth/LoginByTokenFromMobile.json";
-	public static final String LOGIN_BY_FACEBOOK_URL = API_URL+"/auth/LoginByFacebookFromMobile.json";
-	public static final String LOGIN_BY_BG_URL = API_URL+"/auth/LoginByUserFromMobile.json";
+	public static final String API_LOGIN_BY_TOKEN_URL = API_URL+"/auth/LoginByTokenFromMobile.json";
+	public static final String API_LOGIN_BY_FACEBOOK_URL = API_URL+"/auth/LoginByFacebookFromMobile.json";
+	public static final String API_LOGIN_BY_BG_URL = API_URL+"/auth/LoginByUserFromMobile.json";
 	
-	public static final String READ_BUSINESS_LIST_URL = API_URL+"/business_info/read.json";
+	public static final String API_READ_BUSINESS_LIST_URL = API_URL+"/business_info/read.json";
 }
