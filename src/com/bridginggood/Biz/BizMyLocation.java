@@ -18,6 +18,9 @@ public class BizMyLocation {
 	private boolean mIsNetworkEnabled=false;
 	private Context mContext;
 	
+	private static final int MIN_TIME_REFRESH_LOCATION = 1000*60*2;	//Min time in milliseconds
+	private static final int MIN_DIST_REFRESH_LOCATION = 100;		//Min dist in meter
+	
 	public BizMyLocation(Context context){
 		this.mContext = context;
 	}
@@ -38,9 +41,9 @@ public class BizMyLocation {
 			return false;
 
 		if(mIsGpsEnabled)
-			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
+			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_REFRESH_LOCATION, MIN_DIST_REFRESH_LOCATION, locationListenerGps);
 		if(mIsNetworkEnabled)
-			locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
+			locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_REFRESH_LOCATION, MIN_DIST_REFRESH_LOCATION, locationListenerNetwork);
 		timer1=new Timer();
 		timer1.schedule(new GetLastLocation(), 20000);
 		return true;

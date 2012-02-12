@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.bridginggood.R;
 import com.bridginggood.Biz.BizMyLocation.LocationResult;
-import com.bridginggood.DB.ReadBizXML;
+import com.bridginggood.DB.BusinessJSON;
 
 public class BizListController extends Activity implements OnScrollListener{
 	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
@@ -121,8 +121,8 @@ public class BizListController extends Activity implements OnScrollListener{
 			mDistanceRadius += 1.0f; 
 
 			//Get new items
-			ReadBizXML bizDB = new ReadBizXML(mMyLat, mMyLng, mDistanceRadius);
-			mBizArrayList = bizDB.getBizListFromXML();
+			BusinessJSON bizDB = new BusinessJSON(mMyLat, mMyLng, mDistanceRadius);
+			mBizArrayList = bizDB.getBizListJSON();
 
 			Log.d("BG", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+
 					" ) within "+mDistanceRadius);
