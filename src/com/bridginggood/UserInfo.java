@@ -1,9 +1,14 @@
+/**
+ * Created By: Junsung Lim
+ * 
+ * UserInfo is a static class that holds current user info
+ */
 package com.bridginggood;
 
 import android.app.Application;
 import android.content.Context;
 
-import com.bridginggood.DB.LoginJSON;
+import com.bridginggood.DB.UserLoginJSON;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 
@@ -55,21 +60,21 @@ public class UserInfo extends Application{
 		if (getUserType().equals(CONST.USER_SESSION_TYPE_FACEBOOK))
 		{
 			//Go to Facebook Login
-			if (LoginJSON.loginUserSession(CONST.LOGIN_TYPE_FACEBOOK))
+			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_FACEBOOK))
 				return saveCurrentUserSessionToUserSessionStore(context);
 			else
 				return false;
 		}
 		else if (getTokenString() != null){
 			//Go to token login
-			if (LoginJSON.loginUserSession(CONST.LOGIN_TYPE_TOKEN))
+			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_TOKEN))
 				return saveCurrentUserSessionToUserSessionStore(context);
 			else
 				return false;
 		}
 		else{
 			//Go to BG login
-			if (LoginJSON.loginUserSession(CONST.LOGIN_TYPE_BG))
+			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_BG))
 				return saveCurrentUserSessionToUserSessionStore(context);
 			else
 				return false;

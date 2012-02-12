@@ -20,7 +20,6 @@ public class UserSessionStore {
 	 * Save user session object to SharedPreference
 	 * 
 	 * @param context 		Application context to call SharedPreference in
-	 * @param userSession 	Session object to save
 	 */
 	public static boolean saveUserSession(Context context) {
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();

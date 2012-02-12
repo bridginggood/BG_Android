@@ -1,5 +1,9 @@
-/*
- * Static class to perform login
+/**
+ * Created By: Junsung Lim
+ * 
+ * Calls server for user login. 
+ * Calls to server are done in POST method.
+ * Retrieves JSON from the server in return.
  */
 package com.bridginggood.DB;
 
@@ -26,7 +30,7 @@ import android.util.Log;
 import com.bridginggood.CONST;
 import com.bridginggood.UserInfo;
 
-public class LoginJSON {
+public class UserLoginJSON {
 
 	private static final String PARAM_USER_EMAIL = "UserEmail";
 	private static final String PARAM_USER_FIRSTNAME = "UserFirstName";
@@ -39,75 +43,87 @@ public class LoginJSON {
 	private static final String PARAM_RESULT_CODE = "resultCode";
 	private static final String PARAM_RESULT_MSG = "resultMsg";
 
-	/*
-	 * returns true if login is successful
-	 */
-	public static boolean loginUserSession(final int LoginType){
-		try {
-			HttpURLConnection http = null;
-			URL url = null;
-			BufferedReader postRes = null;
-			String postData = "";
-			StringBuilder json = new StringBuilder();
-			String line="";
-			int responseCode=0;
+	private static final int RETRY_LIMIT = 3;
 
+	/**
+	 * Interacts with server to do user login.
+	 * 
+	 * @param LoginType Type of the user. Refer to CONST.java
+	 * 
+	 * @return True upon successful login
+	 */
+	public static boolean loginUser(final int LoginType){
+		try {
+			HttpURLConnection httpURLConnection = null;
+			URL targetURL = null;
+			BufferedReader postRes = null;
+			String postData = "", line="";
+			StringBuilder jsonStringBuilder = new StringBuilder();
+			int responseCode=0, retryAttempt=0;
+
+			// Make POST dataset
 			switch(LoginType)
 			{
 			case CONST.LOGIN_TYPE_BG:
-				url = new URL(CONST.LOGIN_BY_BG_URL);
+				targetURL = new URL(CONST.LOGIN_BY_BG_URL);
 				postData += URLEncoder.encode(PARAM_USER_EMAIL)+"="+URLEncoder.encode(UserInfo.getUserEmail())+"&";
 				postData += URLEncoder.encode(PARAM_USER_PASSWORD)+"="+URLEncoder.encode(UserInfo.getUserPassword())+"&";
 				break;
 			case CONST.LOGIN_TYPE_FACEBOOK:
-				url = new URL(CONST.LOGIN_BY_FACEBOOK_URL);
+				targetURL = new URL(CONST.LOGIN_BY_FACEBOOK_URL);
 				postData += URLEncoder.encode(PARAM_USER_EMAIL)+"="+URLEncoder.encode(UserInfo.getUserEmail())+"&";
 				postData += URLEncoder.encode(PARAM_USER_FIRSTNAME)+"="+URLEncoder.encode(UserInfo.getUserFirstName())+"&";
 				postData += URLEncoder.encode(PARAM_USER_LASTNAME)+"="+URLEncoder.encode(UserInfo.getUserLastName())+"&";
 				break;
 			case CONST.LOGIN_TYPE_TOKEN:
-				url = new URL(CONST.LOGIN_BY_TOKEN_URL);
+				targetURL = new URL(CONST.LOGIN_BY_TOKEN_URL);
 				postData += URLEncoder.encode(PARAM_TOKEN_STRING)+"="+URLEncoder.encode(UserInfo.getTokenString())+"&";
 				break;
 			}
 
-			if (url.getProtocol().toLowerCase().equals("https")) {
+			//Check if the server is HTTPS or HTTP
+			if (targetURL.getProtocol().toLowerCase().equals("https")) {
 				trustAllHosts();
-				HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+				HttpsURLConnection https = (HttpsURLConnection) targetURL.openConnection();
 				https.setHostnameVerifier(DO_NOT_VERIFY);
-				http = https;
+				httpURLConnection = https;
 			} else {
-				http = (HttpURLConnection) url.openConnection();
+				httpURLConnection = (HttpURLConnection) targetURL.openConnection();
 			}
 
-			Log.d("BG", "POSTDATA: "+postData);
+			while(retryAttempt < RETRY_LIMIT || responseCode<0){
+				//Create httpURLConnection header
+				byte[] bytes = postData.getBytes("UTF-8");
+				httpURLConnection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+				httpURLConnection.setRequestMethod("POST");
+				httpURLConnection.setDoOutput(true);
+				httpURLConnection.connect();
 
-			byte[] bytes = postData.getBytes("UTF-8");
-	        http.setRequestProperty("Content-Length", String.valueOf(bytes.length));
-	        http.setRequestMethod("POST");
-	        http.setDoOutput(true);
-	        http.connect();
-	        OutputStream outputStream = http.getOutputStream();
-	        outputStream.write(bytes);
-	        Log.d("BG", "Bytes: "+bytes.toString());
-	        outputStream.close();
-	        
-			responseCode = http.getResponseCode();
-			if(responseCode < 400){
-				postRes = new BufferedReader(new InputStreamReader(http.getInputStream(), "UTF-8"));
-				while ((line = postRes.readLine()) != null){
-					json.append(line);
+				//Send POST data
+				OutputStream outputStream = httpURLConnection.getOutputStream();
+				outputStream.write(bytes);
+				outputStream.close();
+
+				//Check responseCode to determine if the call to server was successful.
+				responseCode = httpURLConnection.getResponseCode();
+				Log.d("BG", "ResponseCode: "+responseCode);
+				if(responseCode > 0 && responseCode < 400){
+					postRes = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
+					while ((line = postRes.readLine()) != null){
+						jsonStringBuilder.append(line);
+					}
+					postRes.close();
+					Log.d("BG", "JSON Received: "+jsonStringBuilder.toString());
+					break;
 				}
-				postRes.close();
+				else{
+					Log.d("BG", "ResponseCode error: "+responseCode+" . "+httpURLConnection.getErrorStream().toString()+" . "+httpURLConnection.getResponseMessage());
+				}
+				retryAttempt++;
+				Log.d("BG","Connection Retry: "+retryAttempt);
 			}
-			else{
-				Log.d("BG", "ResponseCode error: "+responseCode+" . "+http.getErrorStream().toString()+" . "+http.getResponseMessage());
-			}
-			
 
-			Log.d("BG", "HTTPS received: "+json.toString());
-
-			JSONObject jsonObject = new JSONObject(json.toString());
+			JSONObject jsonObject = new JSONObject(jsonStringBuilder.toString());
 
 			//TODO: Maybe this needs to be changed later on.
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
@@ -125,6 +141,11 @@ public class LoginJSON {
 		return false;
 	}
 
+	/**
+	 * Update UserInfo with JSON data
+	 * @param jsonObject JSON from the server
+	 * @throws Exception any exception that occurs while reading jsonObject
+	 */
 	private static void updateUserInfoWithJSON(JSONObject jsonObject) throws Exception{
 		UserInfo.setUserEmail(jsonObject.getString(PARAM_USER_EMAIL));
 		UserInfo.setUserFirstName(jsonObject.getString(PARAM_USER_FIRSTNAME));
@@ -132,14 +153,14 @@ public class LoginJSON {
 		UserInfo.setUserType(jsonObject.getString(PARAM_USER_TYPE));
 		UserInfo.setTokenString(jsonObject.getString(PARAM_TOKEN_STRING));
 		UserInfo.setPhoneType(jsonObject.getString(PARAM_PHONE_TYPE));
-		
+
 		UserInfo.setUserPassword(null);	//Nullify for security reason?!
-		
+
 		Log.d("BG", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
 				UserInfo.getUserLastName()+", "+UserInfo.getUserType());
 	}
 
-	// always verify the host - dont check for certificate
+	// always verify the host - Don't check for certificate
 	final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
 		public boolean verify(String hostname, SSLSession session) {
 			return true;
@@ -147,7 +168,7 @@ public class LoginJSON {
 	};
 
 	/**
-	 * Trust every server - dont check for any certificate
+	 * Trust every server - Don't check for any SSL certificate
 	 */
 	private static void trustAllHosts() {
 		// Create a trust manager that does not validate certificate chains

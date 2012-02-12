@@ -1,9 +1,5 @@
 package com.bridginggood.Bg;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +12,8 @@ import com.bridginggood.CONST;
 import com.bridginggood.R;
 import com.bridginggood.UserInfo;
 import com.bridginggood.UserSessionStore;
+import com.bridginggood.Facebook.FacebookAPI;
 import com.bridginggood.Facebook.FacebookSessionStore;
-import com.facebook.android.FacebookError;
-import com.facebook.android.AsyncFacebookRunner.RequestListener;
 
 public class BgAboutController extends Activity{
 	@Override
@@ -38,37 +33,11 @@ public class BgAboutController extends Activity{
 			public void onClick(View v){
 				Log.d("BG", "Button Clicked");
 				if(UserInfo.getUserType().equals(CONST.USER_SESSION_TYPE_FACEBOOK)){
-					logoutFacebook();
+					if (FacebookAPI.requestUserLogout(getApplicationContext()))
+						FacebookSessionStore.clear(getApplicationContext());
 				}
 				UserSessionStore.clearSession(getApplicationContext());
 			}
 		});
-	}
-	
-	private void logoutFacebook(){
-		//TEMP LOGOUT CODE
-		Log.d("BG", "Session was valid! Logging out now!");
-		UserInfo.mAsyncRunner.logout(getApplicationContext(), new RequestListener() {
-			@Override
-			public void onComplete(String response, Object state) {
-				FacebookSessionStore.clear(getApplicationContext());
-				Log.d("BG", "FacebookSessionStore also cleared");
-			}
-
-			@Override
-			public void onIOException(IOException e, Object state) {}
-
-			@Override
-			public void onFileNotFoundException(FileNotFoundException e,
-					Object state) {}
-
-			@Override
-			public void onMalformedURLException(MalformedURLException e,
-					Object state) {}
-
-			@Override
-			public void onFacebookError(FacebookError e, Object state) {}
-		});
-		//TEMP LOGOUT END
 	}
 }
