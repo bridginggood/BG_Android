@@ -35,7 +35,7 @@ public class UserInfo extends Application{
 		setUserType(type);
 	}
 
-	public static void createUserSessionForBG(String email, String password, String type){
+	public static void createUserInfoForBG(String email, String password, String type){
 		setUserEmail(email);
 		setUserPassword(password);
 		setUserType(type);
@@ -51,7 +51,7 @@ public class UserInfo extends Application{
 	 * 
 	 *@return true if login was successful.  
 	 */
-	public static boolean loginUserSession(Context context){
+	public static boolean loginUserInfo(Context context){
 		if (getUserType().equals(CONST.USER_SESSION_TYPE_FACEBOOK))
 		{
 			//Go to Facebook Login

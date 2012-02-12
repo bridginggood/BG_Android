@@ -4,12 +4,11 @@
  * Description:
  * 	Starting point of the BridgingGood application.
  * 	
- * 	Checks whether saved user token exists or not. If not, directs user to the login page.
- * 	Otherwise, directs the user to the MainController
+ * 	Checks whether saved user token exists or not. If not, directs user to the LoginController.
+ * 	Otherwise, attempts login and directs user to MainController on success.
  */
 package com.bridginggood;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -19,7 +18,6 @@ import android.util.Log;
 
 import com.bridginggood.Facebook.BaseRequestListener;
 import com.bridginggood.Facebook.FacebookSessionStore;
-import com.facebook.android.Facebook;
 
 public class SplashController extends Activity {
 	protected final static long SPLASH_DELAY = 1500;	//Minimum time to show Splash in milliseconds
@@ -30,7 +28,7 @@ public class SplashController extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash_layout);
 		
-		UserInfo.mFacebook = new Facebook(CONST.FACEBOOK_APP_ID);
+		UserInfo.init();	//Initialize UserInfo
 
 		Thread splashTread = new Thread() {
 			@Override
@@ -40,35 +38,26 @@ public class SplashController extends Activity {
 				/*
 				 *===============START Loading Job==================== 
 				 */
-				UserInfo.init();	//Initialize UserInfo
-
+				
 				//Check if saved user token exists or not
 				boolean isLoginSuccess = isUserLoginSuccess();
 
-				/*
-				 * Decide where to redirect user depending on userWithValidUserToken
-				 */
-				Log.d("BG", "userWithValidUserToken "+isLoginSuccess);
+				
+				Log.d("BG", "isUserLoginSuccess "+isLoginSuccess);
 
-				Class<?> targetClass = null;
-				if(isLoginSuccess){
-					//Go to main tabhost view
-					targetClass = MainController.class;
-				}
-				else{
-					//Go to login view
-					targetClass = LoginController.class;
-				}
+				// Decide where to redirect user depending on isLoginSuccess
+				Class<?> targetClass = isLoginSuccess? MainController.class:LoginController.class;
 
 				long durationTime = android.os.SystemClock.uptimeMillis() - startTime;
-				Log.d("BG", "Should redirect soon "+durationTime);
+				Log.d("BG", "Login time taken: "+durationTime);
 				if (durationTime <=SPLASH_DELAY) {
 					try {
 						synchronized(this){
-							wait(SPLASH_DELAY-durationTime);			//Pause the application for remaining time to meet SPLASH_DELAY
+							//Pause the application for remaining time to meet SPLASH_DELAY
+							wait(SPLASH_DELAY-durationTime);
 						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					} catch (Exception e) {
+						Log.d("BG", "spalashThread Exception: "+e.getLocalizedMessage());
 					}
 				}
 
@@ -83,64 +72,73 @@ public class SplashController extends Activity {
 		splashTread.start();
 	}
 
-	/*
-	 * Returns whether the stored login was successful or not.
+	/**
+	 * Returns whether login attempt using stored credentials was successful or not.
 	 * 
 	 * Assumption: If FacebookSessionStore exists, then so will UserSessionStore.
 	 * (Since Server will generate token on every login no matter what)
+	 * 
+	 * @return True if login is success
+	 * 
 	 */
 	private boolean isUserLoginSuccess(){
 		//Load saved session settings
 		UserSessionStore.loadUserSession(getApplicationContext());
-		FacebookSessionStore.restore(UserInfo.mFacebook, getApplicationContext());
+		FacebookSessionStore.restore(getApplicationContext());
 
 		//If session token is not empty, there must have been a login history in the past. 
 		if(!UserInfo.isTokenStringEmpty()){
 			//If Facebook session is valid, then the user must have logged in using facebook account.
 			if(UserInfo.mFacebook.isSessionValid()){ 
 				updateUserInfoUsingFacebookToken();	//Call Facebook API
-				Log.d("BG", "Name: "+UserInfo.getUserFirstName()+" "+UserInfo.getUserLastName()+" . "+UserInfo.getUserEmail());
+				Log.d("BG", "UserInfo by Facebook: "+UserInfo.getUserFirstName()+" "+UserInfo.getUserLastName()+" . "+UserInfo.getUserEmail());
 			}
 			
-			return UserInfo.loginUserSession(getApplicationContext());
+			return UserInfo.loginUserInfo(getApplicationContext());
 		}
 		else{	//No token exists
 			return false;
 		}
 	}
 
+	/**
+	 * Send request user's first name, last name and email to Facebook
+	 * 
+	 * mLockThread is enabled to make program wait until the user's information has been retrieved. 
+	 */
 	private void updateUserInfoUsingFacebookToken(){
 		mLockThread = true;
+		String fbRequestDetail = "first_name, last_name, email";	//Request name, email to Facebook
 		Bundle params = new Bundle();
-		params.putString("fields", "first_name, last_name, email");
+		params.putString("fields", fbRequestDetail);
 		UserInfo.mAsyncRunner.request("me", params,new UserInfoRequestListener());
 
-		while(mLockThread);
+		while(mLockThread);	//Wait until mLockThread is disabled.
 	}
-	/*
-	 * Callback for fetching current user's firstname, lastname, email
+	
+	/**
+	 * Callback called from updateUserInfoUsingFacebookToken.
+	 * 
+	 * User's first name, last name and email are available for store.
 	 */
 	protected class UserInfoRequestListener extends BaseRequestListener {
-
 		@Override
 		public void onComplete(final String response, final Object state) {
-			JSONObject jsonObject;
 			try {
-				jsonObject = new JSONObject(response);
+				JSONObject jsonObject = new JSONObject(response);
 
 				UserInfo.setUserFirstName(jsonObject.getString("first_name"));
 				UserInfo.setUserLastName(jsonObject.getString("last_name"));
 				UserInfo.setUserEmail(jsonObject.getString("email"));
 
 				mLockThread = false;
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				Log.d("BG", "UserInfoRequestListener Exception: "+e.getLocalizedMessage());
 			}
 		}
 	}
 
-	/*
+	/**
 	 * Called to extend mFacebook token, if necessary
 	 */
 	public void onResume() {    

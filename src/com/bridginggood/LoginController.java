@@ -1,3 +1,13 @@
+/**
+ * Created By: Junsung Lim
+ * 
+ * Description:
+ * 	LoginController displays user login page.
+ *  User can login using BridgingGood account or Facebook account. 
+ *  
+ *  Directs user to MainController on successful login.
+ *  Displays an error message upon login failure.
+ */
 package com.bridginggood;
 
 import java.io.FileNotFoundException;
@@ -28,7 +38,7 @@ import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 
 public class LoginController extends Activity{
-	private boolean mLockThread = false;				//Created to put a lock on asynchronous thread
+	private boolean mLockThread = false;			//Created to put a lock on asynchronous thread
 	private boolean mIsLoginSuccess = false;		//True if login is success
 	private ProgressDialog mProgressDialog;
 
@@ -52,7 +62,7 @@ public class LoginController extends Activity{
 				EditText edtEmail = (EditText) findViewById(R.id.edtEmail);
 				EditText edtPassword = (EditText) findViewById(R.id.edtPassword);
 
-				UserInfo.createUserSessionForBG(edtEmail.getText().toString(), edtPassword.getText().toString(), CONST.USER_SESSION_TYPE_BG);
+				UserInfo.createUserInfoForBG(edtEmail.getText().toString(), edtPassword.getText().toString(), CONST.USER_SESSION_TYPE_BG);
 				startLoginProgressDialog();
 			}
 		});
@@ -63,25 +73,35 @@ public class LoginController extends Activity{
 			public void onClick(View v){
 				Log.d("BG", "FB Login button Clicked");
 				UserInfo.setUserType(CONST.USER_SESSION_TYPE_FACEBOOK);
-				mLockThread = true;
 				displayFacebookLogin();
 			}
 		});
 	}
 
+	/**
+	 * Displays ProgressDialog to limit user's activity when loggin in.
+	 * 
+	 * Actual login with server takes place here.
+	 */
 	private void startLoginProgressDialog(){
-		mProgressDialog = ProgressDialog.show(this, "Connecting", "Loading. Please wait...", true, false);
-		Thread thread = new Thread(new Runnable() {
+		mProgressDialog = ProgressDialog.show(this, "Login", "Logging in, please wait...", true, false);
+		Thread threadStartLogin = new Thread(new Runnable() {
 			public void run() {
-				mIsLoginSuccess = UserInfo.loginUserSession(getApplicationContext());
+				mIsLoginSuccess = UserInfo.loginUserInfo(getApplicationContext());
 				Log.d("BG", "mIsLoginSuccess: "+mIsLoginSuccess);
-				handlerLoading.sendEmptyMessage(0);
+				handlerLogin.sendEmptyMessage(0);
 			}
 		});
-		thread.start();	
+		threadStartLogin.start();	
 	}
 
-	private Handler handlerLoading = new Handler() {
+	/**
+	 * Handler called by threadStartLogin in startLoginProgressDialog()
+	 * 
+	 * Directs user to the MainController upon success login. 
+	 * Otherwise, displays an error message
+	 */
+	private Handler handlerLogin = new Handler() {
 		public void handleMessage(Message msg) {
 			mProgressDialog.dismiss(); // Close dialog
 			// Update view
@@ -91,25 +111,24 @@ public class LoginController extends Activity{
 				startActivity(new Intent().setClass(LoginController.this, MainController.class));
 			}
 			else {
-				Toast.makeText(getApplicationContext(), "Login Failed.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Login failed. Please verify your login information.", Toast.LENGTH_SHORT).show();
 			}
 		}
 	};
 
-	/*
-	 * Display Facebook login dialog.
+	/**
+	 * Displays Facebook login dialog.
 	 * 
 	 */
 	private void displayFacebookLogin(){
-
 		if (!UserInfo.mFacebook.isSessionValid()){
+			mLockThread = true;	//Enable lock
 			Log.d("BG", "Launching FB DialogListner in attempt to login using FB");
 			UserInfo.mFacebook.authorize(this, CONST.FACEBOOK_PERMISSION, new DialogListener() {
 				@Override
 				public void onComplete(Bundle values) {
 					Log.d("BG", "Facebook Login Success!");
-					Toast.makeText(getApplicationContext(), "Facebook login success!",Toast.LENGTH_SHORT).show();
-					FacebookSessionStore.save(UserInfo.mFacebook, getApplicationContext());
+					FacebookSessionStore.save(getApplicationContext());
 
 					Bundle params = new Bundle();
 					params.putString("fields", "first_name, last_name, email");
