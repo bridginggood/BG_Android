@@ -26,6 +26,7 @@ public class BizListController extends Activity implements OnScrollListener{
 
 	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
 	private float mMyLat, mMyLng, mDistanceRadius;	//For search
+	private BizMyLocation mBizMyLocation;
 
 	private boolean mIsListLoadingMore, mStopLoadingMore;					//To lock the list while handling onScroll event
 
@@ -52,7 +53,8 @@ public class BizListController extends Activity implements OnScrollListener{
 		mDistanceRadius = 1.0f;	//miles
 
 		//Initialize myLocation to get current loc
-		BizMyLocation.getLocation(this, locationResult);
+		mBizMyLocation = new BizMyLocation(getParent());
+		mBizMyLocation.getLocation(this, locationResult);
 
 		//Initialize listview
 		this.initListView();
@@ -220,7 +222,7 @@ public class BizListController extends Activity implements OnScrollListener{
 		mBizListView.setVisibility(View.INVISIBLE);
 
 		//Initialize myLocation to get current loc
-		BizMyLocation.getLocation(this, locationResult);
+		mBizMyLocation.getLocation(this, locationResult);
 	}
 
 	AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {

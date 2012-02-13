@@ -23,7 +23,7 @@ import com.google.android.maps.OverlayItem;
 
 public class BizMapController extends MapActivity{ 
 	private BizExtendedMapView mMapView;			//MapView
-	private BizMyLocation mMyLocation;				//To get current user location
+	private BizMyLocation mBizMyLocation;				//To get current user location
 	private ArrayList<Business> mBizArrayList;		//Business list
 
 	private ProgressDialog mProgressDialog;			
@@ -51,7 +51,8 @@ public class BizMapController extends MapActivity{
 		initMapView();
 
 		//Initialize myLocation to get current loc
-		BizMyLocation.getLocation(this, locationResult);
+		mBizMyLocation = new BizMyLocation(getParent());
+		mBizMyLocation.getLocation(this, locationResult);
 	}
 
 	private void initMapView(){
