@@ -8,10 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TabHost;
 
-import com.bridginggood.Bg.BgActivityGroup;
 import com.bridginggood.Biz.BizActivityGroup;
 import com.bridginggood.Charity.CharityActivityGroup;
-import com.bridginggood.Payment.PaymentActivityGroup;
+import com.bridginggood.Setting.SettingActivityGroup;
 import com.bridginggood.User.UserActivityGroup;
 
 public class MainController extends TabActivity {
@@ -26,17 +25,15 @@ public class MainController extends TabActivity {
 		TabHost.TabSpec spec = null; 		// Resusable TabSpec for each tab
 		Intent intent = null;  				// Reusable Intent for each tab
 
-		// Payment
+		//User
 		// Create an Intent to launch an Activity for the tab (to be reused)
-		intent = new Intent().setClass(this, PaymentActivityGroup.class);
-		// Initialize a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec("payment").setIndicator("QR Code",
+		intent = new Intent().setClass(this, UserActivityGroup.class);
+		spec = tabHost.newTabSpec("user").setIndicator("Account",
 				res.getDrawable(android.R.drawable.ic_dialog_info))
 				.setContent(intent);
 		tabHost.addTab(spec);
 
 		// Charity
-		// Do the same for the other tabs
 		intent = new Intent().setClass(this, CharityActivityGroup.class);
 		spec = tabHost.newTabSpec("charity").setIndicator("Charity",
 				res.getDrawable(android.R.drawable.ic_dialog_info))
@@ -49,24 +46,17 @@ public class MainController extends TabActivity {
 				res.getDrawable(android.R.drawable.ic_dialog_info))
 				.setContent(intent);
 		tabHost.addTab(spec);
-		
-		//User
-		intent = new Intent().setClass(this, UserActivityGroup.class);
-		spec = tabHost.newTabSpec("user").setIndicator("Account",
-				res.getDrawable(android.R.drawable.ic_dialog_info))
-				.setContent(intent);
-		tabHost.addTab(spec);
 
-		//Bg
-		intent = new Intent().setClass(this, BgActivityGroup.class);
+		//Setting
+		intent = new Intent().setClass(this, SettingActivityGroup.class);
 		spec = tabHost.newTabSpec("bg").setIndicator("About",
 				res.getDrawable(android.R.drawable.ic_dialog_info))
 				.setContent(intent);
 		tabHost.addTab(spec);
-		
+
 		tabHost.setCurrentTab(2);
 	}
-	
+
 	/*
 	 * Called to extend mFacebook token, if necessary
 	 */

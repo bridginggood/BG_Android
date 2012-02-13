@@ -1,4 +1,4 @@
-package com.bridginggood.Bg;
+package com.bridginggood.Setting;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import com.bridginggood.UserSessionStore;
 import com.bridginggood.Facebook.FacebookAPI;
 import com.bridginggood.Facebook.FacebookSessionStore;
 
-public class BgAboutController extends Activity{
+public class SettingController extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

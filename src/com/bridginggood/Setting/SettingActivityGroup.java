@@ -1,4 +1,4 @@
-package com.bridginggood.Bg;
+package com.bridginggood.Setting;
 
 import java.util.ArrayList;
 
@@ -8,10 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class BgActivityGroup extends ActivityGroup {
+public class SettingActivityGroup extends ActivityGroup {
 	
 	private ArrayList<View> historyBgActivityGroup; 		// ArrayList to manage Views.
-	private BgActivityGroup BgActivityGroup; 				// BgActivityGroup that Activity can access.
+	private SettingActivityGroup BgActivityGroup; 				// BgActivityGroup that Activity can access.
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class BgActivityGroup extends ActivityGroup {
     	
     	// Start the root activity within the group and get its view
 		View view = getLocalActivityManager().startActivity("BgAboutController", new 
-				Intent(this,BgAboutController.class)		//First page
+				Intent(this,SettingController.class)		//First page
 				.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 				.getDecorView();
 		
@@ -61,11 +61,11 @@ public class BgActivityGroup extends ActivityGroup {
 	}
     
     //Accessor methods
-    public BgActivityGroup getBgActivityGroup(){
+    public SettingActivityGroup getBgActivityGroup(){
     	return BgActivityGroup;
     }
     
-    public void setBizActivityGroup(BgActivityGroup BgActivityGroup){
+    public void setBizActivityGroup(SettingActivityGroup BgActivityGroup){
     	this.BgActivityGroup = BgActivityGroup;  
     }
     

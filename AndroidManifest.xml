@@ -27,11 +27,7 @@
         
         <!-- Login -->
         <activity android:name=".LoginController"/>
-        
-        <!-- Payment -->
-        <activity android:name=".Payment.PaymentActivityGroup" />
-        <activity android:name=".Payment.PaymentCamera" />
-
+   
         <!-- Charity -->
         <activity android:name=".Charity.CharityActivityGroup" />
 
@@ -46,7 +42,7 @@
 
         <!-- Bg -->
         <activity android:name=".Bg.BgActivityGroup" />
-        <activity android:name=".Bg.BgAboutController"/>
+        <activity android:name=".Setting.SettingController"/>
 
         <!-- Google Map -->
         <uses-library

@@ -7,6 +7,8 @@ import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
@@ -23,19 +25,19 @@ import com.google.android.maps.OverlayItem;
 
 public class BizMapController extends MapActivity{ 
 	private BizExtendedMapView mMapView;			//MapView
-	private BizMyLocation mBizMyLocation;				//To get current user location
+	private BizMyLocation mBizMyLocation;			//To get current user location
 	private ArrayList<Business> mBizArrayList;		//Business list
 
 	private ProgressDialog mProgressDialog;			
 
-	private float mMyLat = 37.4848f;
-	private float mMyLng = 126.895f;
+	private float mMyLat = 40.714353f;
+	private float mMyLng = -74.005973f;
 	private float mDistanceRadius = 1.0f;
 
 	private boolean mIsLoadingOverlay = false; 		//Lock
 
 	private static final int TIME_TO_WAIT_IN_MS = 300;
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,15 +77,20 @@ public class BizMapController extends MapActivity{
 	private LocationResult locationResult = new LocationResult(){
 		@Override
 		public void gotLocation(final Location location){
+			if(mIsLoadingOverlay)
+				return;
+
+			mIsLoadingOverlay = true;
 			Log.d("BG", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
 			//Got the location!, store them as current location
 			mMyLat = (float) location.getLatitude();
 			mMyLng = (float) location.getLongitude();
 
-			createUserPositionOverlayOnMap();
+
 			mProgressDialog.dismiss();
-			
+
 			updateBizArrayList();
+			createBusinessOverlayOnMapView(true);
 		}
 	};
 
@@ -116,7 +123,7 @@ public class BizMapController extends MapActivity{
 	}
 
 	//To create overlay on the map
-	private void createBusinessOverlayOnMapView(){
+	private void createBusinessOverlayOnMapView(boolean pinMyLocation){
 		Log.d("BG", "CreateOverLay called");
 		List<Overlay> mapOverlays = mMapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.charity_icon_default);
@@ -133,7 +140,19 @@ public class BizMapController extends MapActivity{
 			itemizedOverlay.addOverlay(overlayItem);
 			mapOverlays.add(itemizedOverlay);
 		}
+		
+		if(pinMyLocation)
+			handler.sendEmptyMessage(0);
+		
+		mIsLoadingOverlay = false;
 	}
+
+	private Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			createUserPositionOverlayOnMap();
+		}
+	};
 
 	//Convert float lat, lng to int lat lng for geocode
 	private int convFloatToIntE6(float num){
@@ -155,20 +174,20 @@ public class BizMapController extends MapActivity{
 		BizActivityGroup parent = ((BizActivityGroup)getParent());
 		parent.back();
 	}
-	
+
 	private void updateMapViewOnMapPositionChange(){
 		Log.d("BG", "Map changed!");
 		updateBizArrayList();
-		createBusinessOverlayOnMapView();
+		createBusinessOverlayOnMapView(false);
 	}
-	
+
 	/**
 	 * Update mDistanceRadius to the user's current screen radius for new search
 	 * 
 	 * Calculated by taking Top-Right and Bottom-Left corners of screen
 	 */
 	private void updateDistanceRadius(){
-    	float latDiff = mMapView.getLatitudeSpan() / 2;
+		float latDiff = mMapView.getLatitudeSpan() / 2;
 		float lngDiff = mMapView.getLongitudeSpan() / 2;
 		GeoPoint mapCenter = mMapView.getMapCenter();
 
@@ -190,8 +209,8 @@ public class BizMapController extends MapActivity{
 		float dist = locTR.distanceTo(locBL);
 		//Convert distanceAway from meter to miles
 		mDistanceRadius = (float) ((float)(dist/1000)/1.6);
-    }
-	
+	}
+
 	/**
 	 * 
 	 * @author wns349
@@ -199,24 +218,27 @@ public class BizMapController extends MapActivity{
 	 * Listener called when there is a map change by the user.
 	 */
 	private class MapViewChangeListener implements BizExtendedMapView.OnChangeListener
-    {
- 
-        @Override
-        public void onChange(MapView view, GeoPoint newCenter, GeoPoint oldCenter, int newZoom, int oldZoom)
-        {
-            // Check values
-            if ((!newCenter.equals(oldCenter)) || (newZoom != oldZoom))
-            {
-                // Map Zoom and Pan Detected
-            	Log.d("BG", "Map changed from "+oldCenter+" to "+newCenter+" zoom:"+oldZoom+" -> "+newZoom);
-            	
-            	if(newZoom != oldZoom){
-            		//If zoom level changed, mDistanceRadius must be updated.
-            		updateDistanceRadius();
-            	}
+	{
 
-            	updateMapViewOnMapPositionChange();
-            }
-        }
-    }
+		@Override
+		public void onChange(MapView view, GeoPoint newCenter, GeoPoint oldCenter, int newZoom, int oldZoom)
+		{
+			// Check values
+			if ((!newCenter.equals(oldCenter)) || (newZoom != oldZoom))
+			{
+				if(mIsLoadingOverlay)
+					return;
+				mIsLoadingOverlay = true;
+				// Map Zoom and Pan Detected
+				Log.d("BG", "Map changed from "+oldCenter+" to "+newCenter+" zoom:"+oldZoom+" -> "+newZoom);
+
+				if(newZoom != oldZoom){
+					//If zoom level changed, mDistanceRadius must be updated.
+					updateDistanceRadius();
+				}
+
+				updateMapViewOnMapPositionChange();
+			}
+		}
+	}
 }

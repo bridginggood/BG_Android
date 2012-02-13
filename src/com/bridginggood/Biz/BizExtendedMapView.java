@@ -26,12 +26,13 @@ public class BizExtendedMapView extends MapView{
 	// ------------------------------------------------------------------------
 
 	private BizExtendedMapView mThis;
-	private long mEventsTimeout = 250L;     // Set this variable to your preferred timeout
+	private long mEventsTimeout = 500L;     // Set this variable to your preferred timeout
 	private boolean mIsTouched = false;
 	private GeoPoint mLastCenterPosition;
 	private int mLastZoomLevel;
 	private Timer mChangeDelayTimer = new Timer();
 	private BizExtendedMapView.OnChangeListener mChangeListener = null;
+	private boolean mLock = false;
 
 	// ------------------------------------------------------------------------
 	// CONSTRUCTORS
@@ -60,6 +61,7 @@ public class BizExtendedMapView extends MapView{
 		mThis = this;
 		mLastCenterPosition = this.getMapCenter();
 		mLastZoomLevel = this.getZoomLevel();
+		mLock = false;
 	}
 
 	// ------------------------------------------------------------------------
@@ -111,9 +113,13 @@ public class BizExtendedMapView extends MapView{
 			@Override
 			public void run()
 			{
+				if(mLock)
+					return;
+				mLock = true;
 				if (mChangeListener != null) mChangeListener.onChange(mThis, getMapCenter(), mLastCenterPosition, getZoomLevel(), mLastZoomLevel);
 				mLastCenterPosition = getMapCenter();
 				mLastZoomLevel = getZoomLevel();
+				mLock = false;
 			}
 		}, mEventsTimeout);
 	}

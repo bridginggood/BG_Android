@@ -33,27 +33,30 @@ public class BgHttpHelper {
 	 * @throws Exception
 	 */
 	public static String requestHttpRequest(String requestURL, String requestParam, String method) throws Exception{
-		if(method.equals("GET"))
-			requestURL = requestURL+"?"+requestParam;
-
-		HttpURLConnection httpURLConnection = null;
-		URL targetURL = new URL(requestURL);
-		BufferedReader postRes = null;
-		String line="";
-		StringBuilder jsonStringBuilder = new StringBuilder();
 		int responseCode=0, retryAttempt=0;
-
-		//Check if the server is HTTPS or HTTP
-		if (targetURL.getProtocol().toLowerCase().equals("https")) {
-			trustAllHosts();
-			HttpsURLConnection https = (HttpsURLConnection) targetURL.openConnection();
-			https.setHostnameVerifier(DO_NOT_VERIFY);
-			httpURLConnection = https;
-		} else {
-			httpURLConnection = (HttpURLConnection) targetURL.openConnection();
-		}
-
+		StringBuilder jsonStringBuilder = new StringBuilder();
+		
+		//loop is there to make retry-connection upon responseCode == -1
 		while(retryAttempt < RETRY_LIMIT && responseCode<=0){
+			if(method.equals("GET"))
+				requestURL = requestURL+"?"+requestParam;
+
+			HttpURLConnection httpURLConnection = null;
+			URL targetURL = new URL(requestURL);
+			BufferedReader postRes = null;
+			String line="";
+
+			//Check if the server is HTTPS or HTTP
+			if (targetURL.getProtocol().toLowerCase().equals("https")) {
+				trustAllHosts();
+				HttpsURLConnection https = (HttpsURLConnection) targetURL.openConnection();
+				https.setHostnameVerifier(DO_NOT_VERIFY);
+				httpURLConnection = https;
+			} else {
+				httpURLConnection = (HttpURLConnection) targetURL.openConnection();
+			}
+
+
 			//Create httpURLConnection header
 			byte[] bytes = requestParam.getBytes("UTF-8");
 			httpURLConnection.setRequestProperty("Content-Length", String.valueOf(bytes.length));

@@ -65,7 +65,7 @@ public class UserInfo extends Application{
 			else
 				return false;
 		}
-		else if (getTokenString() != null){
+		else if (getTokenString() != null && getUserPassword() == null){
 			//Go to token login
 			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_TOKEN))
 				return saveCurrentUserSessionToUserSessionStore(context);
