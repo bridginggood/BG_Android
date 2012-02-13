@@ -19,13 +19,13 @@ import android.widget.TextView;
 
 import com.bridginggood.R;
 import com.bridginggood.Biz.BizMyLocation.LocationResult;
-import com.bridginggood.DB.ReadBizXML;
+import com.bridginggood.DB.BusinessJSON;
 
 public class BizListController extends Activity implements OnScrollListener{
-	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
-	private BizMyLocation mBizMyLocation;			//To find out my current location
-	private float mMyLat, mMyLng, mDistanceRadius;	//For search
 	private static final float MAX_DIST = 10.0f;	//Maximum search radius
+
+	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
+	private float mMyLat, mMyLng, mDistanceRadius;	//For search
 
 	private boolean mIsListLoadingMore, mStopLoadingMore;					//To lock the list while handling onScroll event
 
@@ -37,25 +37,26 @@ public class BizListController extends Activity implements OnScrollListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bizlist_view);
-		
+
+		/*
+		 * Initialize array list that stores business objects
+		 */
 		mBizArrayList = new ArrayList<Business>();
 
-		//Initialize distnaceRadius to 5 miles
+		/*
+		 * Initialize location variables to NYC City Center
+		 * 
+		 * Set default location to New York City
+		 */
+		mMyLat = 40.714353f; mMyLng = -74.005973f; //sample random location
 		mDistanceRadius = 1.0f;	//miles
-		mMyLat = 37.507275f; mMyLng = 126.939812f; //sample random location
 
 		//Initialize myLocation to get current loc
-		mBizMyLocation = new BizMyLocation(getParent());
-		mBizMyLocation.getLocation(this, locationResult);
+		BizMyLocation.getLocation(this, locationResult);
 
 		//Initialize listview
 		this.initListView();
-
-		//Attach scroll listener
-		mBizListView.setOnScrollListener(this);
-		mIsListLoadingMore = true;
-		mStopLoadingMore = false;
-
+		
 		//Initialize button
 		initButtonViews();
 	}
@@ -78,6 +79,11 @@ public class BizListController extends Activity implements OnScrollListener{
 
 		//Hide the list on init
 		mBizListView.setVisibility(View.INVISIBLE);
+
+		//Attach scroll listener
+		mBizListView.setOnScrollListener(this);
+		mIsListLoadingMore = true;
+		mStopLoadingMore = false;
 	}
 
 	//Callback - once you got the location of the user
@@ -86,7 +92,7 @@ public class BizListController extends Activity implements OnScrollListener{
 		public void gotLocation(final Location location){
 			if(location == null)
 				return;
-			
+
 			Log.d("BG", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
 			//Got the location!, store them as current location
 			mMyLat = (float) location.getLatitude();
@@ -100,29 +106,24 @@ public class BizListController extends Activity implements OnScrollListener{
 
 			//Load list around the user
 			Log.d("BG", "Load new items");
-			Thread thread = new Thread(null, loadMoreListItems);
-			thread.start();
+			new Thread(null, loadMoreListItems).start();
+			//thread.start();
 		}
 	};
 
 	private Runnable loadMoreListItems = new Runnable(){
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
-
 			//set flag so items are not loaded twice at the same time
 			mIsListLoadingMore = true;
-
-			//Simulate a delay, delete this on a production environment
-			//try{ Thread.sleep(50);}catch(Exception e){}
 
 			//Increase mDistanceRadius to search for more result
 			//Increase exponentially
 			mDistanceRadius += 1.0f; 
 
 			//Get new items
-			ReadBizXML bizDB = new ReadBizXML(mMyLat, mMyLng, mDistanceRadius);
-			mBizArrayList = bizDB.getBizListFromXML();
+			BusinessJSON bizDB = new BusinessJSON(mMyLat, mMyLng, mDistanceRadius);
+			mBizArrayList = bizDB.getBizListJSON();
 
 			Log.d("BG", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+
 					" ) within "+mDistanceRadius);
@@ -155,7 +156,7 @@ public class BizListController extends Activity implements OnScrollListener{
 					TextView txtBizListNotFound = (TextView)findViewById(R.id.txtBizListNoResult);
 					txtBizListNotFound.setVisibility(View.VISIBLE);
 				}
-				
+
 				//Remove Loading footer from the list
 				boolean isRemoved = mBizListView.removeFooterView(mBizListViewFooter);
 				Log.d("BG", "Removing footer result: "+isRemoved);
@@ -172,7 +173,7 @@ public class BizListController extends Activity implements OnScrollListener{
 
 	//Load button to BizMap.java
 	public void initButtonViews(){
-		
+
 		//Search in Map button
 		Button btnGoBizMap = (Button) findViewById(R.id.btnGoToBizMap);
 		//Button Handler
@@ -182,13 +183,13 @@ public class BizListController extends Activity implements OnScrollListener{
 				Log.d("BG", "Button Clicked");
 				BizActivityGroup bizActivityGroup = ((BizActivityGroup)getParent());
 				View newView = bizActivityGroup.getBizActivityGroup().getLocalActivityManager()
-						.startActivity("BizMap", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+						.startActivity("BizMapController", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 						.getDecorView();
 
 				bizActivityGroup.getBizActivityGroup().replaceView(newView);	//Replace View
 			}
 		});
-		
+
 		//Refresh my location button
 		Button btnRefreshMyLoc = (Button) findViewById(R.id.btnRefreshMyLoc);
 		btnRefreshMyLoc.setOnClickListener(new OnClickListener(){
@@ -197,16 +198,16 @@ public class BizListController extends Activity implements OnScrollListener{
 			}
 		});
 	}
-	
+
 	private void refreshList(){
 		Log.d("BG", "Refresh clicked");
 		mBizArrayList.clear();
 		mBizListAdapter.clear();
-		
+
 		mDistanceRadius = 1.0f;	//miles
 		mIsListLoadingMore = true;
 		mStopLoadingMore = false;
-		
+
 		//If footer does not exist, add it
 		if(mBizListView.getFooterViewsCount() == 0)
 			mBizListView.addFooterView(mBizListViewFooter);
@@ -217,9 +218,9 @@ public class BizListController extends Activity implements OnScrollListener{
 		TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
 		txtBizListLoading.setVisibility(View.VISIBLE);
 		mBizListView.setVisibility(View.INVISIBLE);
-		
+
 		//Initialize myLocation to get current loc
-		mBizMyLocation.getLocation(this, locationResult);
+		BizMyLocation.getLocation(this, locationResult);
 	}
 
 	AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
