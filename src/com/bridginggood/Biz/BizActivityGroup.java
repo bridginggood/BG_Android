@@ -38,7 +38,7 @@ public class BizActivityGroup extends ActivityGroup {
 	}
 
 	public void replaceView(View v) {   // Changing to new activity level.
-		//Log.d("BG","Replacing View...");
+		//Log.d("BgBiz","Replacing View...");
 		historyBizActivityGroup.add(v);   
 		setContentView(v); 
 	}   
@@ -49,13 +49,13 @@ public class BizActivityGroup extends ActivityGroup {
 			setContentView(historyBizActivityGroup.get(historyBizActivityGroup.size()-1)); 
 		} else {   
 			finish(); // Finish tabactivity
-			Log.d("BG", "onDestroy called from "+this.getClass().toString());
+			Log.d("BgBiz", "onDestroy called from "+this.getClass().toString());
 			System.exit(0);
 		}   
 	}  
 
 	public void onBackPressed() { // Event Handler
-		Log.d("BG", "Back Pressed from BizActivityGroup");
+		Log.d("BgBiz", "Back Pressed from BizActivityGroup");
 		bizActivityGroup.back();   
 		return;
 	}
@@ -79,7 +79,7 @@ public class BizActivityGroup extends ActivityGroup {
     
     public void onDestory(){
 		super.onDestroy();
-		Log.d("BG", "onDestroy called from "+this.getClass().toString());
+		Log.d("BgBiz", "onDestroy called from "+this.getClass().toString());
 		System.exit(0);
 	}
 }

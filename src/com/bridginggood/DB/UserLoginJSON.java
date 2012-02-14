@@ -71,12 +71,12 @@ public class UserLoginJSON {
 				updateUserInfoWithJSON(jsonObject);
 				return true;
 			} else {
-				Log.d("BG", "Login failed: "+jsonObject.getString(PARAM_RESULT_MSG));
+				Log.d("BgDB", "Login failed: "+jsonObject.getString(PARAM_RESULT_MSG));
 				return false;
 			}
 		} catch (Exception e){
 			// Handle all exception
-			Log.d("BG", "Exception occured: "+e.getLocalizedMessage());
+			Log.d("BgDB", "Exception occured: "+e.getLocalizedMessage());
 		}
 		return false;
 	}
@@ -96,7 +96,7 @@ public class UserLoginJSON {
 
 		UserInfo.setUserPassword(null);	//Nullify for security reason?!
 
-		Log.d("BG", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
+		Log.d("BgDB", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
 				UserInfo.getUserLastName()+", "+UserInfo.getUserType());
 	}
 

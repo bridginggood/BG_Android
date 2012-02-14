@@ -17,7 +17,7 @@
             android:text="@string/hello" />
     </LinearLayout>
     <!--
-    	Work: "0Xl-E6OnUWprpaFqFsbLMUSoTS5PaM7VI3k6bsA"
+    	Work: "0bJec5GDn0KoM9Ir2A-9mTV8W4iTfMqx1GgASHA"
     	Home: "0Xl-E6OnUWprJYt6D4dhvh-Ub-A3Fq2SC3-u8mw"
     	APK:  "0Xl-E6OnUWpoddXOp2rwyxqXXLOyuYl-Di_M7RQ"
     -->
@@ -28,7 +28,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:apiKey="0Xl-E6OnUWprJYt6D4dhvh-Ub-A3Fq2SC3-u8mw"
+        android:apiKey="0bJec5GDn0KoM9Ir2A-9mTV8W4iTfMqx1GgASHA"
         android:clickable="true"
         android:enabled="true" />
 

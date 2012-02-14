@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
@@ -25,18 +27,22 @@ import com.google.android.maps.OverlayItem;
 
 public class BizMapController extends MapActivity{ 
 	private BizExtendedMapView mMapView;			//MapView
-	private BizMyLocation mBizMyLocation;			//To get current user location
 	private ArrayList<Business> mBizArrayList;		//Business list
 
 	private ProgressDialog mProgressDialog;			
+	private BizMyLocation mBizMyLocation;
+	private LoadMapThread mLoadMapThread;
+	private LoadBizThread mLoadBizThread;
 
 	private float mMyLat = 40.714353f;
 	private float mMyLng = -74.005973f;
 	private float mDistanceRadius = 1.0f;
 
-	private boolean mIsLoadingOverlay = false; 		//Lock
-
-	private static final int TIME_TO_WAIT_IN_MS = 300;
+	private boolean mIsLoadingBizLocation = false; 		//Lock
+	private boolean mIsLoadingMyLocation = false;
+	
+	private final int STATUS_LOADED_MY_LOC = 0;
+	private final int STATUS_LOADED_BIZ_LOC = 1;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -44,17 +50,57 @@ public class BizMapController extends MapActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bizmap);
 
-		mProgressDialog = ProgressDialog.show(getParent(), "", "Identifying your location...", true, false);
+		Log.d("BgBiz", "Welcome to BizMapController");
+		
 		//Initialize ArrayLists
 		mBizArrayList = new ArrayList<Business>();
 		//Initialize trigger
-		mIsLoadingOverlay = false;
+		mIsLoadingBizLocation = false;
+		mIsLoadingMyLocation = false;
 		//Initialize mapview
 		initMapView();
 
-		//Initialize myLocation to get current loc
+		//Get current location
+		//retrieveCurrentLocation();
+		//retrieveBizLocation();
+	}
+
+	private void retrieveCurrentLocation(){
+		mIsLoadingMyLocation = true;
+		//Start progress dialog
+		mProgressDialog = ProgressDialog.show(getParent(), "", "Identifying your location...", true, true);
+		mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				if(mLoadMapThread!=null && mLoadMapThread.isAlive()){
+					Log.d("BgBiz", "mLoadMapThread killed by the user");
+					//mLoadMapThread.interrupt();
+				}
+			}
+		});
+		
+		
 		mBizMyLocation = new BizMyLocation(getParent());
-		mBizMyLocation.getLocation(this, locationResult);
+		mBizMyLocation.getLocation(getApplicationContext(), locationResult);
+		
+		while(mIsLoadingMyLocation);
+		
+		createMyLocationOverlayOnMapView();
+		mProgressDialog.dismiss();
+		
+		//mLoadMapThread= new LoadMapThread(handlerThread);
+		//mLoadMapThread.start();
+	}
+	
+	private void retrieveBizLocation(){
+		if(mIsLoadingBizLocation){
+			Log.d("BgBiz", "retrieveBizLocation alraedy called");
+			return;
+		}
+		Log.d("BgBiz", "retrieveBizLocation called.");
+		mIsLoadingBizLocation = true;
+		mLoadBizThread = new LoadBizThread(handlerThread);
+		mLoadBizThread.start();
 	}
 
 	private void initMapView(){
@@ -68,7 +114,7 @@ public class BizMapController extends MapActivity{
 		mapController.setZoom(16);
 		mapController.setCenter(tmpGeoPoint);
 
-		Log.d("BG", "Adding listener to the map");
+		Log.d("BgBiz", "Adding listener to the map");
 		//Handle map change - zoom and span
 		mMapView.setOnChangeListener(new MapViewChangeListener());
 	}
@@ -77,20 +123,11 @@ public class BizMapController extends MapActivity{
 	private LocationResult locationResult = new LocationResult(){
 		@Override
 		public void gotLocation(final Location location){
-			if(mIsLoadingOverlay)
-				return;
-
-			mIsLoadingOverlay = true;
-			Log.d("BG", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
+			Log.d("BgBiz", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
 			//Got the location!, store them as current location
 			mMyLat = (float) location.getLatitude();
 			mMyLng = (float) location.getLongitude();
-
-
-			mProgressDialog.dismiss();
-
-			updateBizArrayList();
-			createBusinessOverlayOnMapView(true);
+			mIsLoadingMyLocation = false;
 		}
 	};
 
@@ -102,14 +139,14 @@ public class BizMapController extends MapActivity{
 		float lng = convIntE6ToFloat(mMapView.getMapCenter().getLongitudeE6());
 		BusinessJSON bizDB = new BusinessJSON(lat, lng, mDistanceRadius);
 		mBizArrayList = bizDB.getBizListJSON();
-		Log.d("BG", "mBizArrayList:"+mBizArrayList.toString());
+		Log.d("BgBiz", "mBizArrayList:"+mBizArrayList.toString());
 	}
 
-	private void createUserPositionOverlayOnMap(){
+	private void createMyLocationOverlayOnMapView(){
 		GeoPoint myPoint = new GeoPoint (convFloatToIntE6(mMyLat), convFloatToIntE6(mMyLng));
 		MapController mapController = mMapView.getController();
 		mapController.animateTo(myPoint);
-		Log.d("BG", "createUserPositionOverlayOnMap :"+mMyLat+" , "+mMyLng);
+		Log.d("BgBiz", "createUserPositionOverlayOnMap :"+mMyLat+" , "+mMyLng);
 
 		// Marker
 		MapView.LayoutParams mapMarkerParams = new MapView.LayoutParams(
@@ -123,13 +160,13 @@ public class BizMapController extends MapActivity{
 	}
 
 	//To create overlay on the map
-	private void createBusinessOverlayOnMapView(boolean pinMyLocation){
-		Log.d("BG", "CreateOverLay called");
+	private void createBusinessOverlayOnMapView(){
+		Log.d("BgBiz", "CreateOverLay called");
 		List<Overlay> mapOverlays = mMapView.getOverlays();
 		Drawable drawable = this.getResources().getDrawable(R.drawable.charity_icon_default);
 		BizMapOverlay itemizedOverlay = new BizMapOverlay(drawable, mMapView, mBizArrayList, getParent());	//getParent() since alert only works on the upper-most context.
 
-		Log.d("BG", "Ready to make GeoPoint");
+		Log.d("BgBiz", "Ready to make GeoPoint");
 		GeoPoint point = null;
 		OverlayItem overlayItem = null;
 		for(Business biz : mBizArrayList){
@@ -140,19 +177,9 @@ public class BizMapController extends MapActivity{
 			itemizedOverlay.addOverlay(overlayItem);
 			mapOverlays.add(itemizedOverlay);
 		}
-		
-		if(pinMyLocation)
-			handler.sendEmptyMessage(0);
-		
-		mIsLoadingOverlay = false;
+		mIsLoadingBizLocation = false;
 	}
 
-	private Handler handler = new Handler(){
-		@Override
-		public void handleMessage(Message msg) {
-			createUserPositionOverlayOnMap();
-		}
-	};
 
 	//Convert float lat, lng to int lat lng for geocode
 	private int convFloatToIntE6(float num){
@@ -170,15 +197,14 @@ public class BizMapController extends MapActivity{
 
 	// To handle back button
 	public void onBackPressed() { //on Back
-		Log.d("BG", "Back Pressed from BizMap");
+		Log.d("BgBiz", "Back Pressed from BizMap");
 		BizActivityGroup parent = ((BizActivityGroup)getParent());
 		parent.back();
 	}
 
 	private void updateMapViewOnMapPositionChange(){
-		Log.d("BG", "Map changed!");
-		updateBizArrayList();
-		createBusinessOverlayOnMapView(false);
+		Log.d("BgBiz", "Map changed!");
+		retrieveBizLocation();
 	}
 
 	/**
@@ -191,7 +217,7 @@ public class BizMapController extends MapActivity{
 		float lngDiff = mMapView.getLongitudeSpan() / 2;
 		GeoPoint mapCenter = mMapView.getMapCenter();
 
-		Log.d("BG", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mapCenter);
+		Log.d("BgBiz", "LatSpan, LngSpan, Center: "+mMapView.getLatitudeSpan()+" , "+mMapView.getLongitudeSpan()+", "+mapCenter);
 
 		//Find distance using span
 		float p1Lat = (float) ((mapCenter.getLatitudeE6()+latDiff)/1E6);
@@ -226,11 +252,11 @@ public class BizMapController extends MapActivity{
 			// Check values
 			if ((!newCenter.equals(oldCenter)) || (newZoom != oldZoom))
 			{
-				if(mIsLoadingOverlay)
+				if(mIsLoadingBizLocation)
 					return;
-				mIsLoadingOverlay = true;
+				mIsLoadingBizLocation = true;
 				// Map Zoom and Pan Detected
-				Log.d("BG", "Map changed from "+oldCenter+" to "+newCenter+" zoom:"+oldZoom+" -> "+newZoom);
+				Log.d("BgBiz", "Map changed from "+oldCenter+" to "+newCenter+" zoom:"+oldZoom+" -> "+newZoom);
 
 				if(newZoom != oldZoom){
 					//If zoom level changed, mDistanceRadius must be updated.
@@ -241,4 +267,56 @@ public class BizMapController extends MapActivity{
 			}
 		}
 	}
+	
+	private class LoadBizThread extends Thread{
+		Handler mHandler;
+		
+		public LoadBizThread(Handler h){
+			this.mHandler = h;
+		}
+		
+		public void run(){
+			updateBizArrayList();
+			
+			Message msg = mHandler.obtainMessage();
+			Bundle b = new Bundle();
+			b.putInt("status", STATUS_LOADED_BIZ_LOC);
+			mHandler.sendMessage(msg);
+			mIsLoadingBizLocation = false;
+		}
+	}
+
+	private class LoadMapThread extends Thread{
+		Handler mHandler;
+
+		LoadMapThread(Handler h){
+			this.mHandler = h;
+		}
+
+		public void run(){
+			Log.d("BgBiz", "LoadMapThread mIsLoadingMyLocation : "+mIsLoadingMyLocation);
+			while(mIsLoadingMyLocation);
+			Message msg = mHandler.obtainMessage();
+			Bundle b = new Bundle();
+			b.putInt("status", STATUS_LOADED_MY_LOC);
+			mHandler.sendMessage(msg);
+		}
+	}
+
+	final Handler handlerThread = new Handler() {
+		public void handleMessage(Message msg) {
+			int status = msg.getData().getInt("status");
+			switch(status){
+			case STATUS_LOADED_MY_LOC:
+				Log.d("BgBiz", "Status_loaded_my_loc");
+				createMyLocationOverlayOnMapView();
+				mProgressDialog.dismiss();
+				break;
+			case STATUS_LOADED_BIZ_LOC:
+				Log.d("BgBiz", "Status_loaded_biz_loc");
+				createBusinessOverlayOnMapView();
+				break;
+			}
+		}
+	};
 }

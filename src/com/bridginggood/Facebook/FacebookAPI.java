@@ -34,7 +34,7 @@ public class FacebookAPI {
 		UserInfo.mAsyncRunner.logout(context, new RequestListener() {
 			@Override
 			public void onComplete(String response, Object state) {
-				Log.d("BG", "FacebookAPI: User successfully logged out from Facebook");
+				Log.d("BgFacebook", "FacebookAPI: User successfully logged out from Facebook");
 				stopLock();
 			}
 
@@ -51,7 +51,7 @@ public class FacebookAPI {
 
 			@Override
 			public void onFacebookError(FacebookError e, Object state) {
-				Log.d("BG", "FacebookAPI: Failed to logout user");
+				Log.d("BgFacebook", "FacebookAPI: Failed to logout user");
 				stopLock();
 			}
 		});
@@ -92,7 +92,7 @@ public class FacebookAPI {
 				
 				mLock = false;
 			} catch (Exception e) {
-				Log.d("BG", "UserInfoRequestListener Exception: "+e.getLocalizedMessage());
+				Log.d("BgFacebook", "UserInfoRequestListener Exception: "+e.getLocalizedMessage());
 			}
 		}
 	}

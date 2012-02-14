@@ -25,8 +25,8 @@ public class BizListController extends Activity implements OnScrollListener{
 	private static final float MAX_DIST = 10.0f;	//Maximum search radius
 
 	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
-	private float mMyLat, mMyLng, mDistanceRadius;	//For search
 	private BizMyLocation mBizMyLocation;
+	private float mMyLat, mMyLng, mDistanceRadius;	//For search
 
 	private boolean mIsListLoadingMore, mStopLoadingMore;					//To lock the list while handling onScroll event
 
@@ -58,7 +58,7 @@ public class BizListController extends Activity implements OnScrollListener{
 
 		//Initialize listview
 		this.initListView();
-		
+
 		//Initialize button
 		initButtonViews();
 	}
@@ -92,14 +92,16 @@ public class BizListController extends Activity implements OnScrollListener{
 	public LocationResult locationResult = new LocationResult(){
 		@Override
 		public void gotLocation(final Location location){
-			if(location == null)
+			if(location == null){
+				Log.d("BgBiz", "gotLocation, but Location is null");
 				return;
+			}
 
-			Log.d("BG", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
+			Log.d("BgBiz", "LocationResult called with  "+location.getLatitude() + " , "+location.getLongitude());
 			//Got the location!, store them as current location
 			mMyLat = (float) location.getLatitude();
 			mMyLng = (float) location.getLongitude();
-			Log.d("BG", "myLat: "+mMyLat+" , myLng: "+mMyLng);
+			Log.d("BgBiz", "myLat: "+mMyLat+" , myLng: "+mMyLng);
 
 			//Change the header
 			TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
@@ -107,7 +109,7 @@ public class BizListController extends Activity implements OnScrollListener{
 			mBizListView.setVisibility(View.VISIBLE);
 
 			//Load list around the user
-			Log.d("BG", "Load new items");
+			Log.d("BgBiz", "Load new items");
 			new Thread(null, loadMoreListItems).start();
 			//thread.start();
 		}
@@ -119,15 +121,15 @@ public class BizListController extends Activity implements OnScrollListener{
 			//set flag so items are not loaded twice at the same time
 			mIsListLoadingMore = true;
 
-			//Increase mDistanceRadius to search for more result
-			//Increase exponentially
-			mDistanceRadius += 1.0f; 
-
 			//Get new items
 			BusinessJSON bizDB = new BusinessJSON(mMyLat, mMyLng, mDistanceRadius);
 			mBizArrayList = bizDB.getBizListJSON();
 
-			Log.d("BG", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+
+			//Increase mDistanceRadius to search for more result
+			//Increase exponentially
+			mDistanceRadius += 1.0f; 
+
+			Log.d("BgBiz", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+
 					" ) within "+mDistanceRadius);
 
 			runOnUiThread(updateListView);
@@ -161,12 +163,12 @@ public class BizListController extends Activity implements OnScrollListener{
 
 				//Remove Loading footer from the list
 				boolean isRemoved = mBizListView.removeFooterView(mBizListViewFooter);
-				Log.d("BG", "Removing footer result: "+isRemoved);
+				Log.d("BgBiz", "Removing footer result: "+isRemoved);
 			}
 
 			//Tell to the adapter that changes have been made, this will cause the list to refresh
 			mBizListAdapter.notifyDataSetChanged();
-			Log.d("BG", "mBizListAdpater notified!");
+			Log.d("BgBiz", "mBizListAdpater notified!");
 
 			//Done loading more
 			mIsListLoadingMore = false;	
@@ -182,7 +184,7 @@ public class BizListController extends Activity implements OnScrollListener{
 		final Intent intent = new Intent(this, BizMapController.class);
 		btnGoBizMap.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
-				Log.d("BG", "Button Clicked");
+				Log.d("BgBiz", "Button Clicked");
 				BizActivityGroup bizActivityGroup = ((BizActivityGroup)getParent());
 				View newView = bizActivityGroup.getBizActivityGroup().getLocalActivityManager()
 						.startActivity("BizMapController", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
@@ -202,7 +204,7 @@ public class BizListController extends Activity implements OnScrollListener{
 	}
 
 	private void refreshList(){
-		Log.d("BG", "Refresh clicked");
+		Log.d("BgBiz", "Refresh clicked");
 		mBizArrayList.clear();
 		mBizListAdapter.clear();
 
@@ -254,7 +256,7 @@ public class BizListController extends Activity implements OnScrollListener{
 
 	// To handle back button
 	public void onBackPressed() { //on Back
-		Log.d("BG", "Back Pressed from BizList");
+		Log.d("BgBiz", "Back Pressed from BizList");
 		BizActivityGroup parent = ((BizActivityGroup)getParent());
 		parent.back();
 	}
@@ -271,7 +273,7 @@ public class BizListController extends Activity implements OnScrollListener{
 		//is the bottom item visible & not loading more already? Load more!
 		if(lastInScreen == totalItemCount && totalItemCount != 0 && mIsListLoadingMore == false && mStopLoadingMore == false)
 		{
-			Log.d("BG", "Load next items");
+			Log.d("BgBiz", "Load next items");
 			Thread thread = new Thread(null, loadMoreListItems);
 			thread.start();
 		} 

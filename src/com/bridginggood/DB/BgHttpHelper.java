@@ -35,12 +35,12 @@ public class BgHttpHelper {
 	public static String requestHttpRequest(String requestURL, String requestParam, String method) throws Exception{
 		int responseCode=0, retryAttempt=0;
 		StringBuilder jsonStringBuilder = new StringBuilder();
-		
+
+		if(method.equals("GET"))
+			requestURL = requestURL+"?"+requestParam;
+
 		//loop is there to make retry-connection upon responseCode == -1
 		while(retryAttempt < RETRY_LIMIT && responseCode<=0){
-			if(method.equals("GET"))
-				requestURL = requestURL+"?"+requestParam;
-
 			HttpURLConnection httpURLConnection = null;
 			URL targetURL = new URL(requestURL);
 			BufferedReader postRes = null;
@@ -70,23 +70,24 @@ public class BgHttpHelper {
 				outputStream.write(bytes);
 				outputStream.close();
 			}
+			Log.d("BgDB", "requestURL:"+requestURL);
 			//Check responseCode to determine if the call to server was successful.
 			responseCode = httpURLConnection.getResponseCode();
-			Log.d("BG", "ResponseCode: "+responseCode);
+			Log.d("BgDB", "ResponseCode: "+responseCode);
 			if(responseCode > 0 && responseCode < 400){
 				postRes = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream(), "UTF-8"));
 				while ((line = postRes.readLine()) != null){
 					jsonStringBuilder.append(line);
 				}
 				postRes.close();
-				Log.d("BG", "JSON Received: "+jsonStringBuilder.toString());
+				Log.d("BgDB", "JSON Received: "+jsonStringBuilder.toString());
 				break;
 			}
 			else{
-				Log.d("BG", "ResponseCode Error!");
+				Log.d("BgDB", "ResponseCode Error!");
 			}
 			retryAttempt++;
-			Log.d("BG","Connection Retry: "+retryAttempt);
+			Log.d("BgDB","Connection Retry: "+retryAttempt);
 		}
 		return jsonStringBuilder.toString();
 	}

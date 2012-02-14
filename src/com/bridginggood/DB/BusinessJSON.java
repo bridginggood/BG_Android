@@ -64,7 +64,7 @@ public class BusinessJSON {
 			bizList.add(biz); //add to ArrayList
 
 		} catch (Exception e) {
-			Log.d("BG", "getBizListJSON Exception:"+e.getLocalizedMessage());
+			Log.d("BgDB", "getBizListJSON Exception:"+e.getLocalizedMessage());
 		}
 		return bizList;
 	}
