@@ -41,7 +41,7 @@
         <activity android:name=".User.UserActivityGroup" />
 
         <!-- Bg -->
-        <activity android:name=".Bg.BgActivityGroup" />
+        <activity android:name=".Setting.SettingActivityGroup" />
         <activity android:name=".Setting.SettingController"/>
 
         <!-- Google Map -->

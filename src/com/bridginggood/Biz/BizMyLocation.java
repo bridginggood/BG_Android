@@ -75,7 +75,6 @@ public class BizMyLocation {
 	};
 	
 	public void cancelGetLocation(){
-		
 		locMgr.removeUpdates(locationListenerGps);
 		locMgr.removeUpdates(locationListenerNetwork);
 	}

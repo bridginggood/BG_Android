@@ -40,7 +40,7 @@ public class BizMapController extends MapActivity{
 
 	private boolean mIsLoadingBizLocation = false; 		//Lock
 	private boolean mIsLoadingMyLocation = false;
-	
+
 	private final int STATUS_LOADED_MY_LOC = 0;
 	private final int STATUS_LOADED_BIZ_LOC = 1;
 
@@ -51,7 +51,7 @@ public class BizMapController extends MapActivity{
 		setContentView(R.layout.bizmap);
 
 		Log.d("BgBiz", "Welcome to BizMapController");
-		
+
 		//Initialize ArrayLists
 		mBizArrayList = new ArrayList<Business>();
 		//Initialize trigger
@@ -62,7 +62,11 @@ public class BizMapController extends MapActivity{
 
 		//Get current location
 		//retrieveCurrentLocation();
-		//retrieveBizLocation();
+		if(!mIsLoadingBizLocation){
+			Log.d("BgBiz", "retrieveBizLocation already called");
+			mIsLoadingBizLocation = true;
+			retrieveBizLocation();
+		}
 	}
 
 	private void retrieveCurrentLocation(){
@@ -78,28 +82,24 @@ public class BizMapController extends MapActivity{
 				}
 			}
 		});
-		
-		
+
+
 		mBizMyLocation = new BizMyLocation(getParent());
 		mBizMyLocation.getLocation(getApplicationContext(), locationResult);
-		
+
 		while(mIsLoadingMyLocation);
-		
+
 		createMyLocationOverlayOnMapView();
 		mProgressDialog.dismiss();
-		
+
 		//mLoadMapThread= new LoadMapThread(handlerThread);
 		//mLoadMapThread.start();
 	}
-	
+
 	private void retrieveBizLocation(){
-		if(mIsLoadingBizLocation){
-			Log.d("BgBiz", "retrieveBizLocation alraedy called");
-			return;
-		}
 		Log.d("BgBiz", "retrieveBizLocation called.");
 		mIsLoadingBizLocation = true;
-		mLoadBizThread = new LoadBizThread(handlerThread);
+		mLoadBizThread = new LoadBizThread(handlerLoadBizThread);
 		mLoadBizThread.start();
 	}
 
@@ -202,11 +202,6 @@ public class BizMapController extends MapActivity{
 		parent.back();
 	}
 
-	private void updateMapViewOnMapPositionChange(){
-		Log.d("BgBiz", "Map changed!");
-		retrieveBizLocation();
-	}
-
 	/**
 	 * Update mDistanceRadius to the user's current screen radius for new search
 	 * 
@@ -262,27 +257,29 @@ public class BizMapController extends MapActivity{
 					//If zoom level changed, mDistanceRadius must be updated.
 					updateDistanceRadius();
 				}
-
-				updateMapViewOnMapPositionChange();
+				retrieveBizLocation();
 			}
 		}
 	}
-	
+
 	private class LoadBizThread extends Thread{
 		Handler mHandler;
-		
+
 		public LoadBizThread(Handler h){
 			this.mHandler = h;
 		}
-		
+
 		public void run(){
+			Log.d("BgBiz", "LoadBizThread called");
 			updateBizArrayList();
-			
+			createBusinessOverlayOnMapView();
+
 			Message msg = mHandler.obtainMessage();
 			Bundle b = new Bundle();
 			b.putInt("status", STATUS_LOADED_BIZ_LOC);
 			mHandler.sendMessage(msg);
 			mIsLoadingBizLocation = false;
+			Log.d("BgBiz", "Changed mIsLoadingBizLocation to "+mIsLoadingBizLocation);
 		}
 	}
 
@@ -294,7 +291,7 @@ public class BizMapController extends MapActivity{
 		}
 
 		public void run(){
-			Log.d("BgBiz", "LoadMapThread mIsLoadingMyLocation : "+mIsLoadingMyLocation);
+			Log.d("BgBiz", "LoadMapThread called");
 			while(mIsLoadingMyLocation);
 			Message msg = mHandler.obtainMessage();
 			Bundle b = new Bundle();
@@ -303,7 +300,7 @@ public class BizMapController extends MapActivity{
 		}
 	}
 
-	final Handler handlerThread = new Handler() {
+	final Handler handlerLoadMapThread = new Handler() {
 		public void handleMessage(Message msg) {
 			int status = msg.getData().getInt("status");
 			switch(status){
@@ -312,6 +309,14 @@ public class BizMapController extends MapActivity{
 				createMyLocationOverlayOnMapView();
 				mProgressDialog.dismiss();
 				break;
+			}
+		}
+	};
+
+	final Handler handlerLoadBizThread = new Handler() {
+		public void handleMessage(Message msg) {
+			int status = msg.getData().getInt("status");
+			switch(status){
 			case STATUS_LOADED_BIZ_LOC:
 				Log.d("BgBiz", "Status_loaded_biz_loc");
 				createBusinessOverlayOnMapView();
@@ -319,4 +324,6 @@ public class BizMapController extends MapActivity{
 			}
 		}
 	};
+
+
 }
