@@ -1,33 +1,47 @@
 package com.bridginggood.Biz;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
 public class BizMyLocation {
 	//private Timer timer1;
 	private LocationManager locMgr;
-	private LocationResult locResult;
 	private boolean isGpsEnabled=false;
 	private boolean isNetworkEnabled=false;
-	private Context context;
-	
+	private Context mContext;
+	private Location mCurrentLocation = null;
+	private boolean isLocked = false;
+	private ProgressDialog mProgressDialog;
+
 	public BizMyLocation(Context context){
-		this.context = context;
+		mContext = context;
+		isLocked = false;
 	}
 
-	public boolean getLocation(Context context, LocationResult result)
-	{
+	public Location getLocation()
+	{	
+
+		/*mProgressDialog = ProgressDialog.show(mContext, "", "Identifying your location...", true, true);
+		mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				//TODO: Implement cancel action
+				Log.d("BgBiz", "mLoadMapThread killed by the user");				
+			}
+		});*/
+
 		//Use LocationResult callback class to pass location value from this class to BizMapController.
-		locResult=result;
 		if(locMgr==null)
-			locMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+			locMgr = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
 		//exceptions will be thrown if provider is not permitted.
 		try{isGpsEnabled=locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ex){}
@@ -35,85 +49,83 @@ public class BizMyLocation {
 
 		//don't start listeners if no provider is enabled
 		if(!isGpsEnabled && !isNetworkEnabled)
-			return false;
+			return null;
 
-		if(isGpsEnabled)
+		if(isGpsEnabled){
+			isLocked = true;
+			Log.d("BgBiz", "reuqestLocationUpdates by GPS");
 			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
-		if(isNetworkEnabled)
+			//while(isLocked);
+		}
+		if(isNetworkEnabled){
+			isLocked = true;
+			Log.d("BgBiz", "reuqestLocationUpdates by Network");
 			locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
-		//timer1=new Timer();
-		//timer1.schedule(new GetLastLocation(), 20000);
-		return true;
+			//while(isLocked);
+		}
+
+		Log.d("BgBiz", "Turning on lock from create");
+		isLocked = true;
+		while(isLocked);
+		return mCurrentLocation;
 	}
 
 	LocationListener locationListenerGps = new LocationListener() {
 		public void onLocationChanged(Location location) {
-			//timer1.cancel();
-			locResult.gotLocation(location);
+			Log.d("BgBiz", "locationListnerGPS Called");
+			mCurrentLocation = location;
 			locMgr.removeUpdates(this);
 			locMgr.removeUpdates(locationListenerNetwork);
+
+			mHandler.sendEmptyMessage(0);
 		}
 		public void onProviderDisabled(String provider) {
-			Toast.makeText(context, "GPS is disabled", Toast.LENGTH_SHORT);
+			Toast.makeText(mContext, "GPS is disabled", Toast.LENGTH_SHORT);
+			isLocked = false;
 		}
 		public void onProviderEnabled(String provider) {
-			Toast.makeText(context, "GPS is enabled", Toast.LENGTH_SHORT);
+			Toast.makeText(mContext, "GPS is enabled", Toast.LENGTH_SHORT);
+			isLocked = false;
 		}
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {isLocked = false;}
 	};
 
 	LocationListener locationListenerNetwork = new LocationListener() {
 		public void onLocationChanged(Location location) {
-			//timer1.cancel();
-			locResult.gotLocation(location);
+			Log.d("BgBiz", "locationListnerNetwork Called");
+			mCurrentLocation = location;
 			locMgr.removeUpdates(this);
 			locMgr.removeUpdates(locationListenerGps);
+
+			mHandler.sendEmptyMessage(0);
 		}
-		public void onProviderDisabled(String provider) {}
-		public void onProviderEnabled(String provider) {}
-		public void onStatusChanged(String provider, int status, Bundle extras) {}
+		public void onProviderDisabled(String provider) {isLocked = false;}
+		public void onProviderEnabled(String provider) {isLocked = false;}
+		public void onStatusChanged(String provider, int status, Bundle extras) {isLocked = false;}
 	};
-	
+
 	public void cancelGetLocation(){
+		//TODO: Is this correct implementation?
 		locMgr.removeUpdates(locationListenerGps);
 		locMgr.removeUpdates(locationListenerNetwork);
 	}
-	
-/*
-	class GetLastLocation extends TimerTask {
-		@Override
-		public void run() {
-			locMgr.removeUpdates(locationListenerGps);
-			locMgr.removeUpdates(locationListenerNetwork);
 
-			Location net_loc=null, gps_loc=null;
-			if(isGpsEnabled)
-				gps_loc=locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			if(isNetworkEnabled)
-				net_loc=locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+	public void setCurrentLocation(Location location){
+		mCurrentLocation = location;
+	}
 
-			//if there are both values use the latest one
-			if(gps_loc!=null && net_loc!=null){
-				if(gps_loc.getTime()>net_loc.getTime())
-					locResult.gotLocation(gps_loc);
-				else
-					locResult.gotLocation(net_loc);
-				return;
-			}
+	public Location getCurrentLocation(){
+		return mCurrentLocation;
+	}
 
-			if(gps_loc!=null){
-				locResult.gotLocation(gps_loc);
-				return;
-			}
-			if(net_loc!=null){
-				locResult.gotLocation(net_loc);
-				return;
-			}
-			locResult.gotLocation(null);
+	public boolean isCurrentLocationAvailable(){
+		return (mCurrentLocation!=null);
+	}
+
+	private Handler mHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			Log.d("BgBiz", "mHandler called");
+			isLocked = false;
 		}
-	}
-*/
-	public static abstract class LocationResult{
-		public abstract void gotLocation(Location location);
-	}
+	};
 }

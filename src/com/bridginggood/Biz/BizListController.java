@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bridginggood.R;
-import com.bridginggood.Biz.BizMyLocation.LocationResult;
 import com.bridginggood.DB.BusinessJSON;
 
 public class BizListController extends Activity implements OnScrollListener{
@@ -26,6 +25,7 @@ public class BizListController extends Activity implements OnScrollListener{
 
 	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
 	private BizMyLocation mBizMyLocation;
+	private Location mCurrentLocation;
 	private float mMyLat, mMyLng, mDistanceRadius;	//For search
 
 	private boolean mIsListLoadingMore, mStopLoadingMore;					//To lock the list while handling onScroll event
@@ -53,9 +53,12 @@ public class BizListController extends Activity implements OnScrollListener{
 		mDistanceRadius = 1.0f;	//miles
 
 		//Initialize myLocation to get current loc
-		mBizMyLocation = new BizMyLocation(getParent());
-		mBizMyLocation.getLocation(this, locationResult);
-
+		mBizMyLocation = new BizMyLocation(getApplicationContext());
+		mBizMyLocation.getLocation();
+		mCurrentLocation = mBizMyLocation.getCurrentLocation();
+		
+		Log.d("BgBiz", "mCurrentLocation : "+mCurrentLocation.getLatitude()+" | "+mCurrentLocation.getLongitude());
+		
 		//Initialize listview
 		this.initListView();
 
@@ -87,7 +90,7 @@ public class BizListController extends Activity implements OnScrollListener{
 		mIsListLoadingMore = true;
 		mStopLoadingMore = false;
 	}
-
+/*
 	//Callback - once you got the location of the user
 	public LocationResult locationResult = new LocationResult(){
 		@Override
@@ -113,7 +116,7 @@ public class BizListController extends Activity implements OnScrollListener{
 			new Thread(null, loadMoreListItems).start();
 			//thread.start();
 		}
-	};
+	};*/
 
 	private Runnable loadMoreListItems = new Runnable(){
 		@Override
@@ -224,7 +227,8 @@ public class BizListController extends Activity implements OnScrollListener{
 		mBizListView.setVisibility(View.INVISIBLE);
 
 		//Initialize myLocation to get current loc
-		mBizMyLocation.getLocation(this, locationResult);
+		mBizMyLocation.getLocation();
+		mCurrentLocation = mBizMyLocation.getCurrentLocation();
 	}
 
 	AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {

@@ -16,7 +16,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 
 import com.bridginggood.R;
-import com.bridginggood.Biz.BizMyLocation.LocationResult;
 import com.bridginggood.DB.BusinessJSON;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -34,12 +33,13 @@ public class BizMapController extends MapActivity{
 	private LoadMapThread mLoadMapThread;
 	private LoadBizThread mLoadBizThread;
 
+	private Location mCurrentLocation;
 	private float mMyLat = 40.714353f;
 	private float mMyLng = -74.005973f;
 	private float mDistanceRadius = 1.0f;
 
 	private boolean mIsLoadingBizLocation = false; 		//Lock
-	private boolean mIsLoadingMyLocation = false;
+	private boolean mIsLoadingCurrentLocation = false;
 
 	private final int STATUS_LOADED_MY_LOC = 0;
 	private final int STATUS_LOADED_BIZ_LOC = 1;
@@ -56,12 +56,16 @@ public class BizMapController extends MapActivity{
 		mBizArrayList = new ArrayList<Business>();
 		//Initialize trigger
 		mIsLoadingBizLocation = false;
-		mIsLoadingMyLocation = false;
+		mIsLoadingCurrentLocation = false;
 		//Initialize mapview
 		initMapView();
 
 		//Get current location
-		//retrieveCurrentLocation();
+		if(!mIsLoadingCurrentLocation){
+			Log.d("BgBiz", "Calling retrieveCurrentLocation");
+			mIsLoadingCurrentLocation = true;
+			retrieveCurrentLocation();	
+		}
 		if(!mIsLoadingBizLocation){
 			Log.d("BgBiz", "retrieveBizLocation already called");
 			mIsLoadingBizLocation = true;
@@ -70,30 +74,24 @@ public class BizMapController extends MapActivity{
 	}
 
 	private void retrieveCurrentLocation(){
-		mIsLoadingMyLocation = true;
 		//Start progress dialog
 		mProgressDialog = ProgressDialog.show(getParent(), "", "Identifying your location...", true, true);
 		mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				if(mLoadMapThread!=null && mLoadMapThread.isAlive()){
-					Log.d("BgBiz", "mLoadMapThread killed by the user");
-					//mLoadMapThread.interrupt();
+				if(mBizMyLocation!=null){
+					//TODO: Implement cancel action
+					Log.d("BgBiz", "mLoadMapThread killed by the user");				
 				}
 			}
 		});
 
+		//while(mIsLoadingCurrentLocation);
+		//createMyLocationOverlayOnMapView();
+		//mProgressDialog.dismiss();
 
-		mBizMyLocation = new BizMyLocation(getParent());
-		mBizMyLocation.getLocation(getApplicationContext(), locationResult);
-
-		while(mIsLoadingMyLocation);
-
-		createMyLocationOverlayOnMapView();
-		mProgressDialog.dismiss();
-
-		//mLoadMapThread= new LoadMapThread(handlerThread);
-		//mLoadMapThread.start();
+		mLoadMapThread= new LoadMapThread(handlerLoadMapThread);
+		mLoadMapThread.start();
 	}
 
 	private void retrieveBizLocation(){
@@ -119,7 +117,7 @@ public class BizMapController extends MapActivity{
 		mMapView.setOnChangeListener(new MapViewChangeListener());
 	}
 
-	//Callback - once you got the location of the user
+	/*//Callback - once you got the location of the user
 	private LocationResult locationResult = new LocationResult(){
 		@Override
 		public void gotLocation(final Location location){
@@ -127,9 +125,9 @@ public class BizMapController extends MapActivity{
 			//Got the location!, store them as current location
 			mMyLat = (float) location.getLatitude();
 			mMyLng = (float) location.getLongitude();
-			mIsLoadingMyLocation = false;
+			mIsLoadingCurrentLocation = false;
 		}
-	};
+	};*/
 
 	/**
 	 * Get Arraylist of GeoPoints to be marked on the map
@@ -292,7 +290,15 @@ public class BizMapController extends MapActivity{
 
 		public void run(){
 			Log.d("BgBiz", "LoadMapThread called");
-			while(mIsLoadingMyLocation);
+			Looper.prepare();
+			Looper.loop();
+			Looper.myLooper().quit();
+			mBizMyLocation = new BizMyLocation(getApplicationContext());
+			mBizMyLocation.getLocation();
+			mCurrentLocation = mBizMyLocation.getCurrentLocation();
+
+			while(mIsLoadingCurrentLocation);
+			Log.d("BgBiz", "Escaped from mIsLoadingCurrentLocation wait loop");
 			Message msg = mHandler.obtainMessage();
 			Bundle b = new Bundle();
 			b.putInt("status", STATUS_LOADED_MY_LOC);
@@ -305,8 +311,8 @@ public class BizMapController extends MapActivity{
 			int status = msg.getData().getInt("status");
 			switch(status){
 			case STATUS_LOADED_MY_LOC:
-				Log.d("BgBiz", "Status_loaded_my_loc");
-				createMyLocationOverlayOnMapView();
+				Log.d("BgBiz", "STATUS_LOADED_MY_LOC");
+				//createMyLocationOverlayOnMapView();
 				mProgressDialog.dismiss();
 				break;
 			}
