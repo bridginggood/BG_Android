@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,7 +43,7 @@ public class BizListController extends Activity implements OnScrollListener{
 	private BizListAdapter mBizListAdapter;			//ListView adapter
 	private ListView mBizListView;					//ListView
 	private View mBizListViewFooter;				//ListView footer - Loading message
-	
+
 	private boolean mIsLocationAvailable = false;
 	private LocationControl mLocationControlTask;
 
@@ -47,6 +51,13 @@ public class BizListController extends Activity implements OnScrollListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.bizlist_view);
+
+		//Check if GPS is on or not
+		final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+		if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+			buildAlertMessageNoGps();
+		}
 
 		/*
 		 * Initialize array list that stores business objects
@@ -69,65 +80,65 @@ public class BizListController extends Activity implements OnScrollListener{
 		mBizMyLocation.getLocation(this, locationResult);
 		mLocationControlTask = new LocationControl();
 		mLocationControlTask.execute(this);
-		
+
 		//Initialize listview
 		this.initListView();
 
 		//Initialize button
 		initButtonViews();
 	}
-	
-	private class LocationControl extends AsyncTask<Context, Void, Void>
-    {
-        private final ProgressDialog dialog = new ProgressDialog(BizListController.this);
-        protected void onPreExecute()
-        {
-            //this.dialog.setMessage("Searching");
-            //this.dialog.show();
-        }
-        protected Void doInBackground(Context... params)
-        {
-            //Wait x seconds to see if we can get a location from either network or GPS, otherwise stop
-            Long t = Calendar.getInstance().getTimeInMillis();
-            while (!mIsLocationAvailable && Calendar.getInstance().getTimeInMillis() - t < MAX_TIME_TO_WAIT_LOCATION_SEARCH) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            };
-            return null;
-        }
-        protected void onPostExecute(final Void unused)
-        {
-            if(this.dialog.isShowing())
-            {
-                this.dialog.dismiss();
-            }
 
-            if (mCurrentLocation != null)
-            {
-            	Log.d("BgBiz", "Location found!: "+mCurrentLocation.getLatitude()+" | "+mCurrentLocation.getLongitude());
-                //useLocation();
-            	
-            	/*
-            	 * Do when current location is found
-            	 */
-            	//Change the header
-    			TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
-    			txtBizListLoading.setVisibility(View.INVISIBLE);
-    			mBizListView.setVisibility(View.VISIBLE);
-    			
-    			Log.d("BgBiz", "Load new items");
-    			new Thread(null, loadMoreListItems).start();
-            }
-            else
-            {
-            	Log.d("BgBiz", "Location not found!");
-                //Couldn't find location, do something like show an alert dialog
-            }
-        }
-    }
+	private class LocationControl extends AsyncTask<Context, Void, Void>
+	{
+		private final ProgressDialog dialog = new ProgressDialog(BizListController.this);
+		protected void onPreExecute()
+		{
+			//this.dialog.setMessage("Searching");
+			//this.dialog.show();
+		}
+		protected Void doInBackground(Context... params)
+		{
+			//Wait x seconds to see if we can get a location from either network or GPS, otherwise stop
+			Long t = Calendar.getInstance().getTimeInMillis();
+			while (!mIsLocationAvailable && Calendar.getInstance().getTimeInMillis() - t < MAX_TIME_TO_WAIT_LOCATION_SEARCH) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			};
+			return null;
+		}
+		protected void onPostExecute(final Void unused)
+		{
+			if(this.dialog.isShowing())
+			{
+				this.dialog.dismiss();
+			}
+
+			if (mCurrentLocation != null)
+			{
+				Log.d("BgBiz", "Location found!: "+mCurrentLocation.getLatitude()+" | "+mCurrentLocation.getLongitude());
+				//useLocation();
+
+				/*
+				 * Do when current location is found
+				 */
+				//Change the header
+				TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
+				txtBizListLoading.setVisibility(View.INVISIBLE);
+				mBizListView.setVisibility(View.VISIBLE);
+
+				Log.d("BgBiz", "Load new items");
+				new Thread(null, loadMoreListItems).start();
+			}
+			else
+			{
+				Log.d("BgBiz", "Location not found!");
+				//Couldn't find location, do something like show an alert dialog
+			}
+		}
+	}
 
 	private void initListView(){
 		mBizListAdapter = new BizListAdapter(this, R.layout.bizlist_cell, mBizArrayList);
@@ -153,27 +164,27 @@ public class BizListController extends Activity implements OnScrollListener{
 		mIsListLoadingMore = true;
 		mStopLoadingMore = false;
 	}
-	
+
 	public LocationResult locationResult = new LocationResult()
-    {
-        @Override
-        public void gotLocation(final Location location)
-        {
-            mCurrentLocation = new Location(location);
-            mIsLocationAvailable = true;
-        }
-    };
+	{
+		@Override
+		public void gotLocation(final Location location)
+		{
+			mCurrentLocation = new Location(location);
+			mIsLocationAvailable = true;
+		}
+	};
 
 	private Runnable loadMoreListItems = new Runnable(){
 		@Override
 		public void run() {
 			//set flag so items are not loaded twice at the same time
 			mIsListLoadingMore = true;
-			
+
 			//Get new items
 			float myLat = (float) mCurrentLocation.getLatitude();
 			float myLng = (float) mCurrentLocation.getLongitude();
-			
+
 			BusinessJSON bizDB = new BusinessJSON(myLat, myLng, mDistanceRadius);
 			mBizArrayList = bizDB.getBizListJSON();
 
@@ -342,18 +353,38 @@ public class BizListController extends Activity implements OnScrollListener{
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	private void stopLocationLoading(){
 		if(mBizMyLocation != null)
 			mBizMyLocation.stopLocationUpdates();
 		if (mLocationControlTask != null || !mLocationControlTask.isCancelled())
 			mLocationControlTask.cancel(true);
 	}
-	
+
 	@Override
 	public void onStop(){
 		Log.d("BgBiz", "onStop called from BizListController");
 		stopLocationLoading();
 		super.onStop();
+	}
+
+
+
+	private void buildAlertMessageNoGps() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getParent());
+		builder.setMessage("Yout GPS seems to be disabled, do you want to enable it?")
+		.setCancelable(false)
+		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			public void onClick(final DialogInterface dialog, final int id) {
+				startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+			}
+		})
+		.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			public void onClick(final DialogInterface dialog, final int id) {
+				dialog.cancel();
+			}
+		});
+		final AlertDialog alert = builder.create();
+		alert.show();
 	}
 }
