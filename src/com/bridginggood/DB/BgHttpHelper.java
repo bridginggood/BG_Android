@@ -36,6 +36,9 @@ public class BgHttpHelper {
 		int responseCode=0, retryAttempt=0;
 		StringBuilder jsonStringBuilder = new StringBuilder();
 
+		// To resolve returning -1 problem
+		System.setProperty("http.keepAlive", "false");
+		
 		if(method.equals("GET"))
 			requestURL = requestURL+"?"+requestParam;
 
@@ -60,6 +63,9 @@ public class BgHttpHelper {
 			//Create httpURLConnection header
 			byte[] bytes = requestParam.getBytes("UTF-8");
 			httpURLConnection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+			httpURLConnection.setRequestProperty("Content-Language", "UTF-8");
+			httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0");
 			httpURLConnection.setRequestMethod(method);
 			if(method.equals("POST")){
 				httpURLConnection.setDoOutput(true);
@@ -81,6 +87,7 @@ public class BgHttpHelper {
 				}
 				postRes.close();
 				Log.d("BgDB", "JSON Received: "+jsonStringBuilder.toString());
+				httpURLConnection.disconnect();
 				break;
 			}
 			else{
@@ -88,6 +95,7 @@ public class BgHttpHelper {
 			}
 			retryAttempt++;
 			Log.d("BgDB","Connection Retry: "+retryAttempt);
+			httpURLConnection.disconnect();
 		}
 		return jsonStringBuilder.toString();
 	}

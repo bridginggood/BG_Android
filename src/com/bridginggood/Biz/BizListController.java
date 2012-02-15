@@ -6,7 +6,6 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -53,10 +52,10 @@ public class BizListController extends Activity implements OnScrollListener{
 		setContentView(R.layout.bizlist_view);
 
 		//Check if GPS is on or not
-		final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+		final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
-		if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-			buildAlertMessageNoGps();
+		if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+			displayAlertMessageToEnableGPS();
 		}
 
 		/*
@@ -77,7 +76,7 @@ public class BizListController extends Activity implements OnScrollListener{
 
 		//Initialize myLocation to get current loc
 		mBizMyLocation = new BizMyLocation();
-		mBizMyLocation.getLocation(this, locationResult);
+		mBizMyLocation.getLocation(this, locationFoundResult);
 		mLocationControlTask = new LocationControl();
 		mLocationControlTask.execute(this);
 
@@ -88,13 +87,15 @@ public class BizListController extends Activity implements OnScrollListener{
 		initButtonViews();
 	}
 
+	/**
+	 * Class to find current user location
+	 * @author wns349
+	 *
+	 */
 	private class LocationControl extends AsyncTask<Context, Void, Void>
 	{
-		private final ProgressDialog dialog = new ProgressDialog(BizListController.this);
 		protected void onPreExecute()
 		{
-			//this.dialog.setMessage("Searching");
-			//this.dialog.show();
 		}
 		protected Void doInBackground(Context... params)
 		{
@@ -111,15 +112,9 @@ public class BizListController extends Activity implements OnScrollListener{
 		}
 		protected void onPostExecute(final Void unused)
 		{
-			if(this.dialog.isShowing())
-			{
-				this.dialog.dismiss();
-			}
-
 			if (mCurrentLocation != null)
 			{
 				Log.d("BgBiz", "Location found!: "+mCurrentLocation.getLatitude()+" | "+mCurrentLocation.getLongitude());
-				//useLocation();
 
 				/*
 				 * Do when current location is found
@@ -165,7 +160,7 @@ public class BizListController extends Activity implements OnScrollListener{
 		mStopLoadingMore = false;
 	}
 
-	public LocationResult locationResult = new LocationResult()
+	public LocationResult locationFoundResult = new LocationResult()
 	{
 		@Override
 		public void gotLocation(final Location location)
@@ -291,7 +286,7 @@ public class BizListController extends Activity implements OnScrollListener{
 		//Initialize myLocation to get current loc
 		//mBizMyLocation.getLocation();
 		//mCurrentLocation = mBizMyLocation.getCurrentLocation();
-		mBizMyLocation.getLocation(this, locationResult);
+		mBizMyLocation.getLocation(this, locationFoundResult);
 		mLocationControlTask = new LocationControl();
 		mLocationControlTask.execute(this);
 	}
@@ -370,7 +365,7 @@ public class BizListController extends Activity implements OnScrollListener{
 
 
 
-	private void buildAlertMessageNoGps() {
+	private void displayAlertMessageToEnableGPS() {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(getParent());
 		builder.setMessage("Yout GPS seems to be disabled, do you want to enable it?")
 		.setCancelable(false)
