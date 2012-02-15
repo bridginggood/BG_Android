@@ -44,7 +44,7 @@ public class BusinessJSON {
 			//If retreived empty string, return empty ArrayList
 			if (jsonStr.equals("[]") || jsonStr.equals("{}"))
 				return bizList;
-			
+
 			JSONArray jsonArray = new JSONArray(jsonStr);
 
 			Business biz = null;
@@ -60,9 +60,9 @@ public class BusinessJSON {
 				float distanceAway = Float.parseFloat(jsonObject.getString(REPLY_PARAM_BUSINESS_DISTANCE));
 
 				biz = new Business(bid, 0, name, address, lat, lng, cid, distanceAway);
+				bizList.add(biz); //add to ArrayList
+				Log.d("BgDB", "Business object created. BID: "+bid);
 			}
-			bizList.add(biz); //add to ArrayList
-
 		} catch (Exception e) {
 			Log.d("BgDB", "getBizListJSON Exception:"+e.getLocalizedMessage());
 		}

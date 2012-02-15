@@ -1,131 +1,109 @@
 package com.bridginggood.Biz;
 
-import android.app.ProgressDialog;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Context;
-import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
 
 public class BizMyLocation {
-	//private Timer timer1;
-	private LocationManager locMgr;
-	private boolean isGpsEnabled=false;
-	private boolean isNetworkEnabled=false;
-	private Context mContext;
-	private Location mCurrentLocation = null;
-	private boolean isLocked = false;
-	private ProgressDialog mProgressDialog;
+	Timer timer1;
+	LocationManager lm;
+	LocationResult locationResult;
+	boolean gps_enabled=false;
+	boolean network_enabled=false;
 
-	public BizMyLocation(Context context){
-		mContext = context;
-		isLocked = false;
-	}
-
-	public Location getLocation()
-	{	
-
-		/*mProgressDialog = ProgressDialog.show(mContext, "", "Identifying your location...", true, true);
-		mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				//TODO: Implement cancel action
-				Log.d("BgBiz", "mLoadMapThread killed by the user");				
-			}
-		});*/
-
-		//Use LocationResult callback class to pass location value from this class to BizMapController.
-		if(locMgr==null)
-			locMgr = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+	public boolean getLocation(Context context, LocationResult result)
+	{
+		//I use LocationResult callback class to pass location value from MyLocation to user code.
+		locationResult=result;
+		if(lm==null)
+			lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
 		//exceptions will be thrown if provider is not permitted.
-		try{isGpsEnabled=locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ex){}
-		try{isNetworkEnabled=locMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER);}catch(Exception ex){}
+		try{gps_enabled=lm.isProviderEnabled(LocationManager.GPS_PROVIDER);}catch(Exception ex){}
+		try{network_enabled=lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);}catch(Exception ex){}
 
 		//don't start listeners if no provider is enabled
-		if(!isGpsEnabled && !isNetworkEnabled)
-			return null;
+		if(!gps_enabled && !network_enabled)
+			return false;
 
-		if(isGpsEnabled){
-			isLocked = true;
-			Log.d("BgBiz", "reuqestLocationUpdates by GPS");
-			locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
-			//while(isLocked);
-		}
-		if(isNetworkEnabled){
-			isLocked = true;
-			Log.d("BgBiz", "reuqestLocationUpdates by Network");
-			locMgr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
-			//while(isLocked);
-		}
-
-		Log.d("BgBiz", "Turning on lock from create");
-		isLocked = true;
-		while(isLocked);
-		return mCurrentLocation;
+		if(gps_enabled)
+			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
+		if(network_enabled)
+			lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
+		timer1=new Timer();
+		timer1.schedule(new GetLastLocation(), 20000);
+		return true;
 	}
 
 	LocationListener locationListenerGps = new LocationListener() {
 		public void onLocationChanged(Location location) {
-			Log.d("BgBiz", "locationListnerGPS Called");
-			mCurrentLocation = location;
-			locMgr.removeUpdates(this);
-			locMgr.removeUpdates(locationListenerNetwork);
-
-			mHandler.sendEmptyMessage(0);
+			timer1.cancel();
+			locationResult.gotLocation(location);
+			lm.removeUpdates(this);
+			lm.removeUpdates(locationListenerNetwork);
 		}
-		public void onProviderDisabled(String provider) {
-			Toast.makeText(mContext, "GPS is disabled", Toast.LENGTH_SHORT);
-			isLocked = false;
-		}
-		public void onProviderEnabled(String provider) {
-			Toast.makeText(mContext, "GPS is enabled", Toast.LENGTH_SHORT);
-			isLocked = false;
-		}
-		public void onStatusChanged(String provider, int status, Bundle extras) {isLocked = false;}
+		public void onProviderDisabled(String provider) {}
+		public void onProviderEnabled(String provider) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 	};
 
 	LocationListener locationListenerNetwork = new LocationListener() {
 		public void onLocationChanged(Location location) {
-			Log.d("BgBiz", "locationListnerNetwork Called");
-			mCurrentLocation = location;
-			locMgr.removeUpdates(this);
-			locMgr.removeUpdates(locationListenerGps);
-
-			mHandler.sendEmptyMessage(0);
+			timer1.cancel();
+			locationResult.gotLocation(location);
+			lm.removeUpdates(this);
+			lm.removeUpdates(locationListenerGps);
 		}
-		public void onProviderDisabled(String provider) {isLocked = false;}
-		public void onProviderEnabled(String provider) {isLocked = false;}
-		public void onStatusChanged(String provider, int status, Bundle extras) {isLocked = false;}
+		public void onProviderDisabled(String provider) {}
+		public void onProviderEnabled(String provider) {}
+		public void onStatusChanged(String provider, int status, Bundle extras) {}
 	};
 
-	public void cancelGetLocation(){
-		//TODO: Is this correct implementation?
-		locMgr.removeUpdates(locationListenerGps);
-		locMgr.removeUpdates(locationListenerNetwork);
-	}
+	class GetLastLocation extends TimerTask {
+		@Override
+		public void run() {
+			lm.removeUpdates(locationListenerGps);
+			lm.removeUpdates(locationListenerNetwork);
 
-	public void setCurrentLocation(Location location){
-		mCurrentLocation = location;
-	}
+			Location net_loc=null, gps_loc=null;
+			if(gps_enabled)
+				gps_loc=lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			if(network_enabled)
+				net_loc=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-	public Location getCurrentLocation(){
-		return mCurrentLocation;
-	}
+			//if there are both values use the latest one
+			if(gps_loc!=null && net_loc!=null){
+				if(gps_loc.getTime()>net_loc.getTime())
+					locationResult.gotLocation(gps_loc);
+				else
+					locationResult.gotLocation(net_loc);
+				return;
+			}
 
-	public boolean isCurrentLocationAvailable(){
-		return (mCurrentLocation!=null);
-	}
-
-	private Handler mHandler = new Handler() {
-		public void handleMessage(Message msg) {
-			Log.d("BgBiz", "mHandler called");
-			isLocked = false;
+			if(gps_loc!=null){
+				locationResult.gotLocation(gps_loc);
+				return;
+			}
+			if(net_loc!=null){
+				locationResult.gotLocation(net_loc);
+				return;
+			}
+			locationResult.gotLocation(null);
 		}
-	};
+	}
+
+	public void stopLocationUpdates()
+	{
+		lm.removeUpdates(locationListenerGps);
+		lm.removeUpdates(locationListenerNetwork);
+	}
+
+	public static abstract class LocationResult{
+		public abstract void gotLocation(Location location);
+	}
 }
