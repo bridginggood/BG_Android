@@ -42,8 +42,11 @@ public class SplashController extends Activity {
 				 */
 				
 				//Get device ID
-				if(UserInfo.getDeviceId()==null)
+				if(UserInfo.getDeviceId()==null){
+					Log.d("BG", "UserInfo.getDeviceId is null. Generating new device Id");
 					UserInfo.setDeviceId(getDeviceId());
+					Log.d("BG", "Splash: new id is "+UserInfo.getDeviceId());
+				}
 				
 				//Check if saved user token exists or not
 				boolean isLoginSuccess = isUserLoginSuccess();
