@@ -24,10 +24,11 @@ public class UserLoginJSON {
 	private static final String PARAM_TOKEN_STRING = "TokenString";
 	private static final String PARAM_DEVICE_ID = "DeviceId";
 	private static final String PARAM_DEVICE_TYPE = "DeviceType";
+	private static final String PARAM_C2DM_REGISTRATION_ID = "C2DMRegId";
 
 	private static final String PARAM_RESULT_CODE = "resultCode";
 	private static final String PARAM_RESULT_MSG = "resultMsg";
-	
+
 	private static final String DATA_DEVICE_TYPE = "ANDRO";
 
 	/**
@@ -47,14 +48,14 @@ public class UserLoginJSON {
 			case CONST.LOGIN_TYPE_BG:
 				targetURL = CONST.API_LOGIN_BY_BG_URL;
 				String[][] paramBG = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
-										{PARAM_USER_PASSWORD, UserInfo.getUserPassword()}};
+						{PARAM_USER_PASSWORD, UserInfo.getUserPassword()}};
 				requestParam = BgHttpHelper.generateParamData(paramBG);
 				break;
 			case CONST.LOGIN_TYPE_FACEBOOK:
 				targetURL = CONST.API_LOGIN_BY_FACEBOOK_URL;
 				String[][] paramFacebook = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
-												{PARAM_USER_FIRSTNAME, UserInfo.getUserFirstName()},
-												{PARAM_USER_LASTNAME, UserInfo.getUserLastName()}};
+						{PARAM_USER_FIRSTNAME, UserInfo.getUserFirstName()},
+						{PARAM_USER_LASTNAME, UserInfo.getUserLastName()}};
 				requestParam = BgHttpHelper.generateParamData(paramFacebook);
 				break;
 			case CONST.LOGIN_TYPE_TOKEN:
@@ -63,7 +64,7 @@ public class UserLoginJSON {
 				requestParam = BgHttpHelper.generateParamData(paramToken);
 				break;
 			}
-			
+
 			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
 
 			JSONObject jsonObject = new JSONObject(jsonStr);
@@ -101,33 +102,61 @@ public class UserLoginJSON {
 		Log.d("BgDB", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
 				UserInfo.getUserLastName()+", "+UserInfo.getUserType());
 	}
-	
+
 	/**
 	 * Sends device info to the server
 	 */
 	public static void sendThisDeviceDetail(){
 		try{
-		String targetURL = CONST.API_REGISTER_DEVICE_ID_URL;
-		String[][] param = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
-								{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
-								{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}};
-		String requestParam = BgHttpHelper.generateParamData(param);
-		
-		String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
+			String targetURL = CONST.API_CREATE_USER_DEVICE_URL;
+			String[][] param = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
+					{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
+					{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}};
+			String requestParam = BgHttpHelper.generateParamData(param);
 
-		JSONObject jsonObject = new JSONObject(jsonStr);
+			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
 
-		//TODO: Maybe this needs to be changed later on.
-		if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-			//Login succeed!
-			Log.d("BgDB", "Device registration completed: "+jsonObject.getString(PARAM_RESULT_MSG));
+			JSONObject jsonObject = new JSONObject(jsonStr);
 
-		} else {
-			Log.d("BgDB", "Device registration failed: "+jsonObject.getString(PARAM_RESULT_MSG));
-		}
+			//TODO: Maybe this needs to be changed later on.
+			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+				//Login succeed!
+				Log.d("BgDB", "Device registration completed: "+jsonObject.getString(PARAM_RESULT_MSG));
+
+			} else {
+				Log.d("BgDB", "Device registration failed: "+jsonObject.getString(PARAM_RESULT_MSG));
+			}
 		}
 		catch(Exception e){
 			Log.d("BgDB", "sendThisDeviceDetail Exception: "+e.getLocalizedMessage());
+		}
+	}
+	
+	/**
+	 * Sends C2DM registration info to the server
+	 */
+	public static void sendC2DMRegistrationId(){
+		try{
+			String targetURL = CONST.API_CREATE_C2DM_REGISTRATION_ID_URL;
+			String[][] param = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
+					{PARAM_C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId()}};
+			String requestParam = BgHttpHelper.generateParamData(param);
+
+			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
+
+			JSONObject jsonObject = new JSONObject(jsonStr);
+
+			//TODO: Maybe this needs to be changed later on.
+			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+				//Login succeed!
+				Log.d("BgDB", "C2DM registration completed: "+jsonObject.getString(PARAM_RESULT_MSG));
+
+			} else {
+				Log.d("BgDB", "C2DM registration failed: "+jsonObject.getString(PARAM_RESULT_MSG));
+			}
+		}
+		catch(Exception e){
+			Log.d("BgDB", "sendC2DMRegistrationId Exception: "+e.getLocalizedMessage());
 		}
 	}
 }

@@ -1,7 +1,9 @@
 package com.bridginggood;
 
 
+import android.app.PendingIntent;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -55,6 +57,19 @@ public class MainController extends TabActivity {
 		tabHost.addTab(spec);
 
 		tabHost.setCurrentTab(2);
+
+		initC2DMRegistration();
+	}
+
+	private void initC2DMRegistration(){
+		if(UserInfo.getC2DMRegistrationId()==null){
+			Log.d("BG", "Need to register for C2DM!");
+			Context context = getApplicationContext();
+			Intent registrationIntent = new Intent("com.google.android.c2dm.intent.REGISTER");
+			registrationIntent.putExtra("app", PendingIntent.getBroadcast(context, 0, new Intent(), 0));
+			registrationIntent.putExtra("sender", CONST.C2DM_SENDER);
+			context.startService(registrationIntent);
+		}
 	}
 
 	/*

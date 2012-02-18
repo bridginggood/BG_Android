@@ -13,7 +13,8 @@ import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 
 public class UserInfo extends Application{
-	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName, mTokenString, mDeviceId;
+	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName;
+	private static String mTokenString, mDeviceId, mC2DMRegistrationId;
 	private static boolean mIsFirstTimeOnThisDevice;
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
@@ -26,6 +27,7 @@ public class UserInfo extends Application{
 		setUserLastName(null);
 		setDeviceId(null);
 		setFirstTimeOnThisDevice(true);
+		setC2DMRegistrationId(null);
 		mFacebook = new Facebook(CONST.FACEBOOK_APP_ID);
 		mAsyncRunner= new AsyncFacebookRunner(mFacebook);
 	}
@@ -157,5 +159,13 @@ public class UserInfo extends Application{
 
 	public static void setDeviceId(String mDeviceId) {
 		UserInfo.mDeviceId = mDeviceId;
+	}
+
+	public static String getC2DMRegistrationId() {
+		return mC2DMRegistrationId;
+	}
+
+	public static void setC2DMRegistrationId(String mC2DMRegistrationId) {
+		UserInfo.mC2DMRegistrationId = mC2DMRegistrationId;
 	}
 }
