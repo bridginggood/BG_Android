@@ -62,12 +62,12 @@ public class BgHttpHelper {
 
 			//Create httpURLConnection header
 			byte[] bytes = requestParam.getBytes("UTF-8");
-			httpURLConnection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
-			httpURLConnection.setRequestProperty("Content-Language", "UTF-8");
-			httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0");
 			httpURLConnection.setRequestMethod(method);
 			if(method.equals("POST")){
+				httpURLConnection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
+				httpURLConnection.setRequestProperty("Content-Language", "UTF-8");
+				//httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+				//httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0");
 				httpURLConnection.setDoOutput(true);
 				httpURLConnection.connect();
 
