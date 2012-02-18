@@ -9,10 +9,14 @@
  */
 package com.bridginggood;
 
+import java.util.UUID;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.bridginggood.Facebook.FacebookAPI;
@@ -36,6 +40,9 @@ public class SplashController extends Activity {
 				/*
 				 *===============START Loading Job==================== 
 				 */
+				
+				//Get device ID
+				UserInfo.setDeviceId(getDeviceId());
 				
 				//Check if saved user token exists or not
 				boolean isLoginSuccess = isUserLoginSuccess();
@@ -105,5 +112,23 @@ public class SplashController extends Activity {
 	public void onResume() {    
 		super.onResume();
 		FacebookAPI.extendFacebookToken(getApplicationContext());
+	}
+	
+	/**
+	 * Combination of TelephonyManager and Settings.Secure to generate unique device id
+	 * @return unique device id
+	 */
+	private String getDeviceId(){
+		final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+
+	    final String tmDevice, tmSerial, androidId;
+	    tmDevice = "" + tm.getDeviceId();
+	    tmSerial = "" + tm.getSimSerialNumber();
+	    androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+	    UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+	    String deviceId = deviceUuid.toString();
+	    
+	    return deviceId;
 	}
 }

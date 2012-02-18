@@ -13,7 +13,8 @@ import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 
 public class UserInfo extends Application{
-	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName, mPhoneType, mTokenString;
+	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName, mTokenString, mDeviceId;
+	private static boolean mIsFirstTimeOnThisDevice;
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
 	
@@ -23,7 +24,8 @@ public class UserInfo extends Application{
 		setUserType(null);
 		setUserFirstName(null);
 		setUserLastName(null);
-		setPhoneType(null);
+		setDeviceId(null);
+		setFirstTimeOnThisDevice(true);
 		mFacebook = new Facebook(CONST.FACEBOOK_APP_ID);
 		mAsyncRunner= new AsyncFacebookRunner(mFacebook);
 	}
@@ -57,28 +59,39 @@ public class UserInfo extends Application{
 	 *@return true if login was successful.  
 	 */
 	public static boolean loginUserInfo(Context context){
+		boolean isLoginSucc = false;
+		
 		if (getUserType().equals(CONST.USER_SESSION_TYPE_FACEBOOK))
 		{
 			//Go to Facebook Login
 			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_FACEBOOK))
-				return saveCurrentUserSessionToUserSessionStore(context);
+				isLoginSucc = true;
 			else
 				return false;
 		}
 		else if (getTokenString() != null && getUserPassword() == null){
 			//Go to token login
 			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_TOKEN))
-				return saveCurrentUserSessionToUserSessionStore(context);
+				isLoginSucc = true;
 			else
 				return false;
 		}
 		else{
 			//Go to BG login
 			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_BG))
-				return saveCurrentUserSessionToUserSessionStore(context);
+				isLoginSucc = true;
 			else
 				return false;
 		}
+		
+		//If login is successful, register the device
+		if(isLoginSucc){
+			if (UserInfo.getFirstTimeOnThisDevice())
+				UserLoginJSON.sendThisDeviceDetail();
+			return saveCurrentUserSessionToUserSessionStore(context);
+		}
+		else
+			return false;
 	}
 	
 	private static boolean saveCurrentUserSessionToUserSessionStore(Context context){
@@ -113,12 +126,6 @@ public class UserInfo extends Application{
 	public static void setUserEmail(String userEmail) {
 		mUserEmail = userEmail;
 	}
-	public static String getPhoneType() {
-		return mPhoneType;
-	}
-	public static void setPhoneType(String phoneType) {
-		mPhoneType = phoneType;
-	}
 
 	public static String getTokenString() {
 		return mTokenString;
@@ -134,5 +141,21 @@ public class UserInfo extends Application{
 
 	public static void setUserPassword(String password) {
 		mUserPassword = password;
+	}
+
+	public static boolean getFirstTimeOnThisDevice() {
+		return mIsFirstTimeOnThisDevice;
+	}
+
+	public static void setFirstTimeOnThisDevice(boolean mIsFirst) {
+		UserInfo.mIsFirstTimeOnThisDevice = mIsFirst;
+	}
+
+	public static String getDeviceId() {
+		return mDeviceId;
+	}
+
+	public static void setDeviceId(String mDeviceId) {
+		UserInfo.mDeviceId = mDeviceId;
 	}
 }

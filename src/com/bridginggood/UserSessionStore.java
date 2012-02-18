@@ -14,6 +14,7 @@ public class UserSessionStore {
 
 	private static final String TOKEN = "loginToken";					//Token attribute
 	private static final String USER_TYPE = "userType";					//Type of the user
+	private static final String IS_FIRST = "isFirst";					//Whether it's first time to login using this device
 	private static final String KEY = "BridgingGoodSession";			//SharedPreference Key Value
 
 	/**
@@ -25,6 +26,7 @@ public class UserSessionStore {
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
 		editor.putString(TOKEN, UserInfo.getTokenString());
 		editor.putString(USER_TYPE, UserInfo.getUserType());
+		editor.putBoolean(IS_FIRST, false);
 		return editor.commit();
 	}
 
@@ -32,6 +34,7 @@ public class UserSessionStore {
 		SharedPreferences savedSession = context.getSharedPreferences(KEY, Context.MODE_PRIVATE);
 		UserInfo.setTokenString(savedSession.getString(TOKEN, null));
 		UserInfo.setUserType(savedSession.getString(USER_TYPE,null));
+		UserInfo.setFirstTimeOnThisDevice(savedSession.getBoolean(IS_FIRST, true));
 	}
 
 	public static void clearSession(Context context) {

@@ -4,10 +4,11 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="7" />
+    <uses-sdk android:minSdkVersion="8" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:icon="@drawable/icon"
@@ -18,16 +19,17 @@
             android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <!-- Main TabHost -->
-        <activity android:name=".MainController"/>
-        
+        <activity android:name=".MainController" />
+
         <!-- Login -->
-        <activity android:name=".LoginController"/>
-   
+        <activity android:name=".LoginController" />
+
         <!-- Charity -->
         <activity android:name=".Charity.CharityActivityGroup" />
 
@@ -42,7 +44,7 @@
 
         <!-- Bg -->
         <activity android:name=".Setting.SettingActivityGroup" />
-        <activity android:name=".Setting.SettingController"/>
+        <activity android:name=".Setting.SettingController" />
 
         <!-- Google Map -->
         <uses-library

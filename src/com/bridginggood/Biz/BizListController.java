@@ -1,3 +1,8 @@
+/**
+ * Created by: Junsung Lim
+ * 
+ * Lists down the businesses around the user
+ */
 package com.bridginggood.Biz;
 
 import java.io.Serializable;
@@ -30,7 +35,7 @@ import com.bridginggood.DB.BusinessJSON;
 
 public class BizListController extends Activity implements OnScrollListener{
 	private static final float MAX_DIST = 10.0f;	//Maximum search radius
-	private static final int MAX_TIME_TO_WAIT_LOCATION_SEARCH = 15000;
+	private static final int MAX_TIME_TO_WAIT_LOCATION_SEARCH = 15000;	//in ms
 
 	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
 	private BizMyLocation mBizMyLocation;
@@ -87,53 +92,6 @@ public class BizListController extends Activity implements OnScrollListener{
 		initButtonViews();
 	}
 
-	/**
-	 * Class to find current user location
-	 * @author wns349
-	 *
-	 */
-	private class LocationControl extends AsyncTask<Context, Void, Void>
-	{
-		protected void onPreExecute()
-		{
-		}
-		protected Void doInBackground(Context... params)
-		{
-			//Wait x seconds to see if we can get a location from either network or GPS, otherwise stop
-			Long t = Calendar.getInstance().getTimeInMillis();
-			while (!mIsLocationAvailable && Calendar.getInstance().getTimeInMillis() - t < MAX_TIME_TO_WAIT_LOCATION_SEARCH) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			};
-			return null;
-		}
-		protected void onPostExecute(final Void unused)
-		{
-			if (mCurrentLocation != null)
-			{
-				Log.d("BgBiz", "Location found!: "+mCurrentLocation.getLatitude()+" | "+mCurrentLocation.getLongitude());
-
-				/*
-				 * Do when current location is found
-				 */
-				//Change the header
-				TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
-				txtBizListLoading.setVisibility(View.INVISIBLE);
-				mBizListView.setVisibility(View.VISIBLE);
-
-				Log.d("BgBiz", "Load new items");
-				new Thread(null, loadMoreListItems).start();
-			}
-			else
-			{
-				Log.d("BgBiz", "Location not found!");
-				//Couldn't find location, do something like show an alert dialog
-			}
-		}
-	}
 
 	private void initListView(){
 		mBizListAdapter = new BizListAdapter(this, R.layout.bizlist_cell, mBizArrayList);
@@ -363,8 +321,9 @@ public class BizListController extends Activity implements OnScrollListener{
 		super.onStop();
 	}
 
-
-
+	/*
+	 * Alerts the user to turn on the GPS
+	 */
 	private void displayAlertMessageToEnableGPS() {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(getParent());
 		builder.setMessage("Yout GPS seems to be disabled, do you want to enable it?")
@@ -381,5 +340,53 @@ public class BizListController extends Activity implements OnScrollListener{
 		});
 		final AlertDialog alert = builder.create();
 		alert.show();
+	}
+
+	/**
+	 * Class to find current user location
+	 * @author wns349
+	 *
+	 */
+	private class LocationControl extends AsyncTask<Context, Void, Void>
+	{
+		protected void onPreExecute()
+		{
+		}
+		protected Void doInBackground(Context... params)
+		{
+			//Wait x seconds to see if we can get a location from either network or GPS, otherwise stop
+			Long t = Calendar.getInstance().getTimeInMillis();
+			while (!mIsLocationAvailable && Calendar.getInstance().getTimeInMillis() - t < MAX_TIME_TO_WAIT_LOCATION_SEARCH) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			};
+			return null;
+		}
+		protected void onPostExecute(final Void unused)
+		{
+			if (mCurrentLocation != null)
+			{
+				Log.d("BgBiz", "Location found!: "+mCurrentLocation.getLatitude()+" | "+mCurrentLocation.getLongitude());
+
+				/*
+				 * Do when current location is found
+				 */
+				//Change the header
+				TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
+				txtBizListLoading.setVisibility(View.INVISIBLE);
+				mBizListView.setVisibility(View.VISIBLE);
+
+				Log.d("BgBiz", "Load new items");
+				new Thread(null, loadMoreListItems).start();
+			}
+			else
+			{
+				Log.d("BgBiz", "Location not found!");
+				//Couldn't find location, do something like show an alert dialog
+			}
+		}
 	}
 }

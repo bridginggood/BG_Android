@@ -162,7 +162,7 @@ public class BizMapController extends MapActivity{
 	private void createBusinessOverlayOnMapView(){
 		Log.d("BgBiz", "CreateOverLay called");
 		List<Overlay> mapOverlays = mMapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(R.drawable.charity_icon_default);
+		Drawable drawable = this.getResources().getDrawable(R.drawable.bridginggood_map_pin);
 		BizMapOverlay itemizedOverlay = new BizMapOverlay(drawable, mMapView, mBizArrayList, getParent());	//getParent() since alert only works on the upper-most context.
 
 		Log.d("BgBiz", "Ready to make GeoPoint");

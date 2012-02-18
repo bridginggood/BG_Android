@@ -22,10 +22,13 @@ public class UserLoginJSON {
 	private static final String PARAM_USER_PASSWORD = "UserPassword";
 	private static final String PARAM_USER_TYPE = "UserType";
 	private static final String PARAM_TOKEN_STRING = "TokenString";
-	private static final String PARAM_PHONE_TYPE = "PhoneType";
+	private static final String PARAM_DEVICE_ID = "DeviceId";
+	private static final String PARAM_DEVICE_TYPE = "DeviceType";
 
 	private static final String PARAM_RESULT_CODE = "resultCode";
 	private static final String PARAM_RESULT_MSG = "resultMsg";
+	
+	private static final String DATA_DEVICE_TYPE = "ANDRO";
 
 	/**
 	 * Interacts with server to do user login.
@@ -92,12 +95,39 @@ public class UserLoginJSON {
 		UserInfo.setUserLastName(jsonObject.getString(PARAM_USER_LASTNAME));
 		UserInfo.setUserType(jsonObject.getString(PARAM_USER_TYPE));
 		UserInfo.setTokenString(jsonObject.getString(PARAM_TOKEN_STRING));
-		UserInfo.setPhoneType(jsonObject.getString(PARAM_PHONE_TYPE));
 
 		UserInfo.setUserPassword(null);	//Nullify for security reason?!
 
 		Log.d("BgDB", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
 				UserInfo.getUserLastName()+", "+UserInfo.getUserType());
 	}
+	
+	/**
+	 * Sends device info to the server
+	 */
+	public static void sendThisDeviceDetail(){
+		try{
+		String targetURL = CONST.API_REGISTER_DEVICE_ID_URL;
+		String[][] param = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
+								{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
+								{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}};
+		String requestParam = BgHttpHelper.generateParamData(param);
+		
+		String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
 
+		JSONObject jsonObject = new JSONObject(jsonStr);
+
+		//TODO: Maybe this needs to be changed later on.
+		if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+			//Login succeed!
+			Log.d("BgDB", "Device registration completed: "+jsonObject.getString(PARAM_RESULT_MSG));
+
+		} else {
+			Log.d("BgDB", "Device registration failed: "+jsonObject.getString(PARAM_RESULT_MSG));
+		}
+		}
+		catch(Exception e){
+			Log.d("BgDB", "sendThisDeviceDetail Exception: "+e.getLocalizedMessage());
+		}
+	}
 }

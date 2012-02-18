@@ -10,6 +10,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.bridginggood.CONST;
 import com.bridginggood.UserInfo;
 import com.facebook.android.AsyncFacebookRunner.RequestListener;
 import com.facebook.android.FacebookError;
@@ -86,10 +87,7 @@ public class FacebookAPI {
 		public void onComplete(final String response, final Object state) {
 			try {
 				JSONObject jsonObject = new JSONObject(response);
-				UserInfo.setUserFirstName(jsonObject.getString("first_name"));
-				UserInfo.setUserLastName(jsonObject.getString("last_name"));
-				UserInfo.setUserEmail(jsonObject.getString("email"));
-				
+				UserInfo.createUserSessionForFacebook(jsonObject.getString("email"), jsonObject.getString("first_name"), jsonObject.getString("last_name"),CONST.USER_SESSION_TYPE_FACEBOOK);
 				mLock = false;
 			} catch (Exception e) {
 				Log.d("BgFacebook", "UserInfoRequestListener Exception: "+e.getLocalizedMessage());
