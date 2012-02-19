@@ -47,15 +47,23 @@ public class UserLoginJSON {
 			{
 			case CONST.LOGIN_TYPE_BG:
 				targetURL = CONST.API_LOGIN_BY_BG_URL;
-				String[][] paramBG = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
-						{PARAM_USER_PASSWORD, UserInfo.getUserPassword()}};
+				String[][] paramBG = {	
+						{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
+						{PARAM_USER_PASSWORD, UserInfo.getUserPassword()},
+						{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
+						{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}
+						};
 				requestParam = BgHttpHelper.generateParamData(paramBG);
 				break;
 			case CONST.LOGIN_TYPE_FACEBOOK:
 				targetURL = CONST.API_LOGIN_BY_FACEBOOK_URL;
-				String[][] paramFacebook = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
+				String[][] paramFacebook = {	
+						{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
 						{PARAM_USER_FIRSTNAME, UserInfo.getUserFirstName()},
-						{PARAM_USER_LASTNAME, UserInfo.getUserLastName()}};
+						{PARAM_USER_LASTNAME, UserInfo.getUserLastName()},
+						{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
+						{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}
+						};
 				requestParam = BgHttpHelper.generateParamData(paramFacebook);
 				break;
 			case CONST.LOGIN_TYPE_TOKEN:
@@ -101,35 +109,6 @@ public class UserLoginJSON {
 
 		Log.d("BgDB", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
 				UserInfo.getUserLastName()+", "+UserInfo.getUserType());
-	}
-
-	/**
-	 * Sends device info to the server
-	 */
-	public static void sendThisDeviceDetail(){
-		try{
-			String targetURL = CONST.API_CREATE_USER_DEVICE_URL;
-			String[][] param = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
-					{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
-					{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}};
-			String requestParam = BgHttpHelper.generateParamData(param);
-
-			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
-
-			JSONObject jsonObject = new JSONObject(jsonStr);
-
-			//TODO: Maybe this needs to be changed later on.
-			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-				//Login succeed!
-				Log.d("BgDB", "Device registration completed: "+jsonObject.getString(PARAM_RESULT_MSG));
-
-			} else {
-				Log.d("BgDB", "Device registration failed: "+jsonObject.getString(PARAM_RESULT_MSG));
-			}
-		}
-		catch(Exception e){
-			Log.d("BgDB", "sendThisDeviceDetail Exception: "+e.getLocalizedMessage());
-		}
 	}
 	
 	/**

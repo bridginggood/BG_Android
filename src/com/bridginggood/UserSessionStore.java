@@ -16,7 +16,6 @@ public class UserSessionStore {
 
 	private static final String TOKEN = "loginToken";					//Token attribute
 	private static final String USER_TYPE = "userType";					//Type of the user
-	private static final String IS_FIRST = "isFirst";					//Whether it's first time to login using this device
 	private static final String C2DM_REGISTRATION_ID = "c2dmRegId";		//C2DM Registration Id
 	private static final String KEY = "BridgingGoodSession";			//SharedPreference Key Value
 
@@ -30,7 +29,6 @@ public class UserSessionStore {
 		editor.putString(TOKEN, UserInfo.getTokenString());
 		editor.putString(USER_TYPE, UserInfo.getUserType());
 		editor.putString(C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId());
-		editor.putBoolean(IS_FIRST, false);
 		return editor.commit();
 	}
 
@@ -39,7 +37,6 @@ public class UserSessionStore {
 		UserInfo.setTokenString(savedSession.getString(TOKEN, null));
 		UserInfo.setUserType(savedSession.getString(USER_TYPE,null));
 		UserInfo.setC2DMRegistrationId(savedSession.getString(C2DM_REGISTRATION_ID, null));
-		UserInfo.setFirstTimeOnThisDevice(savedSession.getBoolean(IS_FIRST, true));
 	}
 
 	public static void clearSession(Context context) {
