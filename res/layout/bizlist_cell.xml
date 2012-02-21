@@ -50,7 +50,7 @@
             android:layout_alignRight="@id/distanceAway"
             android:layout_below="@id/distanceAway"
             android:contentDescription="@string/bizListCellIconDescription"
-            android:src="@drawable/bridginggood_map_pin"/>
+            android:src="@drawable/icon"/>
     </RelativeLayout>
 
 </LinearLayout>
