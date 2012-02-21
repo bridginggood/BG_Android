@@ -54,7 +54,7 @@ public class BizListController extends Activity implements OnScrollListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.bizlist_view);
+		setContentView(R.layout.bizlist_layout);
 
 		//Check if GPS is on or not
 		final LocationManager locationManager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
@@ -123,7 +123,9 @@ public class BizListController extends Activity implements OnScrollListener{
 		@Override
 		public void gotLocation(final Location location)
 		{
-			mCurrentLocation = new Location(location);
+			if(location != null)
+				mCurrentLocation = new Location(location);
+			
 			mIsLocationAvailable = true;
 		}
 	};

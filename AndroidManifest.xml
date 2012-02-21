@@ -49,13 +49,16 @@
         </receiver>
 
         <!-- Main TabHost -->
-        <activity android:name=".MainController" />
+        <activity
+            android:name=".MainController"
+            android:theme="@style/Theme.TabTheme" />
 
         <!-- Login -->
         <activity android:name=".LoginController" />
 
         <!-- Charity -->
         <activity android:name=".Charity.CharityActivityGroup" />
+        <activity android:name=".Charity.CharityCurationController"/>
 
         <!-- Biz -->
         <activity android:name=".Biz.BizActivityGroup" />
