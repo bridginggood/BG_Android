@@ -13,8 +13,8 @@ import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 
 public class UserInfo extends Application{
-	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName, mTokenString, mDeviceId;
-	private static boolean mIsFirstTimeOnThisDevice;
+	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName;
+	private static String mTokenString, mDeviceId, mC2DMRegistrationId;
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
 	
@@ -25,7 +25,7 @@ public class UserInfo extends Application{
 		setUserFirstName(null);
 		setUserLastName(null);
 		setDeviceId(null);
-		setFirstTimeOnThisDevice(true);
+		setC2DMRegistrationId(null);
 		mFacebook = new Facebook(CONST.FACEBOOK_APP_ID);
 		mAsyncRunner= new AsyncFacebookRunner(mFacebook);
 	}
@@ -58,40 +58,29 @@ public class UserInfo extends Application{
 	 * 
 	 *@return true if login was successful.  
 	 */
-	public static boolean loginUserInfo(Context context){
-		boolean isLoginSucc = false;
-		
+	public static boolean loginUserInfo(Context context){		
 		if (getUserType().equals(CONST.USER_SESSION_TYPE_FACEBOOK))
 		{
 			//Go to Facebook Login
 			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_FACEBOOK))
-				isLoginSucc = true;
+				return saveCurrentUserSessionToUserSessionStore(context);
 			else
 				return false;
 		}
 		else if (getTokenString() != null && getUserPassword() == null){
 			//Go to token login
 			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_TOKEN))
-				isLoginSucc = true;
+				return saveCurrentUserSessionToUserSessionStore(context);
 			else
 				return false;
 		}
 		else{
 			//Go to BG login
 			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_BG))
-				isLoginSucc = true;
+				return saveCurrentUserSessionToUserSessionStore(context);
 			else
 				return false;
 		}
-		
-		//If login is successful, register the device
-		if(isLoginSucc){
-			if (UserInfo.getFirstTimeOnThisDevice())
-				UserLoginJSON.sendThisDeviceDetail();
-			return saveCurrentUserSessionToUserSessionStore(context);
-		}
-		else
-			return false;
 	}
 	
 	private static boolean saveCurrentUserSessionToUserSessionStore(Context context){
@@ -143,19 +132,19 @@ public class UserInfo extends Application{
 		mUserPassword = password;
 	}
 
-	public static boolean getFirstTimeOnThisDevice() {
-		return mIsFirstTimeOnThisDevice;
-	}
-
-	public static void setFirstTimeOnThisDevice(boolean mIsFirst) {
-		UserInfo.mIsFirstTimeOnThisDevice = mIsFirst;
-	}
-
 	public static String getDeviceId() {
 		return mDeviceId;
 	}
 
 	public static void setDeviceId(String mDeviceId) {
 		UserInfo.mDeviceId = mDeviceId;
+	}
+
+	public static String getC2DMRegistrationId() {
+		return mC2DMRegistrationId;
+	}
+
+	public static void setC2DMRegistrationId(String mC2DMRegistrationId) {
+		UserInfo.mC2DMRegistrationId = mC2DMRegistrationId;
 	}
 }
