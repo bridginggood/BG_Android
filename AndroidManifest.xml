@@ -68,6 +68,7 @@
 
         <!-- User -->
         <activity android:name=".User.UserActivityGroup" />
+        <activity android:name=".User.UserController"/>
 
         <!-- Bg -->
         <activity android:name=".Setting.SettingActivityGroup" />

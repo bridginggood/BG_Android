@@ -19,6 +19,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import com.bridginggood.R;
 import com.bridginggood.Biz.BizMyLocation.LocationResult;
 import com.bridginggood.DB.BusinessJSON;
+import com.viewpagerindicator.CirclePageIndicator;
 
 public class BizListController extends Activity implements OnScrollListener{
 	private static final float MAX_DIST = 10.0f;	//Maximum search radius
@@ -90,9 +92,21 @@ public class BizListController extends Activity implements OnScrollListener{
 
 		//Initialize button
 		initButtonViews();
+		
+		//Initialize PagerAdapter
+		initPagerAdapter();
 	}
 
-
+	private void initPagerAdapter(){
+		BizPagerAdapter adapter = new BizPagerAdapter( this );
+		ViewPager pager = (ViewPager)findViewById( R.id.viewpagerBiz );
+		pager.setAdapter( adapter );
+		
+		//Bind the title indicator to the adapter
+		CirclePageIndicator circleIndicator = (CirclePageIndicator)findViewById(R.id.indicatorViewPagerBiz);
+		circleIndicator.setViewPager(pager);
+	}
+	
 	private void initListView(){
 		mBizListAdapter = new BizListAdapter(this, R.layout.bizlist_cell, mBizArrayList);
 		mBizListView = (ListView)findViewById(R.id.listBiz);

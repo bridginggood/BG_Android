@@ -1,4 +1,4 @@
-package com.bridginggood.Charity;
+package com.bridginggood.Biz;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -9,17 +9,17 @@ import android.widget.TextView;
 
 import com.viewpagerindicator.TitleProvider;
 
-public class CharityPagerAdapter extends PagerAdapter implements TitleProvider
+public class BizPagerAdapter extends PagerAdapter implements TitleProvider
 {
 	private static String[] titles = new String[]
 			{
-		"Page 1",
-		"Page 2",
-		"Page 3"
+		"Biz Page 1",
+		"Biz Page 2",
+		"Biz Page 3"
 			};
 	private final Context context;
 
-	public CharityPagerAdapter( Context context )
+	public BizPagerAdapter( Context context )
 	{
 		this.context = context;
 	}

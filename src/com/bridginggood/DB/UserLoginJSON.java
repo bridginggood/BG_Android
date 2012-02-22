@@ -52,7 +52,7 @@ public class UserLoginJSON {
 						{PARAM_USER_PASSWORD, UserInfo.getUserPassword()},
 						{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
 						{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}
-						};
+				};
 				requestParam = BgHttpHelper.generateParamData(paramBG);
 				break;
 			case CONST.LOGIN_TYPE_FACEBOOK:
@@ -63,7 +63,7 @@ public class UserLoginJSON {
 						{PARAM_USER_LASTNAME, UserInfo.getUserLastName()},
 						{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
 						{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}
-						};
+				};
 				requestParam = BgHttpHelper.generateParamData(paramFacebook);
 				break;
 			case CONST.LOGIN_TYPE_TOKEN:
@@ -110,7 +110,7 @@ public class UserLoginJSON {
 		Log.d("BgDB", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
 				UserInfo.getUserLastName()+", "+UserInfo.getUserType());
 	}
-	
+
 	/**
 	 * Sends C2DM registration info to the server
 	 */
@@ -118,7 +118,8 @@ public class UserLoginJSON {
 		try{
 			String targetURL = CONST.API_CREATE_C2DM_REGISTRATION_ID_URL;
 			String[][] param = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
-					{PARAM_C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId()}};
+					{PARAM_C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId()},
+					{PARAM_DEVICE_ID, UserInfo.getDeviceId()}};
 			String requestParam = BgHttpHelper.generateParamData(param);
 
 			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");

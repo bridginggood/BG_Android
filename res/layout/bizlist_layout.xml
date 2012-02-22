@@ -2,38 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
-    android:background="#fbfde5">
-	<TextView
-	    android:id="@+id/txtBizListLoading"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:text="@string/bizMyLocationLoading"/>
-    <ListView
-        android:id="@+id/listBiz"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        android:layout_weight="1"
-        />
-    <TextView
-	    android:id="@+id/txtBizListNoResult"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:visibility="invisible"
-	    android:text="@string/bizNoResult"/>
+    android:background="#fbfde5"
+    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/btnRefreshMyLoc"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpagerBiz"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="@string/bizRefreshList" />
-    
-    <Button
-        android:id="@+id/btnGoToBizMap"
+        android:layout_weight="1" />
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/indicatorViewPagerBiz"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="@string/bizGoToBizMap" />
-   
+        android:background="#000000" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/txtBizListLoading"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bizMyLocationLoading" />
+
+        <ListView
+            android:id="@+id/listBiz"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:id="@+id/txtBizListNoResult"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bizNoResult"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btnRefreshMyLoc"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bizRefreshList" />
+
+        <Button
+            android:id="@+id/btnGoToBizMap"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bizGoToBizMap" />
+    </LinearLayout>
+
 </LinearLayout>
