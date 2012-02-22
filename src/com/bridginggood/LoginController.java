@@ -45,12 +45,12 @@ public class LoginController extends Activity{
 
 	private void initButtonViews(){
 		//BridgingGood login button
-		Button btnLogin = (Button) findViewById(R.id.btnLogin);
+		Button btnLogin = (Button) findViewById(R.id.login_btnLogin);
 		btnLogin.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				Log.d("BG", "Login button Clicked");
-				EditText edtEmail = (EditText) findViewById(R.id.edtEmail);
-				EditText edtPassword = (EditText) findViewById(R.id.edtPassword);
+				EditText edtEmail = (EditText) findViewById(R.id.login_edtEmail);
+				EditText edtPassword = (EditText) findViewById(R.id.login_edtPassword);
 
 				UserInfo.createUserInfoForBG(edtEmail.getText().toString(), edtPassword.getText().toString(), CONST.USER_SESSION_TYPE_BG);
 				startBridgingGoodLogin();
@@ -58,7 +58,7 @@ public class LoginController extends Activity{
 		});
 
 		//Facebook login button
-		Button btnLoginFB = (Button) findViewById(R.id.btnLoginFacebook);
+		Button btnLoginFB = (Button) findViewById(R.id.login_btnLoginFacebook);
 		btnLoginFB.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				Log.d("BG", "FB Login button Clicked");

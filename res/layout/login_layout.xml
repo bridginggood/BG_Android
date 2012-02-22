@@ -2,61 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#fcefde"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp" >
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
+    <TextView
+        android:id="@+id/login_lblOr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="@string/login_lblOr" />
+
+    <EditText
+        android:id="@+id/login_edtEmail"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:singleLine="true" >
 
-        <TextView
-            android:id="@+id/lblEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.50"
-            android:text="@string/lblEmail" />
-
-        <EditText
-            android:id="@+id/edtEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:singleLine="true" >
+        <requestFocus />
+    </EditText>
 
-            <requestFocus />
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/LinearLayout01"
+    <EditText
+        android:id="@+id/login_edtPassword"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/lblPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.50"
-            android:text="@string/lblPassword" />
-
-        <EditText
-            android:id="@+id/edtPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="textPassword" />
-
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/login_btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login" />
 
     <Button
-        android:id="@+id/btnLoginFacebook"
+        android:id="@+id/login_btnLoginFacebook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login with facebook" />

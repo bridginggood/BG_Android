@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lblEmail">E-mail:</string>
-    <string name="lblPassword">Password:</string>
+    <string name="login_hintEmail">Email</string>
+    <string name="login_hintPassword">Password</string>
+    <string name="login_btnLogin">Login</string>
+    <string name="login_lblForgotPassword">Forgot password?</string>
+    <string name="login_lblNeedAccount">Need an account?</string>
+    <string name="login_lblOr">- or - </string>
     
 </resources>
