@@ -8,17 +8,26 @@
     android:paddingLeft="25dp"
     android:paddingRight="25dp" >
 
+    <Button
+        android:id="@+id/login_btnLoginFacebook"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Login with facebook" />
+
     <TextView
         android:id="@+id/login_lblOr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
-        android:text="@string/login_lblOr" />
+        android:paddingBottom="25dp"
+        android:paddingTop="25dp"
+        android:text="@string/login_lblOr"
+        android:textColor="#000000" />
 
     <EditText
         android:id="@+id/login_edtEmail"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/login_hintEmail"
         android:inputType="textEmailAddress"
         android:singleLine="true" >
 
@@ -29,18 +38,31 @@
         android:id="@+id/login_edtPassword"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/login_hintPassword"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/login_btnLogin"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Login" />
 
-    <Button
-        android:id="@+id/login_btnLoginFacebook"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayoutLoginSub1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login with facebook" />
+        android:paddingBottom="25dp"
+        android:paddingTop="25dp" >
+
+        <TextView
+            android:id="@+id/login_lblForgotPassword"
+            style="@style/LoginLblHelper"
+            android:text="@string/login_lblForgotPassword" />
+
+        <TextView
+            android:id="@+id/login_lblNeedAccount"
+            style="@style/LoginLblHelper"
+            android:text="@string/login_lblNeedAccount" />
+    </LinearLayout>
 
 </LinearLayout>

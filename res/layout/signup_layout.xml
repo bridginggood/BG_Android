@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fcefde"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:id="@+id/login_lblHeader"
+            style="@style/SignUpLblHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/signup_lblHeader" />
+
+        <TextView
+            android:id="@+id/login_lblHeaderDescription"
+            style="@style/SignUpLblHeaderDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/signup_lblHeaderDescription" />
+
+        <Button
+            android:id="@+id/signup_btnLoginFacebook"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Login with facebook" />
+
+        <TextView
+            android:id="@+id/signup_lblOr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="25dp"
+            android:paddingTop="25dp"
+            android:text="@string/signup_lblOr"
+            android:textColor="#000000" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <EditText
+                android:id="@+id/signup_edtFirstName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/signup_hintFirstName" >
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/signup_edtLastName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/signup_hintLastName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <RadioButton
+                android:id="@+id/signup_rdbFemale"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/signup_hintFemale" />
+
+            <RadioButton
+                android:id="@+id/signup_rdbMale"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/signup_hintMale" />
+
+            <RadioButton
+                android:id="@+id/signup_rdbRatherNotSay"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/signup_hintRatherNotSay" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/signup_edtEmail"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/signup_hintEmail"
+            android:inputType="textEmailAddress"
+            android:singleLine="true" />
+
+        <EditText
+            android:id="@+id/signup_edtPassword"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/signup_hintPassword"
+            android:inputType="textPassword" />
+
+        <DatePicker
+            android:id="@+id/signup_datePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/signup_btnJoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/signup_btnJoin" />
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="signup_lblHeader">HEY THERE!</string>
+    <string name="signup_lblHeaderDescription">You\'re moments away from BridgingGood!</string>
+    <string name="signup_lblOr">- or -</string>
+    <string name="signup_hintFirstName">First Name</string>
+    <string name="signup_hintLastName">Last Name</string>
+    <string name="signup_hintFemale">Female</string>
+    <string name="signup_hintMale">Male</string>
+    <string name="signup_hintRatherNotSay">Rather not say</string>
+    <string name="signup_hintEmail">Email</string>
+    <string name="signup_hintPassword">Password</string>
+    <string name="signup_btnJoin">Join BridgingGood!</string>
+    
+</resources>

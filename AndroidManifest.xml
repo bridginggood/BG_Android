@@ -22,7 +22,7 @@
         <activity
             android:name=".SplashController"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,11 +54,13 @@
             android:theme="@style/Theme.TabTheme" />
 
         <!-- Login -->
-        <activity android:name=".LoginController" />
+        <activity
+            android:name=".LoginController"
+            android:theme="@android:style/Theme.NoTitleBar" />
 
         <!-- Charity -->
         <activity android:name=".Charity.CharityActivityGroup" />
-        <activity android:name=".Charity.CharityCurationController"/>
+        <activity android:name=".Charity.CharityCurationController" />
 
         <!-- Biz -->
         <activity android:name=".Biz.BizActivityGroup" />
@@ -68,7 +70,7 @@
 
         <!-- User -->
         <activity android:name=".User.UserActivityGroup" />
-        <activity android:name=".User.UserController"/>
+        <activity android:name=".User.UserController" />
 
         <!-- Bg -->
         <activity android:name=".Setting.SettingActivityGroup" />
