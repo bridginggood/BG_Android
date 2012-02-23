@@ -2,8 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrollView1"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" 
-    android:background="#fcefde">
+    android:layout_height="fill_parent"
+    android:background="#fcefde" >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -65,32 +65,28 @@
                 android:hint="@string/signup_hintLastName" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/linearLayoutGender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+        <RadioGroup
+            android:id="@+id/signup_genderRadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
+            android:layout_gravity="center">
 
             <RadioButton
                 android:id="@+id/signup_rdbFemale"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                style="@style/SignUpRadioGroup"
                 android:text="@string/signup_hintFemale" />
 
             <RadioButton
                 android:id="@+id/signup_rdbMale"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                style="@style/SignUpRadioGroup"
                 android:text="@string/signup_hintMale" />
 
             <RadioButton
                 android:id="@+id/signup_rdbRatherNotSay"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                style="@style/SignUpRadioGroup"
                 android:text="@string/signup_hintRatherNotSay" />
-        </LinearLayout>
+        </RadioGroup>
 
         <EditText
             android:id="@+id/signup_edtEmail"
