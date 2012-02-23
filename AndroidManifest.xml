@@ -57,6 +57,9 @@
         <activity
             android:name=".LoginController"
             android:theme="@android:style/Theme.NoTitleBar" />
+        <activity
+            android:name=".SignupController"
+            android:theme="@android:style/Theme.NoTitleBar" />
 
         <!-- Charity -->
         <activity android:name=".Charity.CharityActivityGroup" />

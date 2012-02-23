@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bridginggood.Facebook.FacebookAPI;
@@ -64,6 +65,16 @@ public class LoginController extends Activity{
 				Log.d("BG", "FB Login button Clicked");
 				UserInfo.setUserType(CONST.USER_SESSION_TYPE_FACEBOOK);
 				startFacebookLogin();
+			}
+		});
+		
+		//Signup button
+		TextView txtSignup = (TextView) findViewById(R.id.login_lblNeedAccount);
+		txtSignup.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d("BG", "Need an account clicked");
+				startActivity(new Intent().setClass(LoginController.this, SignupController.class));
 			}
 		});
 	}

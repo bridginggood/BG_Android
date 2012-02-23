@@ -11,5 +11,6 @@
     <string name="signup_hintEmail">Email</string>
     <string name="signup_hintPassword">Password</string>
     <string name="signup_btnJoin">Join BridgingGood!</string>
+    <string name="signup_hintDOB">Date of Birth</string>
     
 </resources>

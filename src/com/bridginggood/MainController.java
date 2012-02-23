@@ -35,38 +35,7 @@ public class MainController extends TabActivity {
 		setupTab("Places", R.drawable.icon, new Intent().setClass(this, BizActivityGroup.class));
 
 		mTabHost.setCurrentTab(1);
-		/*		
-		//User
-		// Create an Intent to launch an Activity for the tab (to be reused)
-		intent = new Intent().setClass(this, UserActivityGroup.class);
-		spec = mTabHost.newTabSpec("user").setIndicator("Account",
-				res.getDrawable(android.R.drawable.ic_dialog_info))
-				.setContent(intent);
-		mTabHost.addTab(spec);
-
-		// Charity
-		intent = new Intent().setClass(this, CharityActivityGroup.class);
-		spec = mTabHost.newTabSpec("charity").setIndicator("Charity",
-				res.getDrawable(android.R.drawable.ic_dialog_info))
-				.setContent(intent);
-		mTabHost.addTab(spec);
-
-		//Biz
-		intent = new Intent().setClass(this, BizActivityGroup.class);
-		spec = mTabHost.newTabSpec("biz").setIndicator("Search",
-				res.getDrawable(android.R.drawable.ic_dialog_info))
-				.setContent(intent);
-		mTabHost.addTab(spec);
-
-		//Setting
-		intent = new Intent().setClass(this, SettingActivityGroup.class);
-		spec = mTabHost.newTabSpec("bg").setIndicator("About",
-				res.getDrawable(android.R.drawable.ic_dialog_info))
-				.setContent(intent);
-		mTabHost.addTab(spec);
-
-		mTabHost.setCurrentTab(2);
-		 */
+		
 		initC2DMRegistration();
 	}
 
