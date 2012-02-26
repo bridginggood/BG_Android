@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/background">
+
+    <ImageView
+        android:id="@+id/user_qrcode_imgview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/icon"
+        android:contentDescription="@string/user_qrcodeDescription"
+        android:scaleType="center" />
+
+</LinearLayout>

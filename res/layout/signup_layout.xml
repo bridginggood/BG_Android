@@ -15,15 +15,11 @@
         <TextView
             android:id="@+id/login_lblHeader"
             style="@style/SignUpLblHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/signup_lblHeader" />
 
         <TextView
             android:id="@+id/login_lblHeaderDescription"
             style="@style/SignUpLblHeaderDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/signup_lblHeaderDescription" />
 
         <Button
@@ -34,13 +30,8 @@
 
         <TextView
             android:id="@+id/signup_lblOr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="25dp"
-            android:paddingTop="25dp"
-            android:text="@string/signup_lblOr"
-            android:textColor="#000000" />
+            style="@style/SignUpLblOr"
+            android:text="@string/signup_lblOr" />
 
         <LinearLayout
             android:id="@+id/linearLayoutName"
@@ -69,22 +60,25 @@
             android:id="@+id/signup_genderRadioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" 
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:orientation="horizontal" >
 
             <RadioButton
                 android:id="@+id/signup_rdbFemale"
                 style="@style/SignUpRadioGroup"
+                android:layout_weight="1"
                 android:text="@string/signup_hintFemale" />
 
             <RadioButton
                 android:id="@+id/signup_rdbMale"
                 style="@style/SignUpRadioGroup"
+                android:layout_weight="1"
                 android:text="@string/signup_hintMale" />
 
             <RadioButton
                 android:id="@+id/signup_rdbRatherNotSay"
                 style="@style/SignUpRadioGroup"
+                android:layout_weight="1"
                 android:text="@string/signup_hintRatherNotSay" />
         </RadioGroup>
 
@@ -112,8 +106,9 @@
 
         <Button
             android:id="@+id/signup_btnJoin"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/signup_btn_join_selector"
             android:text="@string/signup_btnJoin" />
     </LinearLayout>
 

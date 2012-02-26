@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.bridginggood.Biz.BizActivityGroup;
 import com.bridginggood.Charity.CharityActivityGroup;
+import com.bridginggood.Setting.SettingController;
 import com.bridginggood.User.UserActivityGroup;
 
 public class MainController extends TabActivity {
@@ -29,14 +31,24 @@ public class MainController extends TabActivity {
 
 		//Apply customed tab layout
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-
 		setupTab("Causes", R.drawable.icon, new Intent().setClass(this, CharityActivityGroup.class));
 		setupTab("Donate", R.drawable.icon, new Intent().setClass(this, UserActivityGroup.class));
 		setupTab("Places", R.drawable.icon, new Intent().setClass(this, BizActivityGroup.class));
-
 		mTabHost.setCurrentTab(1);
 		
+		initActionBar();
+		
 		initC2DMRegistration();
+	}
+	
+	private void initActionBar(){
+		ImageView imgSettings = (ImageView)findViewById(R.id.actionImgRight);
+		imgSettings.setOnClickListener(new OnClickListener(){
+			public void onClick(View v){
+				Log.d("BG", "Button Clicked");
+				startActivity(new Intent().setClass(MainController.this, SettingController.class));
+			}
+		});
 	}
 
 	private void setupTab(final String tag, final int drawableImg, final Intent intent) {
@@ -49,7 +61,7 @@ public class MainController extends TabActivity {
 	}
 
 	private static View createTabView(final Context context, final String text, final int drawableImg) {
-		View view = LayoutInflater.from(context).inflate(R.drawable.tabs_bg, null);
+		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
 		ImageView img = (ImageView) view.findViewById(R.id.tabsImage);
 		img.setImageResource(drawableImg);
 		TextView tv = (TextView) view.findViewById(R.id.tabsText);
