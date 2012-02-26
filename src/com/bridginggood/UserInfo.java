@@ -15,10 +15,12 @@ import com.facebook.android.Facebook;
 public class UserInfo extends Application{
 	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName;
 	private static String mTokenString, mDeviceId, mC2DMRegistrationId;
+	private static Long mUserId;
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
 	
 	public static void init(){
+		setUserId(null);
 		setUserEmail(null);
 		setUserPassword(null);
 		setUserType(null);
@@ -91,6 +93,10 @@ public class UserInfo extends Application{
 		return (getTokenString() == null);
 	}
 	
+	public static String getQRCodeFileName(){
+		return mUserId+"_"+mDeviceId+".png";
+	}
+	
 	public static String getUserFirstName() {
 		return mUserFirstName;
 	}
@@ -146,5 +152,13 @@ public class UserInfo extends Application{
 
 	public static void setC2DMRegistrationId(String mC2DMRegistrationId) {
 		UserInfo.mC2DMRegistrationId = mC2DMRegistrationId;
+	}
+
+	public static Long getUserId() {
+		return mUserId;
+	}
+
+	public static void setUserId(Long mUserId) {
+		UserInfo.mUserId = mUserId;
 	}
 }

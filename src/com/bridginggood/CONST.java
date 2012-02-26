@@ -6,6 +6,9 @@ public class CONST {
 	//SplashController: Splash time
 	public static final long SPLASH_DELAY = 1500;
 	
+	//Lazy Loading Image cache folder
+	public static final String LAZY_LOAD_IMAGE_CACHE = "data/BridgingGood";
+	
 	//C2DM Registered account
 	public static final String C2DM_SENDER = "admin@bridginggood.com";
 	
@@ -19,6 +22,9 @@ public class CONST {
 	public static final int LOGIN_TYPE_BG = 0;
 	public static final int LOGIN_TYPE_FACEBOOK = 1;
 	public static final int LOGIN_TYPE_TOKEN = 2;
+	
+	//For QRCode:
+	public static final String QRCODE_URL = "https://s3.amazonaws.com/BG_DEV_S3/media/qrcode/";
 	
 	//For BridgingGood Database API
 	public static final String API_LOGIN_BY_TOKEN_URL = API_URL+"/auth/LoginByTokenFromMobile.json";

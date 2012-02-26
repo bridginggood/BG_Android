@@ -3,7 +3,6 @@ package com.bridginggood.Biz;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +10,23 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bridginggood.CONST;
+import com.bridginggood.ImageManager;
 import com.bridginggood.R;
 
 public class BizListAdapter extends ArrayAdapter<Business>{
 
-    Context mContext; 
+    Activity mActivity;
     int mLayoutResourceId;    
     ArrayList<Business> mData = null;
+    ImageManager mImageManager;
     
-    public BizListAdapter(Context context, int layoutResourceId, ArrayList<Business> data) {
-        super(context, layoutResourceId, data);
+    public BizListAdapter(Activity activity, int layoutResourceId, ArrayList<Business> data) {
+        super(activity, layoutResourceId, data);
         this.mLayoutResourceId = layoutResourceId;
-        this.mContext = context;
         this.mData = data;
+        this.mActivity = activity;
+        mImageManager = new ImageManager(activity.getApplicationContext(), true);
     }
 
     @Override
@@ -33,7 +36,7 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         
         if(row == null)
         {
-            LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
+            LayoutInflater inflater = mActivity.getLayoutInflater();
             row = inflater.inflate(mLayoutResourceId, parent, false);
             
             //create temporary holder
@@ -49,6 +52,13 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         else
         {
             holder = (BusinessHolder)row.getTag();
+            
+            final Business biz = mData.get(position);
+            if(biz != null){
+            	holder.updateBizName(biz.getBizName());
+            	holder.updateBizAddress(biz.getBizAddress());
+            	mImageManager.displayImage(CONST.QRCODE_URL+"test.png", mActivity, holder.bizLogo);
+            }
         }
         
         //Get current bizCell

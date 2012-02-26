@@ -16,6 +16,7 @@ import com.bridginggood.UserInfo;
 
 public class UserLoginJSON {
 
+	private static final String PARAM_USER_ID = "UserId";
 	private static final String PARAM_USER_EMAIL = "UserEmail";
 	private static final String PARAM_USER_FIRSTNAME = "UserFirstName";
 	private static final String PARAM_USER_LASTNAME = "UserLastName";
@@ -99,6 +100,7 @@ public class UserLoginJSON {
 	 * @throws Exception any exception that occurs while reading jsonObject
 	 */
 	private static void updateUserInfoWithJSON(JSONObject jsonObject) throws Exception{
+		UserInfo.setUserId(jsonObject.getLong(PARAM_USER_ID));
 		UserInfo.setUserEmail(jsonObject.getString(PARAM_USER_EMAIL));
 		UserInfo.setUserFirstName(jsonObject.getString(PARAM_USER_FIRSTNAME));
 		UserInfo.setUserLastName(jsonObject.getString(PARAM_USER_LASTNAME));
