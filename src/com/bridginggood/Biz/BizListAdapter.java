@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
+import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
 
 public class BizListAdapter extends ArrayAdapter<Business>{
@@ -26,7 +27,7 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         this.mLayoutResourceId = layoutResourceId;
         this.mData = data;
         this.mActivity = activity;
-        mImageManager = new ImageManager(activity.getApplicationContext(), true);
+        mImageManager = new ImageManager(activity.getApplicationContext(), true, mImageDownloaded);
     }
 
     @Override
@@ -74,6 +75,14 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         return row;
     }
     
+    public ImageManagerResult mImageDownloaded = new ImageManagerResult()
+	{
+		@Override
+		public void gotImage(final boolean isLoaded)
+		{
+			;
+		}
+	};
     
     //Use this holder class for optimization. (Does not load ImageView all the time)
     static class BusinessHolder

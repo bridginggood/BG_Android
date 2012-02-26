@@ -25,9 +25,12 @@ public class ImageManager {
 	private ImageQueue imageQueue = new ImageQueue();
 	private Thread imageLoaderThread = new Thread(new ImageQueueManager());
 	private boolean mIsList;
+	private ImageManagerResult mImageManagerResult;
 
-	public ImageManager(Context context, boolean isList) {
+	public ImageManager(Context context, boolean isList, ImageManagerResult imageManagerResult) {
 		mIsList = isList;
+		
+		mImageManagerResult = imageManagerResult;
 		
 		// Make background thread low priority, to avoid affecting UI performance
 		imageLoaderThread.setPriority(Thread.NORM_PRIORITY-1);
@@ -50,11 +53,12 @@ public class ImageManager {
 		if(imageMap.containsKey(url)){
 			Log.d("BG", "imageMap contains the url: "+url);
 			imageView.setImageBitmap(imageMap.get(url).get());
+			mImageManagerResult.gotImage(true);
 		}
 		else {
 			Log.d("BG", "imageMap does not contain the url:"+url);
 			queueImage(url, activity, imageView);
-			imageView.setImageResource(R.drawable.icon);
+			//imageView.setImageResource(R.drawable.icon);
 		}
 	}
 
@@ -165,8 +169,7 @@ public class ImageManager {
 
 						// Make sure we have the right view - thread safety defender
 						if(!mIsList || tag != null && ((String)tag).equals(imageToLoad.url)) {
-							BitmapDisplayer bmpDisplayer = 
-									new BitmapDisplayer(bmp, imageToLoad.imageView);
+							BitmapDisplayer bmpDisplayer = new BitmapDisplayer(bmp, imageToLoad.imageView);
 
 							Activity a = (Activity)imageToLoad.imageView.getContext();
 
@@ -192,11 +195,19 @@ public class ImageManager {
 		}
 
 		public void run() {
-			if(bitmap != null)
+			if(bitmap != null){
 				imageView.setImageBitmap(bitmap);
-			else
-				imageView.setImageResource(R.drawable.icon);
+				mImageManagerResult.gotImage(true);
+			}
+			else{
+				//imageView.setImageResource(R.drawable.icon);
+				mImageManagerResult.gotImage(false);
+			}
 		}
+	}
+	
+	public static abstract class ImageManagerResult{
+		public abstract void gotImage(boolean isLoaded);
 	}
 }
 
