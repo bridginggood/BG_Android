@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bridginggood.DB.UserLoginJSON;
 import com.bridginggood.Facebook.FacebookAPI;
 import com.bridginggood.Facebook.FacebookSessionStore;
 import com.facebook.android.DialogError;
@@ -89,6 +90,13 @@ public class LoginController extends Activity{
 		Thread threadStartLogin = new Thread(new Runnable() {
 			public void run() {
 				mIsLoginSuccess = UserInfo.loginUserInfo(getApplicationContext());
+				
+				// If deviceId did not exist before, create QRCode
+				if(!UserInfo.isDeviceIdExisted()){
+					Log.d("BG", "Requesting createQRCode since isDeviceIdExisted is false");
+					UserLoginJSON.createQRCode();
+				}
+				
 				Log.d("BG", "mIsLoginSuccess: "+mIsLoginSuccess);
 				handlerLogin.sendEmptyMessage(0);
 			}

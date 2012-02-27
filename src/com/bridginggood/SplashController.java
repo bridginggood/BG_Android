@@ -40,7 +40,10 @@ public class SplashController extends Activity {
 				/*
 				 *===============START Loading Job==================== 
 				 */
-				
+				//Load saved session settings
+				UserSessionStore.loadUserSession(getApplicationContext());
+				FacebookSessionStore.restore(getApplicationContext());
+
 				//Get device ID
 				if(UserInfo.getDeviceId()==null){
 					UserInfo.setDeviceId(getDeviceId());
@@ -91,10 +94,6 @@ public class SplashController extends Activity {
 	 * 
 	 */
 	private boolean isUserLoginSuccess(){
-		//Load saved session settings
-		UserSessionStore.loadUserSession(getApplicationContext());
-		FacebookSessionStore.restore(getApplicationContext());
-
 		//If session token is not empty, there must have been a login history in the past. 
 		if(!UserInfo.isTokenStringEmpty()){
 			//If Facebook session is valid, then the user must have logged in using facebook account.

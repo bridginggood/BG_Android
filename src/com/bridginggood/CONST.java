@@ -23,15 +23,13 @@ public class CONST {
 	public static final int LOGIN_TYPE_FACEBOOK = 1;
 	public static final int LOGIN_TYPE_TOKEN = 2;
 	
-	//For QRCode:
-	public static final String QRCODE_URL = "https://s3.amazonaws.com/BG_DEV_S3/media/qrcode/";
-	
 	//For BridgingGood Database API
 	public static final String API_LOGIN_BY_TOKEN_URL = API_URL+"/auth/LoginByTokenFromMobile.json";
 	public static final String API_LOGIN_BY_FACEBOOK_URL = API_URL+"/auth/LoginByFacebookFromMobile.json";
 	public static final String API_LOGIN_BY_BG_URL = API_URL+"/auth/LoginByUserFromMobile.json";
 
 	public static final String API_CREATE_C2DM_REGISTRATION_ID_URL = API_URL+"/auth/CreatePushNotificationAndroid.json";
+	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQRCode.json";
 	
 	public static final String API_READ_BUSINESS_LIST_URL = API_URL+"/business_info/read.json";
 }

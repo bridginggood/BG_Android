@@ -14,6 +14,7 @@ import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
 import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
+import com.bridginggood.UserInfo;
 
 public class BizListAdapter extends ArrayAdapter<Business>{
 
@@ -58,7 +59,7 @@ public class BizListAdapter extends ArrayAdapter<Business>{
             if(biz != null){
             	holder.updateBizName(biz.getBizName());
             	holder.updateBizAddress(biz.getBizAddress());
-            	mImageManager.displayImage(CONST.QRCODE_URL+"test.png", mActivity, holder.bizLogo);
+            	mImageManager.displayImage(UserInfo.getQRCodeURL(), mActivity, holder.bizLogo);
             }
         }
         

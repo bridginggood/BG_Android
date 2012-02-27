@@ -14,7 +14,8 @@ import com.facebook.android.Facebook;
 
 public class UserInfo extends Application{
 	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName;
-	private static String mTokenString, mDeviceId, mC2DMRegistrationId;
+	private static String mTokenString, mDeviceId, mC2DMRegistrationId, mQRCodeURL;
+	private static boolean mDeviceIdExisted;
 	private static Long mUserId;
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
@@ -28,6 +29,8 @@ public class UserInfo extends Application{
 		setUserLastName(null);
 		setDeviceId(null);
 		setC2DMRegistrationId(null);
+		setQRCodeURL(null);
+		setDeviceIdExisted(false);
 		mFacebook = new Facebook(CONST.FACEBOOK_APP_ID);
 		mAsyncRunner= new AsyncFacebookRunner(mFacebook);
 	}
@@ -93,10 +96,6 @@ public class UserInfo extends Application{
 		return (getTokenString() == null);
 	}
 	
-	public static String getQRCodeFileName(){
-		return mUserId+"_"+mDeviceId+".png";
-	}
-	
 	public static String getUserFirstName() {
 		return mUserFirstName;
 	}
@@ -160,5 +159,21 @@ public class UserInfo extends Application{
 
 	public static void setUserId(Long mUserId) {
 		UserInfo.mUserId = mUserId;
+	}
+
+	public static String getQRCodeURL() {
+		return mQRCodeURL;
+	}
+
+	public static void setQRCodeURL(String mQRCodeURL) {
+		UserInfo.mQRCodeURL = mQRCodeURL;
+	}
+
+	public static boolean isDeviceIdExisted() {
+		return mDeviceIdExisted;
+	}
+
+	public static void setDeviceIdExisted(boolean mDeviceIdExisted) {
+		UserInfo.mDeviceIdExisted = mDeviceIdExisted;
 	}
 }

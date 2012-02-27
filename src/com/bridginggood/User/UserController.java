@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
 import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
@@ -19,8 +18,7 @@ public class UserController extends Activity{
 		setContentView(R.layout.user_qrcode_layout);
 		
 		ImageView imgView = (ImageView)findViewById(R.id.user_qrcode_imgview);
-		String qrcodeURL = CONST.QRCODE_URL+UserInfo.getQRCodeFileName();
-		initQRCode (CONST.QRCODE_URL+"test_method.png", imgView);
+		initQRCode (UserInfo.getQRCodeURL(), imgView);
 	}
 
 	private void initQRCode(String qrcodeURL, ImageView imgView){

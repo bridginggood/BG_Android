@@ -26,6 +26,7 @@ public class UserLoginJSON {
 	private static final String PARAM_DEVICE_ID = "DeviceId";
 	private static final String PARAM_DEVICE_TYPE = "DeviceType";
 	private static final String PARAM_C2DM_REGISTRATION_ID = "C2DMRegId";
+	private static final String PARAM_QRCODE_URL = "CONCAT(qrcodeURL, user_device_info.QRCode)";
 
 	private static final String PARAM_RESULT_CODE = "resultCode";
 	private static final String PARAM_RESULT_MSG = "resultMsg";
@@ -106,6 +107,7 @@ public class UserLoginJSON {
 		UserInfo.setUserLastName(jsonObject.getString(PARAM_USER_LASTNAME));
 		UserInfo.setUserType(jsonObject.getString(PARAM_USER_TYPE));
 		UserInfo.setTokenString(jsonObject.getString(PARAM_TOKEN_STRING));
+		UserInfo.setQRCodeURL(jsonObject.getString(PARAM_QRCODE_URL));
 
 		UserInfo.setUserPassword(null);	//Nullify for security reason?!
 
@@ -141,4 +143,34 @@ public class UserLoginJSON {
 			Log.d("BgDB", "sendC2DMRegistrationId Exception: "+e.getLocalizedMessage());
 		}
 	}
+
+	/**
+	 * Sends QRCode generation request to server
+	 */
+	public static void createQRCode(){
+		try{
+			String targetURL = CONST.API_CREATE_QRCODE_URL;
+			String[][] param = {	{PARAM_USER_ID, UserInfo.getUserId()+""},
+					{PARAM_DEVICE_ID, UserInfo.getDeviceId()}};
+			String requestParam = BgHttpHelper.generateParamData(param);
+
+			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
+
+			JSONObject jsonObject = new JSONObject(jsonStr);
+
+			//TODO: Maybe this needs to be changed later on.
+			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+				//Login succeed!
+				Log.d("BgDB", "QRCode generated");
+
+			} else {
+				Log.d("BgDB", "QRCode NOT generated");
+			}
+		}
+		catch(Exception e){
+			Log.d("BgDB", "createQRCode Exception: "+e.getLocalizedMessage());
+		}
+	}
+
+
 }
