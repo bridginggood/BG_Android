@@ -15,15 +15,15 @@ public class QRMainActivity extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.user_qrcode_layout);
+		setContentView(R.layout.qrcode_layout);
 		
-		//ImageView imgView = (ImageView)findViewById(R.id.user_qrcode_imgview);
-		//initQRCode (UserInfo.getQRCodeURL(), imgView);
+		ImageView imgView = (ImageView)findViewById(R.id.qrcode_imgview);
+		initQRCode ("https://s3.amazonaws.com/BG_DEV_S3/media/qrcode/1203031822146048.png", imgView);
 	}
 
 	private void initQRCode(String qrcodeURL, ImageView imgView){
 		Log.d("BG_USER", "initQRCode called:"+qrcodeURL);
-		findViewById(R.id.user_qrcode_imgview).setVisibility(View.INVISIBLE);
+		findViewById(R.id.qrcode_imgview).setVisibility(View.INVISIBLE);
 		imgView.setVisibility(View.INVISIBLE);
 		ImageManager imageManager = new ImageManager(this, false, mImageDownloaded);
 		imageManager.displayImage(qrcodeURL, this, imgView);
@@ -35,8 +35,8 @@ public class QRMainActivity extends Activity{
 		public void gotImage(final boolean isLoaded)
 		{
 			if(isLoaded){
-				findViewById(R.id.user_qrcode_loading).setVisibility(View.GONE);
-				findViewById(R.id.user_qrcode_imgview).setVisibility(View.VISIBLE);
+				findViewById(R.id.qrcode_loading).setVisibility(View.GONE);
+				findViewById(R.id.qrcode_imgview).setVisibility(View.VISIBLE);
 			}
 		}
 	};

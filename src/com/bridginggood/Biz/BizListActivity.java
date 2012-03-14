@@ -221,6 +221,11 @@ public class BizListActivity extends Activity implements OnScrollListener{
 				refreshList();
 			}
 		});
+		
+		//Set ListView button as selected
+		Button btnGoListView = (Button) findViewById(R.id.btnGoToListView);
+		btnGoListView.setPressed(true);
+		btnGoListView.setEnabled(false);
 	}
 
 	private void refreshList(){

@@ -92,7 +92,9 @@ public class BizMapActivity extends MapActivity{
 		@Override
 		public void gotLocation(final Location location)
 		{
-			mCurrentLocation = new Location(location);
+			if(location != null)
+				mCurrentLocation = new Location(location);
+			
 			mIsLocationAvailable = true;
 		}
 	};
