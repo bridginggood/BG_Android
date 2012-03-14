@@ -20,10 +20,10 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
         <activity
-            android:name=".SplashController"
+            android:name=".SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:theme="@android:style/Theme.Light" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,16 +51,17 @@
 
         <!-- Main TabHost -->
         <activity
-            android:name=".MainController"
+            android:name=".MainActivity"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TabTheme" />
 
         <!-- Login -->
         <activity
-            android:name=".LoginController"
+            android:name=".LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignupController"
+            android:name=".SignupActivity"
             android:screenOrientation="portrait" />
 
         <!-- Charity -->
@@ -68,7 +69,7 @@
             android:name=".Charity.CharityActivityGroup"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Charity.CharityCurationController"
+            android:name=".Charity.CharityCurationActivity"
             android:screenOrientation="portrait" />
 
         <!-- Biz -->
@@ -76,21 +77,29 @@
             android:name=".Biz.BizActivityGroup"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Biz.BizMapController"
+            android:name=".Biz.BizMapActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Biz.BizListController"
+            android:name=".Biz.BizListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Biz.BizDetailController"
+            android:name=".Biz.BizDetailActivity"
             android:screenOrientation="portrait" />
 
-        <!-- User -->
+        <!-- Profile -->
         <activity
             android:name=".User.UserActivityGroup"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".User.UserController"
+            android:name=".User.UserActivity"
+            android:screenOrientation="portrait" />
+
+        <!-- Donate -->
+        <activity
+            android:name=".QR.QRActivityGroup"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".QR.QRMainActivity"
             android:screenOrientation="portrait" />
 
         <!-- Bg -->
@@ -98,7 +107,7 @@
             android:name=".Setting.SettingActivityGroup"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Setting.SettingController"
+            android:name=".Setting.SettingActivity"
             android:screenOrientation="portrait" />
 
         <!-- Google Map -->

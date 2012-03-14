@@ -23,7 +23,7 @@ public class CharityActivityGroup extends ActivityGroup {
     	
     	// Start the root activity within the group and get its view
 		View view = getLocalActivityManager().startActivity("CharityCurationController", new 
-				Intent(this,CharityCurationController.class)		//First page
+				Intent(this,CharityCurationActivity.class)		//First page
 				.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 				.getDecorView();
 		

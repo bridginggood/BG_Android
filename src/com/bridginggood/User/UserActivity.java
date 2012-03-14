@@ -11,14 +11,14 @@ import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
 import com.bridginggood.UserInfo;
 
-public class UserController extends Activity{
+public class UserActivity extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.user_qrcode_layout);
 		
-		ImageView imgView = (ImageView)findViewById(R.id.user_qrcode_imgview);
-		initQRCode (UserInfo.getQRCodeURL(), imgView);
+		//ImageView imgView = (ImageView)findViewById(R.id.user_qrcode_imgview);
+		//initQRCode (UserInfo.getQRCodeURL(), imgView);
 	}
 
 	private void initQRCode(String qrcodeURL, ImageView imgView){

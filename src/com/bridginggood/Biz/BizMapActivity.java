@@ -27,7 +27,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-public class BizMapController extends MapActivity{ 
+public class BizMapActivity extends MapActivity{ 
 	private static final int MAX_TIME_TO_WAIT_LOCATION_SEARCH = 15000;
 
 	private BizExtendedMapView mMapView;			//MapView
@@ -297,7 +297,7 @@ public class BizMapController extends MapActivity{
 
 	private class LocationControl extends AsyncTask<Context, Void, Void>
 	{
-		private final ProgressDialog dialog = new ProgressDialog(BizMapController.this);
+		private final ProgressDialog dialog = new ProgressDialog(BizMapActivity.this);
 		protected void onPreExecute()
 		{
 			//this.dialog.setMessage("Searching");

@@ -40,7 +40,7 @@ public class BizMapOverlay extends BalloonItemizedOverlay<OverlayItem>{
 		//Toast.makeText(this.context, "onBalloonTap for overlay index " + bizList.get(index).getBizName(), Toast.LENGTH_LONG).show();
 		Business biz = mBizArrayList.get(index);
 		// TODO Auto-generated method stub
-		Intent intent = new Intent(context, BizDetailController.class);
+		Intent intent = new Intent(context, BizDetailActivity.class);
 
 		Bundle extra = new Bundle();
 		extra.putSerializable("biz", (Serializable) biz);

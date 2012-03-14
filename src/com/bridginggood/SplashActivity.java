@@ -22,7 +22,7 @@ import android.util.Log;
 import com.bridginggood.Facebook.FacebookAPI;
 import com.bridginggood.Facebook.FacebookSessionStore;
 
-public class SplashController extends Activity {
+public class SplashActivity extends Activity {
 	private ProgressDialog mProgressDialog;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class SplashController extends Activity {
 				Log.d("BG", "isUserLoginSuccess "+isLoginSuccess);
 
 				// Decide where to redirect user depending on isLoginSuccess
-				Class<?> targetClass = isLoginSuccess? MainController.class:LoginController.class;
+				Class<?> targetClass = isLoginSuccess? MainActivity.class:LoginActivity.class;
 
 				long durationTime = android.os.SystemClock.uptimeMillis() - startTime;
 				Log.d("BG", "Login time taken: "+durationTime);
@@ -78,7 +78,7 @@ public class SplashController extends Activity {
 
 				mProgressDialog.dismiss();
 				finish();
-				startActivity(new Intent().setClass(SplashController.this, targetClass));
+				startActivity(new Intent().setClass(SplashActivity.this, targetClass));
 			}
 		};
 		splashTread.start();
@@ -101,17 +101,32 @@ public class SplashController extends Activity {
 				FacebookAPI.requestUserInfo();
 				Log.d("BG", "UserInfo by Facebook: "+UserInfo.getUserFirstName()+" "+UserInfo.getUserLastName()+" . "+UserInfo.getUserEmail());
 			}
-			return UserInfo.loginUserInfo(getApplicationContext());
+			return skipLogin();
+			//return UserInfo.loginUserInfo(getApplicationContext());
 		}
 		else{	//No token exists
 			return false;
 		}
+	}
+	
+	/**
+	 * Temporary method to skip login dialog
+	 * @return
+	 */
+	private boolean skipLogin(){
+		UserInfo.setUserEmail("skip@example.com");
+		UserInfo.setUserFirstName("Michael");
+		UserInfo.setUserLastName("Jackson");
+		UserInfo.setUserId((long) 1000000111);
+		
+		return true;
 	}
 
 	/**
 	 * Called to extend mFacebook token, if necessary
 	 */
 	public void onResume() {    
+		Log.d("BG", "SplashActivity onResume called. FacebookAPI.extendFacebookToken will be called");
 		super.onResume();
 		FacebookAPI.extendFacebookToken(getApplicationContext());
 	}

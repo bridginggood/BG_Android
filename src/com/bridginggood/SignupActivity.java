@@ -12,7 +12,7 @@ import android.view.View.OnTouchListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-public class SignupController extends Activity{
+public class SignupActivity extends Activity{
 	private EditText mEdtDOB;
 	private Calendar mCalendar;
 	private DatePickerDialog mDatePickerDialog; 
@@ -25,7 +25,7 @@ public class SignupController extends Activity{
 
 		mCalendar = Calendar.getInstance();
 		mEdtDOB = (EditText)findViewById(R.id.signup_edtDOB);
-		mDatePickerDialog = new DatePickerDialog(SignupController.this, mDateSetListener, mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
+		mDatePickerDialog = new DatePickerDialog(SignupActivity.this, mDateSetListener, mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
 
 		initEdtDOB();
 		

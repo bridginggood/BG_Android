@@ -2,25 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#fbfde5"
+    android:baselineAligned="false"
+    android:background="@color/background"
     android:orientation="vertical" >
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpagerBiz"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-    <com.viewpagerindicator.CirclePageIndicator
-        android:id="@+id/indicatorViewPagerBiz"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#000000" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1" >
+        android:layout_weight="9"
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/txtBizListLoading"
@@ -31,8 +21,7 @@
         <ListView
             android:id="@+id/listBiz"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/txtBizListNoResult"
@@ -45,13 +34,36 @@
             android:id="@+id/btnRefreshMyLoc"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/button_selector"
             android:text="@string/bizRefreshList" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@drawable/actionbar_shape"
+        android:gravity="center"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/btnGoToBizMap"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bizGoToBizMap" />
+            android:layout_gravity="center"
+            android:background="@drawable/button_selector"
+            android:text="@string/bizGoToBizMap"
+            style="@style/ButtonText" />
+
+        <Button
+            android:id="@+id/btnGoToListView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_selector"
+            android:text="@string/bizGoToListView"
+            style="@style/ButtonText" />
     </LinearLayout>
 
 </LinearLayout>

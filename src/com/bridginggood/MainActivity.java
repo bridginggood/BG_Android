@@ -17,10 +17,11 @@ import android.widget.TextView;
 
 import com.bridginggood.Biz.BizActivityGroup;
 import com.bridginggood.Charity.CharityActivityGroup;
-import com.bridginggood.Setting.SettingController;
+import com.bridginggood.QR.QRActivityGroup;
+import com.bridginggood.Setting.SettingActivity;
 import com.bridginggood.User.UserActivityGroup;
 
-public class MainController extends TabActivity {
+public class MainActivity extends TabActivity {
 	private TabHost mTabHost;
 
 	/** Called when the activity is first created. */
@@ -31,25 +32,27 @@ public class MainController extends TabActivity {
 
 		//Apply customed tab layout
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		setupTab("Profile", R.drawable.icon, new Intent().setClass(this, UserActivityGroup.class));
+		setupTab("Explore", R.drawable.icon, new Intent().setClass(this, BizActivityGroup.class));
+		setupTab("Donate", R.drawable.icon, new Intent().setClass(this, QRActivityGroup.class));
 		setupTab("Causes", R.drawable.icon, new Intent().setClass(this, CharityActivityGroup.class));
-		setupTab("Donate", R.drawable.icon, new Intent().setClass(this, UserActivityGroup.class));
-		setupTab("Places", R.drawable.icon, new Intent().setClass(this, BizActivityGroup.class));
+		
 		mTabHost.setCurrentTab(1);
 		
-		initActionBar();
+		//initActionBar();
 		
 		initC2DMRegistration();
 	}
-	
+	/*
 	private void initActionBar(){
 		ImageView imgSettings = (ImageView)findViewById(R.id.actionImgRight);
 		imgSettings.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				Log.d("BG", "Button Clicked");
-				startActivity(new Intent().setClass(MainController.this, SettingController.class));
+				startActivity(new Intent().setClass(MainActivity.this, SettingActivity.class));
 			}
 		});
-	}
+	}*/
 
 	private void setupTab(final String tag, final int drawableImg, final Intent intent) {
 		View tabview = createTabView(mTabHost.getContext(), tag, drawableImg);

@@ -23,7 +23,7 @@ public class UserActivityGroup extends ActivityGroup {
     	
     	// Start the root activity within the group and get its view
 		View view = getLocalActivityManager().startActivity("BgAboutController", new 
-				Intent(this,UserController.class)		//First page
+				Intent(this,UserActivity.class)		//First page
 				.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 				.getDecorView();
 		

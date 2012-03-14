@@ -87,7 +87,7 @@ public class C2DMReceiver extends BroadcastReceiver{
 		// Hide the notification after its selected
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-		Intent intent = new Intent(context, SplashController.class);
+		Intent intent = new Intent(context, SplashActivity.class);
 		intent.putExtra("payload", payload);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
 				intent, 0);

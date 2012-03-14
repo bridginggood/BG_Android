@@ -31,7 +31,7 @@ import com.facebook.android.DialogError;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
 
-public class LoginController extends Activity{
+public class LoginActivity extends Activity{
 	private boolean mIsLoginSuccess = false;		//True if login is success
 	private ProgressDialog mProgressDialog;
 	
@@ -75,7 +75,7 @@ public class LoginController extends Activity{
 			@Override
 			public void onClick(View v) {
 				Log.d("BG", "Need an account clicked");
-				startActivity(new Intent().setClass(LoginController.this, SignupController.class));
+				startActivity(new Intent().setClass(LoginActivity.this, SignupActivity.class));
 			}
 		});
 	}
@@ -117,7 +117,7 @@ public class LoginController extends Activity{
 			if(mIsLoginSuccess){
 				Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
 				finish();
-				startActivity(new Intent().setClass(LoginController.this, MainController.class));
+				startActivity(new Intent().setClass(LoginActivity.this, MainActivity.class));
 			}
 			else {
 				Toast.makeText(getApplicationContext(), "Login failed. Please verify your login information.", Toast.LENGTH_SHORT).show();

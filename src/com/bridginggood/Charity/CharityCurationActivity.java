@@ -12,7 +12,7 @@ import android.support.v4.view.ViewPager;
 import com.bridginggood.R;
 import com.viewpagerindicator.CirclePageIndicator;
 
-public class CharityCurationController extends FragmentActivity{
+public class CharityCurationActivity extends FragmentActivity{
 	/** maintains the pager adapter*/
 	private PagerAdapter mPagerAdapter;
 	/* (non-Javadoc)

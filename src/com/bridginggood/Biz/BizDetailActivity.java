@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.bridginggood.R;
 
-public class BizDetailController extends Activity{
+public class BizDetailActivity extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

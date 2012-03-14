@@ -1,4 +1,4 @@
-package com.bridginggood.Biz;
+package com.bridginggood.QR;
 
 import java.util.ArrayList;
 
@@ -8,22 +8,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class BizActivityGroup extends ActivityGroup {
+public class QRActivityGroup extends ActivityGroup {
 	
-	private ArrayList<View> historyBizActivityGroup; 		// ArrayList to manage Views.
-	private BizActivityGroup bizActivityGroup; 				// BizActivityGroup that Activity can access.
+	private ArrayList<View> QRActivityGroup; 		// ArrayList to manage Views.
+	private QRActivityGroup qrActivityGroup; 				// qrActivityGroup that Activity can access.
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	
     	//Initialize global variables
-    	historyBizActivityGroup = new ArrayList<View>();
-    	bizActivityGroup = this;
+    	QRActivityGroup = new ArrayList<View>();
+    	qrActivityGroup = this;
     	
     	// Start the root activity within the group and get its view
 		View view = getLocalActivityManager().startActivity("BizList", new 
-				Intent(this,BizListActivity.class)		//First page
+				Intent(this,QRMainActivity.class)		//First page
 				.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 				.getDecorView();
 		
@@ -32,21 +32,21 @@ public class BizActivityGroup extends ActivityGroup {
     }
         
     public void changeView(View v)  { // Changing one activity to another on same level
-		historyBizActivityGroup.remove(historyBizActivityGroup.size()-1);
-		historyBizActivityGroup.add(v);
+		QRActivityGroup.remove(QRActivityGroup.size()-1);
+		QRActivityGroup.add(v);
 		setContentView(v);
 	}
 
 	public void replaceView(View v) {   // Changing to new activity level.
 		//Log.d("BgBiz","Replacing View...");
-		historyBizActivityGroup.add(v);   
+		QRActivityGroup.add(v);   
 		setContentView(v); 
 	}   
 
 	public void back() { // On back key press
-		if(historyBizActivityGroup.size() > 1) {   
-			historyBizActivityGroup.remove(historyBizActivityGroup.size()-1);   
-			setContentView(historyBizActivityGroup.get(historyBizActivityGroup.size()-1)); 
+		if(QRActivityGroup.size() > 1) {   
+			QRActivityGroup.remove(QRActivityGroup.size()-1);   
+			setContentView(QRActivityGroup.get(QRActivityGroup.size()-1)); 
 		} else {   
 			finish(); // Finish tabactivity
 			Log.d("BgBiz", "onDestroy called from "+this.getClass().toString());
@@ -55,26 +55,26 @@ public class BizActivityGroup extends ActivityGroup {
 	}  
 
 	public void onBackPressed() { // Event Handler
-		Log.d("BgBiz", "Back Pressed from BizActivityGroup");
-		bizActivityGroup.back();   
+		Log.d("BgBiz", "Back Pressed from qrActivityGroup");
+		qrActivityGroup.back();   
 		return;
 	}
     
     //Accessor methods
-    public BizActivityGroup getBizActivityGroup(){
-    	return bizActivityGroup;
+    public QRActivityGroup getqrActivityGroup(){
+    	return qrActivityGroup;
     }
     
-    public void setBizActivityGroup(BizActivityGroup bizActivityGroup){
-    	this.bizActivityGroup = bizActivityGroup;  
+    public void setqrActivityGroup(QRActivityGroup qrActivityGroup){
+    	this.qrActivityGroup = qrActivityGroup;  
     }
     
-    public ArrayList<View> getHistoryBizActivityGroup(){
-    	return historyBizActivityGroup;
+    public ArrayList<View> getQRActivityGroup(){
+    	return QRActivityGroup;
     }
     
-    public void setHistoryBizActivityGroup(ArrayList<View> historyBizActivityGroup){
-    	this.historyBizActivityGroup = historyBizActivityGroup;
+    public void setQRActivityGroup(ArrayList<View> QRActivityGroup){
+    	this.QRActivityGroup = QRActivityGroup;
     }
     
     public void onDestory(){

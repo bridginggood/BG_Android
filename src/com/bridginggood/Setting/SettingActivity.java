@@ -15,7 +15,7 @@ import com.bridginggood.UserSessionStore;
 import com.bridginggood.Facebook.FacebookAPI;
 import com.bridginggood.Facebook.FacebookSessionStore;
 
-public class SettingController extends Activity{
+public class SettingActivity extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
