@@ -65,8 +65,9 @@ public class BizMapActivity extends MapActivity{
 		mIsLocationAvailable = false;
 
 		//Initialize mapview
-		initMapView();
 		initButtonViews();
+		initMapView();
+		
 
 		retrieveUserLocation();	
 	}
