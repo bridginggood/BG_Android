@@ -25,6 +25,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -115,7 +116,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		mBizListView.setOnItemClickListener(mItemClickListener);
 
 		//Hide the list on init
-		mBizListView.setVisibility(View.INVISIBLE);
+		mBizListView.setVisibility(View.GONE);
 
 		//Attach scroll listener
 		mBizListView.setOnScrollListener(this);
@@ -166,8 +167,13 @@ public class BizListActivity extends Activity implements OnScrollListener{
 				//Display found none message if the list adapter is empty
 				if(mBizListAdapter.isEmpty())
 				{
-					TextView txtBizListNotFound = (TextView)findViewById(R.id.txtBizListNoResult);
-					txtBizListNotFound.setVisibility(View.VISIBLE);
+					TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
+					txtBizListLoading.setText(R.string.bizNoResult);
+					//txtBizListLoading.setVisibility(View.VISIBLE);
+					LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
+					layoutBizListLoading.setVisibility(View.VISIBLE);
+					
+					mBizListView.setVisibility(View.GONE);
 				}
 
 				//Remove Loading footer from the list
@@ -207,22 +213,10 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			}
 		});
 
-		//Refresh my location button
-		Button btnRefreshMyLoc = (Button) findViewById(R.id.btnRefreshMyLoc);
-		btnRefreshMyLoc.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){
-				refreshList();
-			}
-		});
-
 		//Set ListView button as selected
 		Button btnGoListView = (Button) findViewById(R.id.btnGoToListView);
 		btnGoListView.setPressed(true);
 		btnGoListView.setEnabled(false);
-	}
-
-	private void refreshList(){
-		/**/
 	}
 
 	AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
@@ -356,12 +350,12 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			{
 				Log.d("BgBiz", "Location found!: "+mUserLocation.getLatitude()+" | "+mUserLocation.getLongitude());
 
-				/*
-				 * Do when current location is found
-				 */
 				//Change the header
-				TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
-				txtBizListLoading.setVisibility(View.INVISIBLE);
+				//TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
+				//txtBizListLoading.setVisibility(View.GONE);
+				LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
+				layoutBizListLoading.setVisibility(View.GONE);
+				
 				mBizListView.setVisibility(View.VISIBLE);
 
 				Log.d("BgBiz", "Load new items");

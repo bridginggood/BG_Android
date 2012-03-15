@@ -94,6 +94,8 @@ public class SplashActivity extends Activity {
 	 * 
 	 */
 	private boolean isUserLoginSuccess(){
+		return skipLogin();
+		/*
 		//If session token is not empty, there must have been a login history in the past. 
 		if(!UserInfo.isTokenStringEmpty()){
 			//If Facebook session is valid, then the user must have logged in using facebook account.
@@ -101,15 +103,16 @@ public class SplashActivity extends Activity {
 				FacebookAPI.requestUserInfo();
 				Log.d("BG", "UserInfo by Facebook: "+UserInfo.getUserFirstName()+" "+UserInfo.getUserLastName()+" . "+UserInfo.getUserEmail());
 			}
-			return skipLogin();
-			//return UserInfo.loginUserInfo(getApplicationContext());
+			return UserInfo.loginUserInfo(getApplicationContext());
 		}
 		else{	//No token exists
 			return false;
 		}
+		*/
 	}
 	
 	/**
+	 * TODO: Delete this later
 	 * Temporary method to skip login dialog
 	 * @return
 	 */

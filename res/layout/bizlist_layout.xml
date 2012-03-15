@@ -2,42 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:baselineAligned="false"
     android:background="@color/background"
+    android:baselineAligned="false"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="9"
-        android:orientation="vertical" >
+        android:layout_margin="10dp"
+        android:layout_weight="95"
+        android:background="@drawable/layout_selector"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp" >
 
-        <TextView
-            android:id="@+id/txtBizListLoading"
+        <!-- Biz List Loading -->
+
+        <LinearLayout
+            android:id="@+id/layoutBizListLoading"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/bizMyLocationLoading" />
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <ProgressBar
+                android:id="@+id/progressbarBizListLoading"
+                style="@style/GenericProgressIndicator"
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:id="@+id/txtBizListLoading"
+                style="@style/TextviewText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/bizMyLocationLoading" />
+        </LinearLayout>
+
+        <!-- List View -->
 
         <ListView
             android:id="@+id/listBiz"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/txtBizListNoResult"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/bizNoResult"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/btnRefreshMyLoc"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_selector"
-            android:text="@string/bizRefreshList" />
+            android:layout_height="fill_parent"
+            android:visibility="gone" />
     </LinearLayout>
 
-    <include layout="@layout/biz_navigation_layout"/>
+    <!-- Navigation menu -->
+
+    <include layout="@layout/biz_navigation_layout" />
 
 </LinearLayout>
