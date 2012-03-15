@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Theme.TabTheme" parent="android:Theme">
-        <item name="android:windowContentOverlay">@null</item>
+       <!-- Tab shadow line <item name="android:windowContentOverlay">@null</item> -->
         <item name="android:windowNoTitle">false</item>
     </style>
 

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:gravity="center"
+    android:layout_gravity="center"
     android:orientation="vertical" >
 
     <ImageView
@@ -23,5 +24,8 @@
 	    android:layout_height="wrap_content"
 	    android:text="@string/qrcodeText"
 	    android:layout_gravity="center"
+	    android:gravity="center"
+	    android:paddingTop="20dp"
+	    style = "@style/TextviewNormalBrown"
 	/>
 </LinearLayout>
