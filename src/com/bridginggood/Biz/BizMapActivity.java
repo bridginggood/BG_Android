@@ -1,7 +1,6 @@
 package com.bridginggood.Biz;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import android.app.ProgressDialog;
@@ -18,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bridginggood.R;
 import com.bridginggood.Biz.BizMyLocation.LocationResult;
@@ -30,22 +30,22 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 public class BizMapActivity extends MapActivity{ 
-	private static final int MAX_TIME_TO_WAIT_LOCATION_SEARCH = 15000;
-
 	private BizExtendedMapView mMapView;			//MapView
 	private ArrayList<GeoPoint> mGeoPointArrayList;		//GeoPoints that have already been added to the map for display
 
-	private ProgressDialog mProgressDialog;			
 	private BizMyLocation mBizMyLocation;
 	private LoadBusinessAndDisplayAsyncTask mLoadBusinessAndDisplayAsyncTask;
+	private LoadUserLocationAndDisplayAsyncTask mLoadUserLocationAndDisplayAsyncTask;
+	private Location mUserLocation;
 
-	private Location mCurrentLocation;
+	private ProgressDialog mProgressDialog;
+
 	private float mDistanceRadius = 1.0f;
 
 	private boolean mIsLoadingBizLocation = false; 		//Lock
+	private boolean mIsLocationAvailable = false;	// Triggers when location becomes available
 
-	private boolean mIsLocationAvailable = false;
-	private LocationControl mLocationControlTask;
+	private Context mMasterContext;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -55,16 +55,20 @@ public class BizMapActivity extends MapActivity{
 
 		Log.d("BgMap", "Welcome to BizMapController");
 
+		mMasterContext = getParent();
+
 		//Initialize ArrayLists
 		mGeoPointArrayList = new ArrayList<GeoPoint>();
-		
+
 		//Initialize lock
 		mIsLoadingBizLocation = false;
+		mIsLocationAvailable = false;
+
 		//Initialize mapview
 		initMapView();
 		initButtonViews();
 
-		//retrieveCurrentLocation();	
+		retrieveUserLocation();	
 	}
 
 	/**
@@ -114,40 +118,13 @@ public class BizMapActivity extends MapActivity{
 		});
 	}
 
-	private void retrieveCurrentLocation(){
-		//Start progress dialog
-		mProgressDialog = ProgressDialog.show(getParent(), "", "Identifying your location...", true, true);
-		mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-			@Override
-			public void onCancel(DialogInterface dialog) {
-				if(mBizMyLocation!=null){
-					//TODO: Implement cancel action
-					if(mLocationControlTask!=null)
-						mLocationControlTask.cancel(true);
-					Log.d("BgMap", "mLoadMapThread killed by the user");				
-				}
-			}
-		});
-
-		//Initialize myLocation to get current loc
+	private void retrieveUserLocation(){
 		mBizMyLocation = new BizMyLocation();
-		mBizMyLocation.getLocation(this, locationResult);
+		mBizMyLocation.getLocation(this, mLocationResult);
 
-		mLocationControlTask = new LocationControl();
-		mLocationControlTask.execute(this);
+		mLoadUserLocationAndDisplayAsyncTask = new LoadUserLocationAndDisplayAsyncTask(getParent());
+		mLoadUserLocationAndDisplayAsyncTask.execute();
 	}
-
-	public LocationResult locationResult = new LocationResult()
-	{
-		@Override
-		public void gotLocation(final Location location)
-		{
-			if(location != null)
-				mCurrentLocation = new Location(location);
-
-			mIsLocationAvailable = true;
-		}
-	};
 
 	private void retrieveBizLocation(){
 		mIsLoadingBizLocation = true;	//Lock
@@ -166,9 +143,12 @@ public class BizMapActivity extends MapActivity{
 		return bizDB.getBizMapJSON();
 	}
 
-	private void createMyLocationOverlayOnMapView(){
-		float myLat = (float)mCurrentLocation.getLatitude();
-		float myLng = (float)mCurrentLocation.getLongitude();
+	private void createUserLocationOverlayOnMapView(){
+		if(mProgressDialog.isShowing())
+			mProgressDialog.dismiss();
+
+		float myLat = (float)mUserLocation.getLatitude();
+		float myLng = (float)mUserLocation.getLongitude();
 
 		GeoPoint myPoint = new GeoPoint (convFloatToIntE6(myLat), convFloatToIntE6(myLng));
 		MapController mapController = mMapView.getController();
@@ -203,7 +183,7 @@ public class BizMapActivity extends MapActivity{
 			isNewGeopoint = true;
 
 			point = new GeoPoint( convFloatToIntE6(biz.getBizLat()) , convFloatToIntE6(biz.getBizLng()));	//Create GeoPoint
-			
+
 			//Check if the point already exists on the map.
 			for(GeoPoint gp : mGeoPointArrayList){
 				if (gp.getLatitudeE6() == point.getLatitudeE6() && gp.getLongitudeE6() == gp.getLongitudeE6()){
@@ -211,14 +191,14 @@ public class BizMapActivity extends MapActivity{
 					break;
 				}
 			}
-			
+
 			//Add only new points to the map
 			if(isNewGeopoint){
 				Log.d("BgMap", "Added new point:"+biz.getBizName());
 				overlayItem = new OverlayItem(point, biz.getBizName(), biz.getBizAddress());					//Store name and address as descriptions of GeoPoint
 				itemizedOverlay.addOverlay(overlayItem);
 				mapOverlays.add(itemizedOverlay);
-				
+
 				//Add this geopoint to the arraylist to mark it as used
 				mGeoPointArrayList.add(point);
 			}
@@ -330,20 +310,47 @@ public class BizMapActivity extends MapActivity{
 		}
 	}
 
-
-	private class LocationControl extends AsyncTask<Context, Void, Void>
+	//Callback to get current location
+	private LocationResult mLocationResult = new LocationResult()
 	{
-		private final ProgressDialog dialog = new ProgressDialog(BizMapActivity.this);
+		@Override
+		public void gotLocation(final Location location)
+		{
+			mUserLocation = location;
+			mIsLocationAvailable = true;
+		}
+	};
+
+	private class LoadUserLocationAndDisplayAsyncTask extends AsyncTask<Context, Void, Context>
+	{
+		private Context mContext;
+		private LoadUserLocationAndDisplayAsyncTask _this = this;
+
+		public LoadUserLocationAndDisplayAsyncTask(Context context){
+			this.mContext = context;
+		}
+
+
+		//Display progress dialog
 		protected void onPreExecute()
 		{
-			//this.dialog.setMessage("Searching");
-			//this.dialog.show();
+			mProgressDialog = ProgressDialog.show(mMasterContext, "", "Identifying your location...", true, true);
+			mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					if(mBizMyLocation != null){
+						mBizMyLocation.stopLocationUpdates();
+					}
+					_this.cancel(true);
+				}
+			});
 		}
-		protected Void doInBackground(Context... params)
+
+		//Load current location
+		protected Context doInBackground(Context... contexts)
 		{
-			//Wait x seconds to see if we can get a location from either network or GPS, otherwise stop
-			Long t = Calendar.getInstance().getTimeInMillis();
-			while (!mIsLocationAvailable && Calendar.getInstance().getTimeInMillis() - t < MAX_TIME_TO_WAIT_LOCATION_SEARCH) {
+			//Wait until isLocationAvailable becomes available. 
+			while (!mIsLocationAvailable) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -352,55 +359,46 @@ public class BizMapActivity extends MapActivity{
 			};
 			return null;
 		}
-		protected void onPostExecute(final Void unused)
+		protected void onPostExecute(final Context context)
 		{
-			if(this.dialog.isShowing())
+			if(mProgressDialog.isShowing())
 			{
-				this.dialog.dismiss();
+				mProgressDialog.dismiss();
 			}
 
-			if(mProgressDialog.isShowing())
-				mProgressDialog.dismiss();
-
-			if (mCurrentLocation != null)
+			if (mUserLocation != null)
 			{
-				Log.d("BgMap", "Location found!: "+mCurrentLocation.getLatitude()+" | "+mCurrentLocation.getLongitude());
-				//useLocation();
-
-				/*
-				 * Do when current location is found
-				 */
-				createMyLocationOverlayOnMapView();
-				if(!mIsLoadingBizLocation){
-					Log.d("BgMap", "retrieveBizLocation already called");
-					mIsLoadingBizLocation = true;
-					retrieveBizLocation();
-				}
+				Log.d("BgMap", "Location found!: "+mUserLocation.getLatitude()+" | "+mUserLocation.getLongitude());
+				createUserLocationOverlayOnMapView();
 			}
 			else
 			{
 				Log.d("BgMap", "Location not found!");
-				//Couldn't find location, do something like show an alert dialog
-				if(!mIsLoadingBizLocation){
-					Log.d("BgMap", "retrieveBizLocation already called");
-					mIsLoadingBizLocation = true;
-					retrieveBizLocation();
-				}
+				Toast.makeText(this.mContext, "Unable to identify your location.", Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
+
 	@Override
 	public void onStop(){
-		Log.d("BgMap", "onStop called from BizMapController");
+		Log.d("BgMap", "onStop called from BizMapActivity");
 		stopLocationLoading();
 		super.onStop();
 	}
+
+	@Override
+	public void onPause(){
+		Log.d("BgMap", "onPause called from BizMapActivity");
+		stopLocationLoading();
+		super.onPause();
+	}
+
 	private void stopLocationLoading(){
 		if(mBizMyLocation!= null)
 			mBizMyLocation.stopLocationUpdates();
 		if(mLoadBusinessAndDisplayAsyncTask != null)
 			mLoadBusinessAndDisplayAsyncTask.cancel(true);
-		if(mLocationControlTask != null)
-			mLocationControlTask.cancel(true);
+		if(mLoadUserLocationAndDisplayAsyncTask != null)
+			mLoadUserLocationAndDisplayAsyncTask.cancel(true);
 	}
 }

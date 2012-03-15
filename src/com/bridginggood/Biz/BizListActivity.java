@@ -7,7 +7,6 @@ package com.bridginggood.Biz;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,9 +33,6 @@ import com.bridginggood.Biz.BizMyLocation.LocationResult;
 import com.bridginggood.DB.BusinessJSON;
 
 public class BizListActivity extends Activity implements OnScrollListener{
-	//private static final float MAX_DIST = 10.0f;	//Maximum search radius
-	private static final int MAX_TIME_TO_WAIT_LOCATION_SEARCH = 15000;	//in ms
-
 	private ArrayList<Business> mBizArrayList, mTmpBizListAdapter;		//Stores Business objects in array
 	private BizMyLocation mBizMyLocation;
 	private Location mCurrentLocation;
@@ -52,7 +48,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	private View mBizListViewFooter;				//ListView footer - Loading message
 
 	private boolean mIsLocationAvailable = false;
-	private LocationControl mLocationControlTask;
+	private LoadUserLocationAndDisplayAsyncTask mLocationControlTask;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +83,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		//Initialize myLocation to get current loc
 		mBizMyLocation = new BizMyLocation();
 		mBizMyLocation.getLocation(this, locationFoundResult);
-		mLocationControlTask = new LocationControl();
+		mLocationControlTask = new LoadUserLocationAndDisplayAsyncTask();
 		mLocationControlTask.execute(this);
 
 		//Initialize listview
@@ -246,7 +242,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		//mBizMyLocation.getLocation();
 		//mCurrentLocation = mBizMyLocation.getCurrentLocation();
 		mBizMyLocation.getLocation(this, locationFoundResult);
-		mLocationControlTask = new LocationControl();
+		mLocationControlTask = new LoadUserLocationAndDisplayAsyncTask();
 		mLocationControlTask.execute(this);
 	}
 
@@ -355,16 +351,12 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	 * @author wns349
 	 *
 	 */
-	private class LocationControl extends AsyncTask<Context, Void, Void>
+	private class LoadUserLocationAndDisplayAsyncTask extends AsyncTask<Context, Void, Void>
 	{
-		protected void onPreExecute()
-		{
-		}
 		protected Void doInBackground(Context... params)
 		{
 			//Wait x seconds to see if we can get a location from either network or GPS, otherwise stop
-			Long t = Calendar.getInstance().getTimeInMillis();
-			while (!mIsLocationAvailable && Calendar.getInstance().getTimeInMillis() - t < MAX_TIME_TO_WAIT_LOCATION_SEARCH) {
+			while (!mIsLocationAvailable) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
