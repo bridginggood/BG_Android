@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
 import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
@@ -45,9 +44,9 @@ public class BizListAdapter extends ArrayAdapter<Business>{
             holder = new BusinessHolder();
             holder.setBizLogo((ImageView)row.findViewById( R.id.bizLogo ));
             holder.setBizName((TextView)row.findViewById(R.id.bizName));
-            holder.setBizAddress((TextView)row.findViewById(R.id.bizAddress));
+            //holder.setBizAddress((TextView)row.findViewById(R.id.bizAddress));
             holder.setDistanceAway((TextView)row.findViewById(R.id.distanceAway));
-            holder.setCharityLogo((ImageView)row.findViewById(R.id.charityLogo));
+            //holder.setCharityLogo((ImageView)row.findViewById(R.id.charityLogo));
             
             row.setTag(holder);
         }
@@ -58,8 +57,10 @@ public class BizListAdapter extends ArrayAdapter<Business>{
             final Business biz = mData.get(position);
             if(biz != null){
             	holder.updateBizName(biz.getBizName());
-            	holder.updateBizAddress(biz.getBizAddress());
-            	mImageManager.displayImage(UserInfo.getQRCodeURL(), mActivity, holder.bizLogo);
+            	holder.updateDistanceAway(biz.getDistanceAwayStr());
+            	//holder.updateBizAddress(biz.getBizAddress());
+            	//TODO: change the ICON URL!
+            	mImageManager.displayImage("https://s3.amazonaws.com/BG_S3/media/business/shop_default.png", mActivity, holder.bizLogo);
             }
         }
         
@@ -69,9 +70,9 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         //Update the content of the cell
         holder.updateBizLogo(bizCell.getBizLogo());
         holder.updateBizName(bizCell.getBizName());
-        holder.updateBizAddress(bizCell.getBizAddress());
-        holder.updateDistanceAway(bizCell.getDistanceAwayStr("miles"));	
-        holder.updateCharityLogo(bizCell.getCharityLogo());
+        //holder.updateBizAddress(bizCell.getBizAddress());
+        holder.updateDistanceAway(bizCell.getDistanceAwayStr());	
+        //holder.updateCharityLogo(bizCell.getCharityLogo());
         
         return row;
     }
@@ -88,8 +89,10 @@ public class BizListAdapter extends ArrayAdapter<Business>{
     //Use this holder class for optimization. (Does not load ImageView all the time)
     static class BusinessHolder
     {
-        ImageView bizLogo, charityLogo;
-        TextView bizName, bizAddress, distanceAway;
+        //ImageView bizLogo, charityLogo;
+        //TextView bizName, bizAddress, distanceAway;
+    	ImageView bizLogo;
+    	TextView bizName, distanceAway;
         
         public void setBizLogo(ImageView bizLogo){
         	this.bizLogo = bizLogo;
@@ -99,16 +102,18 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         	this.bizName = bizName;
         }
         
-        public void setBizAddress(TextView bizAddress){
+        /*
+         * public void setBizAddress(TextView bizAddress){
         	this.bizAddress = bizAddress;
-        }
-        
-        public void setDistanceAway(TextView distanceAway){
-        	this.distanceAway = distanceAway;
         }
         
         public void setCharityLogo(ImageView charityLogo){
         	this.charityLogo = charityLogo;
+        }
+        */
+        
+        public void setDistanceAway(TextView distanceAway){
+        	this.distanceAway = distanceAway;
         }
         
         public void updateBizLogo(int bizLogo){
@@ -119,16 +124,18 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         	this.bizName.setText(bizName);
         }
         
-        public void updateBizAddress(String bizAddress){
-        	this.bizAddress.setText(bizAddress);
-        }
-        
         public void updateDistanceAway(String distanceAway){
         	this.distanceAway.setText(distanceAway);
+        }
+
+        /*        
+        public void updateBizAddress(String bizAddress){
+        	this.bizAddress.setText(bizAddress);
         }
         
         public void updateCharityLogo(int charityLogo){
         	this.charityLogo.setImageResource(charityLogo);
         }
+        */
     }
 }

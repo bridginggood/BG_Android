@@ -37,14 +37,17 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	//private static final float MAX_DIST = 10.0f;	//Maximum search radius
 	private static final int MAX_TIME_TO_WAIT_LOCATION_SEARCH = 15000;	//in ms
 
-	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
+	private ArrayList<Business> mBizArrayList, mTmpBizListAdapter;		//Stores Business objects in array
 	private BizMyLocation mBizMyLocation;
 	private Location mCurrentLocation;
-	private float mMyLat, mMyLng, mDistanceRadius;	//For search
+	private float mMyLat, mMyLng;	//For API search
+	private int mPage;				//For API search
 
-	private boolean mIsListLoadingMore, mStopLoadingMore;					//To lock the list while handling onScroll event
+	private boolean mIsListLoadingMore, mEndOfList;					//To lock the list while handling onScroll event
+
 
 	private BizListAdapter mBizListAdapter;			//ListView adapter
+
 	private ListView mBizListView;					//ListView
 	private View mBizListViewFooter;				//ListView footer - Loading message
 
@@ -77,7 +80,9 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		mCurrentLocation = new Location("CurrentLocation");
 		mCurrentLocation.setLatitude(40.714353);
 		mCurrentLocation.setLongitude(-74.005973);
-		mDistanceRadius = 1.0f;	//miles
+		mPage = 1;
+		
+		mEndOfList = false;
 
 		//Initialize myLocation to get current loc
 		mBizMyLocation = new BizMyLocation();
@@ -89,10 +94,8 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		this.initListView();
 
 		//Initialize button
-		initButtonViews();
+		this.initButtonViews();
 	}
-
-
 
 	private void initListView(){
 		mBizListAdapter = new BizListAdapter(this, R.layout.bizlist_cell, mBizArrayList);
@@ -116,7 +119,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		//Attach scroll listener
 		mBizListView.setOnScrollListener(this);
 		mIsListLoadingMore = true;
-		mStopLoadingMore = false;
+		mEndOfList = false;
 	}
 
 	public LocationResult locationFoundResult = new LocationResult()
@@ -126,7 +129,6 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		{
 			if(location != null)
 				mCurrentLocation = new Location(location);
-
 			mIsLocationAvailable = true;
 		}
 	};
@@ -136,21 +138,23 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		public void run() {
 			//set flag so items are not loaded twice at the same time
 			mIsListLoadingMore = true;
+			mTmpBizListAdapter = null;
 
 			//Get new items
 			float myLat = (float) mCurrentLocation.getLatitude();
 			float myLng = (float) mCurrentLocation.getLongitude();
 
-			BusinessJSON bizDB = new BusinessJSON(myLat, myLng, mDistanceRadius);
-			mBizArrayList = bizDB.getBizListJSON();
-
-			//Increase mDistanceRadius to search for more result
-			//Increase exponentially
-			mDistanceRadius += 1.0f; 
-
+			BusinessJSON bizDB = new BusinessJSON(myLat, myLng, mPage);		
+			mTmpBizListAdapter = bizDB.getBizListJSON();
+			
+			if (mTmpBizListAdapter == null){
+				mEndOfList = true;
+			}
+			else{
+				mPage++;
+			}
 			Log.d("BgBiz", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+
-					" ) within "+mDistanceRadius);
-
+					" ) with page: "+mPage);
 			runOnUiThread(updateListView);
 		}
 	};
@@ -158,22 +162,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	private Runnable updateListView = new Runnable(){
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
-
-			//Clear mBizListAdapter
-			mBizListAdapter.clear();
-
-			//Loop through the new items and add them to the adapter
-			if(mBizArrayList != null && mBizArrayList.size()>0){
-				for(Business biz : mBizArrayList){
-					mBizListAdapter.add(biz);
-				}
-			}
-
-			//Stop search for more item in the future once it reaches max_dist.
-			if(mDistanceRadius == MAX_DIST){
-				mStopLoadingMore = true;
-
+			if (mEndOfList){
 				//Display found none message if the list adapter is empty
 				if(mBizListAdapter.isEmpty())
 				{
@@ -185,11 +174,15 @@ public class BizListActivity extends Activity implements OnScrollListener{
 				boolean isRemoved = mBizListView.removeFooterView(mBizListViewFooter);
 				Log.d("BgBiz", "Removing footer result: "+isRemoved);
 			}
-
-			//Tell to the adapter that changes have been made, this will cause the list to refresh
-			mBizListAdapter.notifyDataSetChanged();
-			Log.d("BgBiz", "mBizListAdpater notified!");
-
+			else {
+				for(Business biz : mTmpBizListAdapter){
+					mBizListAdapter.add(biz);
+				}
+				
+				//Tell to the adapter that changes have been made, this will cause the list to refresh
+				mBizListAdapter.notifyDataSetChanged();
+				Log.d("BgBiz", "mBizListAdpater notified!");		
+			}
 			//Done loading more
 			mIsListLoadingMore = false;	
 		}
@@ -233,10 +226,10 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		stopLocationLoading();
 		mBizArrayList.clear();
 		mBizListAdapter.clear();
-
-		mDistanceRadius = 1.0f;	//miles
+		
+		mPage = 1;
 		mIsListLoadingMore = true;
-		mStopLoadingMore = false;
+		mEndOfList = false;
 
 		//If footer does not exist, add it
 		if(mBizListView.getFooterViewsCount() == 0)
@@ -302,7 +295,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		int lastInScreen = firstVisibleItem+visibleItemCount;
 
 		//is the bottom item visible & not loading more already? Load more!
-		if(lastInScreen == totalItemCount && totalItemCount != 0 && mIsListLoadingMore == false && mStopLoadingMore == false)
+		if(lastInScreen == totalItemCount && totalItemCount != 0 && mIsListLoadingMore == false && mEndOfList == false)
 		{
 			Log.d("BgBiz", "Load next items");
 			Thread thread = new Thread(null, loadMoreListItems);
@@ -327,6 +320,13 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		Log.d("BgBiz", "onStop called from BizListController");
 		stopLocationLoading();
 		super.onStop();
+	}
+	
+	@Override
+	public void onPause(){
+		Log.d("BgBiz", "onPause called from BizListController");
+		stopLocationLoading();
+		super.onPause();
 	}
 
 	/*

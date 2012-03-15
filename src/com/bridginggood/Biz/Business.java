@@ -97,7 +97,8 @@ public class Business implements Serializable {
 		return distanceAway;
 	}
 	
-	public String getDistanceAwayStr(String unit){
+	public String getDistanceAwayStr(){
+		String unit = (distanceAway == 1.000000f)? "mile":"miles";		
 		return String.format("%.2f "+unit, distanceAway);
 	}
 

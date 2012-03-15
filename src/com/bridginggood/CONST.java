@@ -1,7 +1,7 @@
 package com.bridginggood;
 
 public class CONST {
-	private static final String API_URL = "https://api.bridginggood.com:8080";
+	private static final String API_URL = "http://api.bridginggood.com:8080";
 	
 	//SplashController: Splash time
 	public static final long SPLASH_DELAY = 1500;
@@ -31,5 +31,6 @@ public class CONST {
 	public static final String API_CREATE_C2DM_REGISTRATION_ID_URL = API_URL+"/auth/CreatePushNotificationAndroid.json";
 	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQRCode.json";
 	
-	public static final String API_READ_BUSINESS_LIST_URL = API_URL+"/business_info/read.json";
+	public static final String API_READ_BUSINESS_LIST_URL = API_URL+"/business_info/readlist.json";
+	public static final String API_READ_BUSINESS_MAP_URL = API_URL+"/business_info/readmap.json";
 }
