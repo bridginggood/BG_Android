@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -14,7 +15,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bridginggood.R;
@@ -51,7 +55,7 @@ public class BizMapActivity extends MapActivity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.bizmap);
+		setContentView(R.layout.bizmap_layout);
 
 		Log.d("BgBiz", "Welcome to BizMapController");
 
@@ -61,9 +65,36 @@ public class BizMapActivity extends MapActivity{
 		mIsLoadingBizLocation = false;
 		//Initialize mapview
 		initMapView();
-
+		initButtonViews();
+		
 		retrieveCurrentLocation();	
 	}
+	
+	//Load button to BizMap.java
+		public void initButtonViews(){
+
+			//Set MapView button as selected
+			Button btnGoBizMap = (Button) findViewById(R.id.btnGoToBizMap);
+			btnGoBizMap.setPressed(true);
+			btnGoBizMap.setEnabled(false);
+			
+
+			//Action to ListView button
+			Button btnGoListView = (Button) findViewById(R.id.btnGoToListView);
+			//Button Handler
+			final Intent intent = new Intent(this, BizListActivity.class);
+			btnGoListView.setOnClickListener(new OnClickListener(){
+				public void onClick(View v){
+					Log.d("BgBiz", "Button Clicked");
+					BizActivityGroup bizActivityGroup = ((BizActivityGroup)getParent());
+					View newView = bizActivityGroup.getBizActivityGroup().getLocalActivityManager()
+							.startActivity("BizListActivity", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+							.getDecorView();
+
+					bizActivityGroup.getBizActivityGroup().changeView(newView);	//Replace View
+				}
+			});
+		}
 
 	private void retrieveCurrentLocation(){
 		//Start progress dialog

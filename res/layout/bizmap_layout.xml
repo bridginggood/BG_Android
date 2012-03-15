@@ -7,8 +7,8 @@
     <LinearLayout
         android:id="@+id/bizMapHeaderLayout"
         android:layout_width="fill_parent"
-        android:layout_height="32dp"
-        android:layout_weight="0" >
+        android:layout_height="50dp"
+        android:layout_weight="1" >
 
         <TextView
             android:id="@+id/txtBizMapHeader"
@@ -23,27 +23,22 @@
     	TEST: "0Xl-E6OnUWpokeeWcCdHPv43VV1HhKX7g54BVAw"
     -->
 
-    <com.bridginggood.Biz.BizExtendedMapView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/bizMapView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:apiKey="0Xl-E6OnUWpokeeWcCdHPv43VV1HhKX7g54BVAw"
-        android:clickable="true"
-        android:enabled="true" />
-
     <LinearLayout
-        android:id="@+id/bizMapBottomLayout"
+        android:id="@+id/bizMapContentLayout"
         android:layout_width="fill_parent"
-        android:layout_height="32dp"
-        android:layout_weight="0" >
+        android:layout_height="0dp"
+        android:layout_weight="8" >
 
-        <TextView
-            android:id="@+id/txtBizMapBottom"
+        <com.bridginggood.Biz.BizExtendedMapView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/bizMapView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hello" />
+            android:layout_height="fill_parent"
+            android:apiKey="0bJec5GDn0KoM9Ir2A-9mTV8W4iTfMqx1GgASHA"
+            android:clickable="true"
+            android:enabled="true" />
     </LinearLayout>
+
+    <include layout="@layout/biz_navigation_layout" />
 
 </LinearLayout>

@@ -34,7 +34,7 @@ import com.bridginggood.Biz.BizMyLocation.LocationResult;
 import com.bridginggood.DB.BusinessJSON;
 
 public class BizListActivity extends Activity implements OnScrollListener{
-	private static final float MAX_DIST = 10.0f;	//Maximum search radius
+	//private static final float MAX_DIST = 10.0f;	//Maximum search radius
 	private static final int MAX_TIME_TO_WAIT_LOCATION_SEARCH = 15000;	//in ms
 
 	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
@@ -93,7 +93,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	}
 
 
-	
+
 	private void initListView(){
 		mBizListAdapter = new BizListAdapter(this, R.layout.bizlist_cell, mBizArrayList);
 		mBizListView = (ListView)findViewById(R.id.listBiz);
@@ -126,7 +126,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		{
 			if(location != null)
 				mCurrentLocation = new Location(location);
-			
+
 			mIsLocationAvailable = true;
 		}
 	};
@@ -207,10 +207,10 @@ public class BizListActivity extends Activity implements OnScrollListener{
 				Log.d("BgBiz", "Button Clicked");
 				BizActivityGroup bizActivityGroup = ((BizActivityGroup)getParent());
 				View newView = bizActivityGroup.getBizActivityGroup().getLocalActivityManager()
-						.startActivity("BizMapController", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+						.startActivity("BizMapActivity", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
 						.getDecorView();
 
-				bizActivityGroup.getBizActivityGroup().replaceView(newView);	//Replace View
+				bizActivityGroup.getBizActivityGroup().changeView(newView);	//Replace View
 			}
 		});
 
@@ -221,7 +221,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 				refreshList();
 			}
 		});
-		
+
 		//Set ListView button as selected
 		Button btnGoListView = (Button) findViewById(R.id.btnGoToListView);
 		btnGoListView.setPressed(true);
