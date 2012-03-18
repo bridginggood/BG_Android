@@ -30,12 +30,15 @@ public class CONST {
 	public static final String API_LOGIN_BY_BG_URL = API_URL+"/auth/LoginByUserFromMobile.json";
 
 	public static final String API_CREATE_C2DM_REGISTRATION_ID_URL = API_URL+"/auth/CreatePushNotificationAndroid.json";
-	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQRCode.json";
+	//public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQRCode.json";
 	/****************/
 	
 	public static final String API_READ_BUSINESS_LIST_URL = API_URL+"/business_details/readlist.json";
 	public static final String API_READ_BUSINESS_MAP_URL = API_URL+"/business_details/readmap.json";
 	
 	public static final String API_LOGIN_BY_FACEBOOK_URL = API_URL+"/auth/LoginByFacebook.json";
+	
+	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQrcodeFromMobile.json";
+	public static final String API_REGISTER_QRCODE_URL = API_URL+"/auth/RegisterQrcodeFromMobile.json";
 	
 }

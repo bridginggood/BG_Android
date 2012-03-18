@@ -125,10 +125,10 @@ public class UserInfo extends Application{
 		return mQRCodeURL;
 	}
 
-	public static void setQRCodeURL(String mQRCodeURL) {
+	public static void setQRCodeURL(String qrId) {
 		//Update to full URL only if filename exists
-		if(mQRCodeURL != null && mQRCodeURL.length() > 0)
-			UserInfo.mQRCodeURL = CONST.QRCODE_S3_URL_PREFIX + mQRCodeURL + ".png";
+		if(qrId != null && qrId.length() > 0)
+			UserInfo.mQRCodeURL = CONST.QRCODE_S3_URL_PREFIX + qrId + ".png";
 	}
 
 	public static String getFbUid() {

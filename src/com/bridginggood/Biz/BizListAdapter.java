@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.bridginggood.ImageManager;
 import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
-import com.bridginggood.UserInfo;
 
 public class BizListAdapter extends ArrayAdapter<Business>{
 

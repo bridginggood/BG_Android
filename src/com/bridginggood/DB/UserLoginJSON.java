@@ -81,9 +81,10 @@ public class UserLoginJSON {
 			}
 
 			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
-
+			Log.d("BgDB", "LoginJSON received:"+jsonStr);
+			
 			JSONObject jsonObject = new JSONObject(jsonStr);
-
+			
 			//TODO: Maybe this needs to be changed later on.
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
 				//Login succeed!

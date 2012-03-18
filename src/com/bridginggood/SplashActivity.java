@@ -94,6 +94,11 @@ public class SplashActivity extends Activity {
 	 * @return True if login is success
 	 */
 	private boolean isUserAutoLoginSuccessful(){
+		Log.d("BG", "Stored UserInfo getUserType:"+UserInfo.getUserType());
+		Log.d("BG", "Stored UserName getUserFirstName: "+UserInfo.getUserFirstName());
+		Log.d("BG", "Stored Facebook getFbUid: "+UserInfo.getFbUid());
+		Log.d("BG", "Stored Facebook token: "+UserInfo.mFacebook.getAccessToken());
+		Log.d("BG", "Stored Facebook expiry: "+UserInfo.mFacebook.getAccessExpires());
 		return UserLoginJSON.loginUser(UserInfo.getUserType());
 	}
 
