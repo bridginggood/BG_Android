@@ -2,26 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#fcefde"
+    android:background="@drawable/login_background"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingLeft="25dp"
     android:paddingRight="25dp" >
-
-    <Button
-        android:id="@+id/login_btnLoginFacebook"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Login with facebook" />
-
-    <TextView
-        android:id="@+id/login_lblOr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="25dp"
-        android:paddingTop="25dp"
-        android:text="@string/login_lblOr"
-        android:textColor="#000000" />
 
     <EditText
         android:id="@+id/login_edtEmail"
@@ -30,7 +15,6 @@
         android:hint="@string/login_hintEmail"
         android:inputType="textEmailAddress"
         android:singleLine="true" >
-
         <requestFocus />
     </EditText>
 
@@ -64,5 +48,11 @@
             style="@style/LoginLblHelper"
             android:text="@string/login_lblNeedAccount" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/login_btnLoginFacebook"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Login with facebook" />
 
 </LinearLayout>
