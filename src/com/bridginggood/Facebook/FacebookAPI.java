@@ -69,7 +69,7 @@ public class FacebookAPI {
 	public static boolean requestUserInfo(){
 		startLock();
 		
-		String fbRequestDetail = "first_name, last_name, email";	//Request name, email to Facebook
+		String fbRequestDetail = "id, first_name, last_name, email";	//Request name, email to Facebook
 		Bundle params = new Bundle();
 		params.putString("fields", fbRequestDetail);
 		UserInfo.mAsyncRunner.request("me", params,new UserInfoRequestListener());
@@ -87,7 +87,7 @@ public class FacebookAPI {
 		public void onComplete(final String response, final Object state) {
 			try {
 				JSONObject jsonObject = new JSONObject(response);
-				UserInfo.createUserSessionForFacebook(jsonObject.getString("email"), jsonObject.getString("first_name"), jsonObject.getString("last_name"),CONST.USER_SESSION_TYPE_FACEBOOK);
+				UserInfo.createUserSessionForFacebook(jsonObject.getString("id"), jsonObject.getString("email"), jsonObject.getString("first_name"), jsonObject.getString("last_name"),CONST.USER_SESSION_TYPE_FACEBOOK);
 				mLock = false;
 			} catch (Exception e) {
 				Log.d("BgFacebook", "UserInfoRequestListener Exception: "+e.getLocalizedMessage());

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.bridginggood.Biz.BizActivityGroup;
 import com.bridginggood.Charity.CharityActivityGroup;
 import com.bridginggood.QR.QRActivityGroup;
-import com.bridginggood.Setting.SettingActivity;
 import com.bridginggood.User.UserActivityGroup;
 
 public class MainActivity extends TabActivity {
@@ -39,20 +37,8 @@ public class MainActivity extends TabActivity {
 		
 		mTabHost.setCurrentTab(1);
 		
-		//initActionBar();
-		
 		initC2DMRegistration();
 	}
-	/*
-	private void initActionBar(){
-		ImageView imgSettings = (ImageView)findViewById(R.id.actionImgRight);
-		imgSettings.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){
-				Log.d("BG", "Button Clicked");
-				startActivity(new Intent().setClass(MainActivity.this, SettingActivity.class));
-			}
-		});
-	}*/
 
 	private void setupTab(final String tag, final int drawableImg, final Intent intent) {
 		View tabview = createTabView(mTabHost.getContext(), tag, drawableImg);
@@ -83,14 +69,6 @@ public class MainActivity extends TabActivity {
 		}
 	}
 
-	/*
-	 * Called to extend mFacebook token, if necessary
-	 */
-	public void onResume() {    
-		super.onResume();
-		if(UserInfo.mFacebook != null && UserInfo.mFacebook.isSessionValid())
-			UserInfo.mFacebook.extendAccessTokenIfNeeded(this, null);
-	}
 	public void onDestory(){
 		super.onDestroy();
 		Log.d("BG", "onDestroy called");

@@ -17,16 +17,19 @@ import com.bridginggood.UserInfo;
 public class UserLoginJSON {
 
 	private static final String PARAM_USER_ID = "UserId";
-	private static final String PARAM_USER_EMAIL = "UserEmail";
-	private static final String PARAM_USER_FIRSTNAME = "UserFirstName";
-	private static final String PARAM_USER_LASTNAME = "UserLastName";
+	private static final String PARAM_USER_EMAIL = "Email";
+	private static final String PARAM_USER_FIRSTNAME = "FirstName";
+	private static final String PARAM_USER_LASTNAME = "LastName";
 	private static final String PARAM_USER_PASSWORD = "UserPassword";
 	private static final String PARAM_USER_TYPE = "UserType";
 	private static final String PARAM_TOKEN_STRING = "TokenString";
+	
+	private static final String PARAM_FB_UID = "FacebookUid";
+	
 	private static final String PARAM_DEVICE_ID = "DeviceId";
 	private static final String PARAM_DEVICE_TYPE = "DeviceType";
 	private static final String PARAM_C2DM_REGISTRATION_ID = "C2DMRegId";
-	private static final String PARAM_QRCODE_URL = "CONCAT(qrcodeURL, user_device_info.QRCode)";
+	private static final String PARAM_QRCODE_ID = "QrId";
 
 	private static final String PARAM_RESULT_CODE = "resultCode";
 	private static final String PARAM_RESULT_MSG = "resultMsg";
@@ -36,18 +39,19 @@ public class UserLoginJSON {
 	/**
 	 * Interacts with server to do user login.
 	 * 
-	 * @param LoginType Type of the user. Refer to CONST.java
+	 * @param UserType Type of the user. Refer to CONST.java
 	 * 
 	 * @return True upon successful login
 	 */
-	public static boolean loginUser(final int LoginType){
+	public static boolean loginUser(final int UserType){
 		try {
 			String targetURL = "";
 			String requestParam = "";
 			// Make POST dataset
-			switch(LoginType)
+			switch(UserType)
 			{
-			case CONST.LOGIN_TYPE_BG:
+			case CONST.USER_SESSION_TYPE_BG:
+				/*
 				targetURL = CONST.API_LOGIN_BY_BG_URL;
 				String[][] paramBG = {	
 						{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
@@ -56,10 +60,13 @@ public class UserLoginJSON {
 						{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}
 				};
 				requestParam = BgHttpHelper.generateParamData(paramBG);
+				*/
 				break;
-			case CONST.LOGIN_TYPE_FACEBOOK:
+				
+			case CONST.USER_SESSION_TYPE_FACEBOOK:
 				targetURL = CONST.API_LOGIN_BY_FACEBOOK_URL;
 				String[][] paramFacebook = {	
+						{PARAM_FB_UID, UserInfo.getFbUid()},
 						{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
 						{PARAM_USER_FIRSTNAME, UserInfo.getUserFirstName()},
 						{PARAM_USER_LASTNAME, UserInfo.getUserLastName()},
@@ -68,11 +75,9 @@ public class UserLoginJSON {
 				};
 				requestParam = BgHttpHelper.generateParamData(paramFacebook);
 				break;
-			case CONST.LOGIN_TYPE_TOKEN:
-				targetURL = CONST.API_LOGIN_BY_TOKEN_URL;
-				String[][] paramToken = {{PARAM_TOKEN_STRING, UserInfo.getTokenString()}};
-				requestParam = BgHttpHelper.generateParamData(paramToken);
-				break;
+				
+			default:
+				return false;
 			}
 
 			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
@@ -102,17 +107,8 @@ public class UserLoginJSON {
 	 */
 	private static void updateUserInfoWithJSON(JSONObject jsonObject) throws Exception{
 		UserInfo.setUserId(jsonObject.getLong(PARAM_USER_ID));
-		UserInfo.setUserEmail(jsonObject.getString(PARAM_USER_EMAIL));
-		UserInfo.setUserFirstName(jsonObject.getString(PARAM_USER_FIRSTNAME));
-		UserInfo.setUserLastName(jsonObject.getString(PARAM_USER_LASTNAME));
-		UserInfo.setUserType(jsonObject.getString(PARAM_USER_TYPE));
-		UserInfo.setTokenString(jsonObject.getString(PARAM_TOKEN_STRING));
-		UserInfo.setQRCodeURL(jsonObject.getString(PARAM_QRCODE_URL));
-
+		UserInfo.setQRCodeURL(jsonObject.getString(PARAM_QRCODE_ID));
 		UserInfo.setUserPassword(null);	//Nullify for security reason?!
-
-		Log.d("BgDB", "UserInfo updated:"+UserInfo.getUserEmail()+" ,"+UserInfo.getUserFirstName()+","+
-				UserInfo.getUserLastName()+", "+UserInfo.getUserType());
 	}
 
 	/**

@@ -6,17 +6,15 @@
 package com.bridginggood;
 
 import android.app.Application;
-import android.content.Context;
 
-import com.bridginggood.DB.UserLoginJSON;
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
 
 public class UserInfo extends Application{
-	private static String mUserEmail, mUserPassword, mUserType, mUserFirstName, mUserLastName;
+	private static String mFbUid, mUserEmail, mUserPassword, mUserFirstName, mUserLastName;
 	private static String mTokenString, mDeviceId, mC2DMRegistrationId, mQRCodeURL;
-	private static boolean mDeviceIdExisted;
 	private static Long mUserId;
+	private static int mUserType;
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
 	
@@ -24,72 +22,34 @@ public class UserInfo extends Application{
 		setUserId(null);
 		setUserEmail(null);
 		setUserPassword(null);
-		setUserType(null);
 		setUserFirstName(null);
 		setUserLastName(null);
 		setDeviceId(null);
 		setC2DMRegistrationId(null);
 		setQRCodeURL(null);
-		setDeviceIdExisted(false);
+		setFbUid(null);
+		setUserType(0);
 		mFacebook = new Facebook(CONST.FACEBOOK_APP_ID);
 		mAsyncRunner= new AsyncFacebookRunner(mFacebook);
 	}
 	
-	public static void createUserSessionForFacebook(String email, String firstname, String lastname, String type){
+	public static void createUserSessionForFacebook(String fbuid, String email, String firstname, String lastname, int type){
+		setFbUid(fbuid);
 		setUserEmail(email);
 		setUserFirstName(firstname);
 		setUserLastName(lastname);
 		setUserType(type);
 	}
 
-	public static void createUserSessionForToken(String loginToken, String type){
+	public static void createUserSessionForToken(String loginToken, int type){
 		setTokenString(loginToken);
 		setUserType(type);
 	}
 
-	public static void createUserInfoForBG(String email, String password, String type){
+	public static void createUserInfoForBG(String email, String password, int type){
 		setUserEmail(email);
 		setUserPassword(password);
 		setUserType(type);
-	}
-	
-	/**
-	 * Depending on the data available on UserSession, 
-	 * call appropriate methods to perform login.
-	 * 
-	 * If type is FACEBOOK, directs user to facebook login method no matter what.
-	 * Else, if Login Token exists, directs to token login method.
-	 * Otherwise, go to BG login method.
-	 * 
-	 *@return true if login was successful.  
-	 */
-	public static boolean loginUserInfo(Context context){		
-		if (getUserType().equals(CONST.USER_SESSION_TYPE_FACEBOOK))
-		{
-			//Go to Facebook Login
-			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_FACEBOOK))
-				return saveCurrentUserSessionToUserSessionStore(context);
-			else
-				return false;
-		}
-		else if (getTokenString() != null && getUserPassword() == null){
-			//Go to token login
-			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_TOKEN))
-				return saveCurrentUserSessionToUserSessionStore(context);
-			else
-				return false;
-		}
-		else{
-			//Go to BG login
-			if (UserLoginJSON.loginUser(CONST.LOGIN_TYPE_BG))
-				return saveCurrentUserSessionToUserSessionStore(context);
-			else
-				return false;
-		}
-	}
-	
-	private static boolean saveCurrentUserSessionToUserSessionStore(Context context){
-		return UserSessionStore.saveUserSession(context);
 	}
 	
 	public static boolean isTokenStringEmpty(){
@@ -102,10 +62,10 @@ public class UserInfo extends Application{
 	public static void setUserFirstName(String userFirstName) {
 		mUserFirstName = userFirstName;
 	}
-	public static String getUserType() {
+	public static int getUserType() {
 		return mUserType;
 	}
-	public static void setUserType(String userType) {
+	public static void setUserType(int userType) {
 		mUserType = userType;
 	}
 	public static String getUserLastName() {
@@ -166,14 +126,16 @@ public class UserInfo extends Application{
 	}
 
 	public static void setQRCodeURL(String mQRCodeURL) {
-		UserInfo.mQRCodeURL = mQRCodeURL;
+		//Update to full URL only if filename exists
+		if(mQRCodeURL != null && mQRCodeURL.length() > 0)
+			UserInfo.mQRCodeURL = CONST.QRCODE_S3_URL_PREFIX + mQRCodeURL + ".png";
 	}
 
-	public static boolean isDeviceIdExisted() {
-		return mDeviceIdExisted;
+	public static String getFbUid() {
+		return mFbUid;
 	}
 
-	public static void setDeviceIdExisted(boolean mDeviceIdExisted) {
-		UserInfo.mDeviceIdExisted = mDeviceIdExisted;
+	public static void setFbUid(String mFbUid) {
+		UserInfo.mFbUid = mFbUid;
 	}
 }

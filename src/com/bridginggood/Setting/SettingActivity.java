@@ -8,12 +8,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bridginggood.CONST;
 import com.bridginggood.R;
 import com.bridginggood.UserInfo;
 import com.bridginggood.UserSessionStore;
-import com.bridginggood.Facebook.FacebookAPI;
-import com.bridginggood.Facebook.FacebookSessionStore;
 
 public class SettingActivity extends Activity{
 	@Override
@@ -32,10 +29,6 @@ public class SettingActivity extends Activity{
 		btnGoBizMap.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				Log.d("BG", "Button Clicked");
-				if(UserInfo.getUserType().equals(CONST.USER_SESSION_TYPE_FACEBOOK)){
-					if (FacebookAPI.requestUserLogout(getApplicationContext()))
-						FacebookSessionStore.clear(getApplicationContext());
-				}
 				UserSessionStore.clearSession(getApplicationContext());
 			}
 		});

@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import com.bridginggood.DB.UserLoginJSON;
 import com.bridginggood.Facebook.FacebookAPI;
-import com.bridginggood.Facebook.FacebookSessionStore;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook.DialogListener;
 import com.facebook.android.FacebookError;
@@ -89,13 +88,7 @@ public class LoginActivity extends Activity{
 		mProgressDialog = ProgressDialog.show(this, "", "Logging in, please wait...", true, false);
 		Thread threadStartLogin = new Thread(new Runnable() {
 			public void run() {
-				mIsLoginSuccess = UserInfo.loginUserInfo(getApplicationContext());
-				
-				// If deviceId did not exist before, create QRCode
-				if(!UserInfo.isDeviceIdExisted()){
-					Log.d("BG", "Requesting createQRCode since isDeviceIdExisted is false");
-					UserLoginJSON.createQRCode();
-				}
+				mIsLoginSuccess = UserLoginJSON.loginUser(UserInfo.getUserType());
 				
 				Log.d("BG", "mIsLoginSuccess: "+mIsLoginSuccess);
 				handlerLogin.sendEmptyMessage(0);
@@ -116,6 +109,7 @@ public class LoginActivity extends Activity{
 			// Update view
 			if(mIsLoginSuccess){
 				Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
+				UserSessionStore.saveUserSession(getApplicationContext());
 				finish();
 				startActivity(new Intent().setClass(LoginActivity.this, MainActivity.class));
 			}
@@ -136,8 +130,6 @@ public class LoginActivity extends Activity{
 				@Override
 				public void onComplete(Bundle values) {
 					Log.d("BG", "Facebook Login Success!");
-					//Store Facebook session and request for user data
-					FacebookSessionStore.save(getApplicationContext());
 					FacebookAPI.requestUserInfo();
 					
 					//Start BridgingGood login for the Facebook user

@@ -1,4 +1,4 @@
-package com.bridginggood.User;
+package com.bridginggood.QR;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import com.bridginggood.R;
 import com.bridginggood.UserInfo;
 import com.bridginggood.UserSessionStore;
 
-public class UserActivity extends Activity{
+public class QRUndefinedActivity extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

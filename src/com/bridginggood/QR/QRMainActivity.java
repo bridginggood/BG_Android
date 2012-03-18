@@ -16,9 +16,12 @@ public class QRMainActivity extends Activity{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.qrcode_layout);
+
+		if (UserInfo.getQRCodeURL() != null){
+			ImageView imgView = (ImageView)findViewById(R.id.qrcode_imgview);
+			initQRCode (UserInfo.getQRCodeURL(), imgView);
+		}
 		
-		ImageView imgView = (ImageView)findViewById(R.id.qrcode_imgview);
-		initQRCode ("https://s3.amazonaws.com/BG_DEV_S3/media/qrcode/1203031822146048.png", imgView);
 	}
 
 	private void initQRCode(String qrcodeURL, ImageView imgView){
@@ -28,7 +31,7 @@ public class QRMainActivity extends Activity{
 		ImageManager imageManager = new ImageManager(this, false, mImageDownloaded);
 		imageManager.displayImage(qrcodeURL, this, imgView);
 	}
-	
+
 	public ImageManagerResult mImageDownloaded = new ImageManagerResult()
 	{
 		@Override
