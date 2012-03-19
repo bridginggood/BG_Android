@@ -1,43 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/background"
-    android:gravity="center"
-    android:orientation="vertical" >
+    android:background="@drawable/background_layout" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/qrcode_defined_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:visibility="gone"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical" >
-
-        <ImageView
-            android:id="@+id/qrcode_imgview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/qrcodeDescription"
-            android:scaleType="center"
-            android:src="@drawable/icon" />
-
-        <ProgressBar
-            android:id="@+id/qrcode_loading"
-            style="@style/GenericProgressIndicator" />
 
         <TextView
             android:id="@+id/qrcode_textview"
-            style="@style/TextviewNormalBrown"
+            style="@style/TextviewActionBar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/background_actionbar"
             android:gravity="center"
-            android:paddingTop="20dp"
+            android:padding="10dp"
             android:text="@string/qrcodeText" />
-    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/qrcode_imgview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/qrcodeDescription"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon" />
+
+            <ProgressBar
+                android:id="@+id/qrcode_loading"
+                style="@style/GenericProgressIndicator"
+                android:gravity="center" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/qrcode_undefined_layout"
@@ -45,7 +50,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:visibility="gone" >
 
         <Button
             android:id="@+id/qrcode_btnCreateNewQrcode"
@@ -57,9 +63,8 @@
         <EditText
             android:id="@+id/qrcode_edtQrcode"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
-            android:hint="Enter QRCode"
-            >
+            android:layout_height="wrap_content"
+            android:hint="Enter QRCode" >
 
             <requestFocus />
         </EditText>
@@ -71,4 +76,4 @@
             android:text="Register QR" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

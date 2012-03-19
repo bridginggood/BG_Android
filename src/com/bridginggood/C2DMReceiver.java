@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -59,7 +60,7 @@ public class C2DMReceiver extends BroadcastReceiver{
 	    	Log.d("BG_C2DM", registration);
 	    	//Update the userInfo and save it
 	    	UserInfo.setC2DMRegistrationId(registration);
-	    	UserInfoStore.saveUserSessionC2DMOnly(context);
+	    	//UserInfoStore.saveUserSessionC2DMOnly(context);
 	    	
 	       // Send the registration ID to the 3rd party site that is sending the messages.
 	    	sendRegistrationIdToServer(context);
@@ -101,10 +102,14 @@ public class C2DMReceiver extends BroadcastReceiver{
 	 * Sends registration Id to the server
 	 * @param context Got it from MainController
 	 */
-	private void sendRegistrationIdToServer(Context context){
+	private void sendRegistrationIdToServer(final Context context){
 		Thread threadStartLogin = new Thread(new Runnable() {
 			public void run() {
-				UserLoginJSON.sendC2DMRegistrationId();
+				boolean isSucc = UserLoginJSON.sendC2DMRegistrationId();
+				if (isSucc){
+					UserInfoStore.saveUserSessionC2DMOnly(context);
+				}
+				
 				handlerRegistration.sendEmptyMessage(0);
 			}
 		});

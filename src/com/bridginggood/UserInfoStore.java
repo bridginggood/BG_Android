@@ -11,6 +11,7 @@ package com.bridginggood;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 public class UserInfoStore {
 
@@ -41,7 +42,7 @@ public class UserInfoStore {
 		editor.putString(FBUID, UserInfo.getFbUid());
 		editor.putString(FBTOKEN, UserInfo.mFacebook.getAccessToken());
         editor.putLong(FBTOKEN_EXPIRES_IN, UserInfo.mFacebook.getAccessExpires());
-		editor.putString(C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId());
+		//editor.putString(C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId());
 		return editor.commit();
 	}
 
@@ -66,6 +67,7 @@ public class UserInfoStore {
 	}
 
 	public static boolean saveUserSessionC2DMOnly(Context context){
+		Log.d("BGUS", "saveUserSessionC2DMonly called");
 		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
 		editor.putString(C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId());
 		return editor.commit();

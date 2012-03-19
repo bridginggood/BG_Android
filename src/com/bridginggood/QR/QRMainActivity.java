@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bridginggood.ImageManager;
@@ -94,7 +95,7 @@ public class QRMainActivity extends Activity{
 	}
 
 	private void toggleLayout(){
-		LinearLayout linearLayoutQRDefined = (LinearLayout)findViewById(R.id.qrcode_defined_layout);
+		RelativeLayout linearLayoutQRDefined = (RelativeLayout)findViewById(R.id.qrcode_defined_layout);
 		LinearLayout linearLayoutQRUndefined = (LinearLayout)findViewById(R.id.qrcode_undefined_layout);
 
 		//QR exists
@@ -129,8 +130,7 @@ public class QRMainActivity extends Activity{
 	//Loads image (Qrcode) asynchronously. 
 	private void initQRCode(String qrcodeURL, ImageView imgView){
 		Log.d("BG_USER", "initQRCode called:"+qrcodeURL);
-		findViewById(R.id.qrcode_imgview).setVisibility(View.INVISIBLE);
-		imgView.setVisibility(View.INVISIBLE);
+		imgView.setVisibility(View.GONE);
 		ImageManager imageManager = new ImageManager(this, false, mImageDownloaded);
 		imageManager.displayImage(qrcodeURL, this, imgView);
 	}

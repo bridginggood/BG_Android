@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.bridginggood.CONST;
 import com.bridginggood.UserInfo;
+import com.bridginggood.UserInfoStore;
 
 public class UserLoginJSON {
 
@@ -115,7 +116,7 @@ public class UserLoginJSON {
 	/**
 	 * Sends C2DM registration info to the server
 	 */
-	public static void sendC2DMRegistrationId(){
+	public static boolean sendC2DMRegistrationId(){
 		try{
 			String targetURL = CONST.API_CREATE_C2DM_DEVICE_URL;
 			String[][] param = {	
@@ -130,16 +131,19 @@ public class UserLoginJSON {
 
 			//TODO: Maybe this needs to be changed later on.
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-				//Login succeed!
+				//Registration success! 
 				Log.d("BgDB", "C2DM registration completed: "+jsonObject.getString(PARAM_RESULT_MSG));
+				return true;
 
 			} else {
 				Log.d("BgDB", "C2DM registration failed: "+jsonObject.getString(PARAM_RESULT_MSG));
+				return false;
 			}
 		}
 		catch(Exception e){
 			Log.d("BgDB", "sendC2DMRegistrationId Exception: "+e.getLocalizedMessage());
 		}
+		return false;
 	}
 
 	/**

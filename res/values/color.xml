@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="background">#FEB900</color>
     <color name="transparent">#00000000</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
-    <color name="tab_bg_gradient">#36353b</color>
+    <color name="tab_unselected_bg_gradient">#36353b</color>
+    <color name="tab_selected_bg_gradient_start">#6a6971</color>
+    <color name="tab_selected_bg_gradient_center">#515056</color>
     <color name="tab_text_unselected">#b5b5b5</color>
+    <color name="background_gradient_start">#fea900</color>
+    <color name="background_gradient_end">#f9ce07</color>
+    
+    <color name="actionbar_gradient_start">#cd4400</color>
+    <color name="actionbar_gradient_end">#bd3f00</color>
     
     <color name="dark_brown">#2d1c00</color>
     <color name="gray">#808080</color>
-    
     <color name="gray_tab_unselected">#757575</color>
     <color name="gray_tab_selected">#989898</color>
-    
     <color name="gray_unselected">#7f7f7f</color>
     <color name="lime">#d2d900</color>
-    
+
 </resources>

@@ -3,8 +3,9 @@
     android:shape="rectangle" >
 
     <gradient
-        android:angle="90"
-        android:endColor="@color/tab_bg_gradient"
-        android:startColor="@color/black" />
+        android:angle="-90"
+        android:centerColor="@color/black"
+        android:endColor="@color/tab_unselected_bg_gradient"
+        android:startColor="@color/tab_unselected_bg_gradient" />
 
 </shape>
