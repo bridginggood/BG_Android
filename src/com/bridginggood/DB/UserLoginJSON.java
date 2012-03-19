@@ -117,8 +117,9 @@ public class UserLoginJSON {
 	 */
 	public static void sendC2DMRegistrationId(){
 		try{
-			String targetURL = CONST.API_CREATE_C2DM_REGISTRATION_ID_URL;
-			String[][] param = {	{PARAM_USER_EMAIL, UserInfo.getUserEmail()},
+			String targetURL = CONST.API_CREATE_C2DM_DEVICE_URL;
+			String[][] param = {	
+					{PARAM_USER_ID, UserInfo.getUserId()+""},
 					{PARAM_C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId()},
 					{PARAM_DEVICE_ID, UserInfo.getDeviceId()}};
 			String requestParam = BgHttpHelper.generateParamData(param);

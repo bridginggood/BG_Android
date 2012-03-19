@@ -29,7 +29,7 @@ public class CONST {
 
 	public static final String API_LOGIN_BY_BG_URL = API_URL+"/auth/LoginByUserFromMobile.json";
 
-	public static final String API_CREATE_C2DM_REGISTRATION_ID_URL = API_URL+"/auth/CreatePushNotificationAndroid.json";
+	public static final String API_CREATE_C2DM_DEVICE_URL = API_URL+"/auth/CreateC2DMDevice.json";
 	//public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQRCode.json";
 	/****************/
 	
