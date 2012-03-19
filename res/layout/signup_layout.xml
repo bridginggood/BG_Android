@@ -108,7 +108,6 @@
             android:id="@+id/signup_btnJoin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/signup_btn_join_selector"
             android:text="@string/signup_btnJoin" />
     </LinearLayout>
 

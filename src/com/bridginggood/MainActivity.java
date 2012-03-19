@@ -30,10 +30,10 @@ public class MainActivity extends TabActivity {
 
 		//Apply customed tab layout
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-		setupTab("Profile", R.drawable.icon_profile0, new Intent().setClass(this, UserActivityGroup.class));
-		setupTab("Explore", R.drawable.icon_explore0, new Intent().setClass(this, BizActivityGroup.class));
-		setupTab("Donate", R.drawable.icon_donate0, new Intent().setClass(this, QRActivityGroup.class));
-		setupTab("Causes", R.drawable.icon_causes1, new Intent().setClass(this, CharityActivityGroup.class));
+		setupTab("Profile", R.drawable.selector_tab_profile, new Intent().setClass(this, UserActivityGroup.class));
+		setupTab("Explore", R.drawable.selector_tab_explore, new Intent().setClass(this, BizActivityGroup.class));
+		setupTab("Donate", R.drawable.selector_tab_donate, new Intent().setClass(this, QRActivityGroup.class));
+		setupTab("Causes", R.drawable.selector_tab_causes, new Intent().setClass(this, CharityActivityGroup.class));
 		
 		mTabHost.setCurrentTab(1);
 		
