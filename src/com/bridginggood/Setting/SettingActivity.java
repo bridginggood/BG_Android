@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bridginggood.R;
 import com.bridginggood.UserInfo;
-import com.bridginggood.UserSessionStore;
+import com.bridginggood.UserInfoStore;
 
 public class SettingActivity extends Activity{
 	@Override
@@ -29,7 +29,7 @@ public class SettingActivity extends Activity{
 		btnGoBizMap.setOnClickListener(new OnClickListener(){
 			public void onClick(View v){
 				Log.d("BG", "Button Clicked");
-				UserSessionStore.clearSession(getApplicationContext());
+				UserInfoStore.clearSession(getApplicationContext());
 			}
 		});
 	}

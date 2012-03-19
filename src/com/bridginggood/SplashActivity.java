@@ -30,7 +30,6 @@ public class SplashActivity extends Activity {
 		setContentView(R.layout.splash_layout);
 
 		mProgressDialog = ProgressDialog.show(this, "", "Loading... Please wait", true, false);
-		UserInfo.init();	//Initialize UserInfo
 
 		Thread splashTread = new Thread() {
 			@Override
@@ -43,7 +42,7 @@ public class SplashActivity extends Activity {
 				
 				//Load saved session settings
 				UserInfo.init();
-				UserSessionStore.loadUserSession(getApplicationContext());
+				UserInfoStore.loadUserSession(getApplicationContext());
 				//FacebookSessionStore.restore(getApplicationContext());
 
 				//Get device ID

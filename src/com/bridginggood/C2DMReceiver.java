@@ -59,7 +59,7 @@ public class C2DMReceiver extends BroadcastReceiver{
 	    	Log.d("BG_C2DM", registration);
 	    	//Update the userInfo and save it
 	    	UserInfo.setC2DMRegistrationId(registration);
-	    	UserSessionStore.saveUserSessionC2DMOnly(context);
+	    	UserInfoStore.saveUserSessionC2DMOnly(context);
 	    	
 	       // Send the registration ID to the 3rd party site that is sending the messages.
 	    	sendRegistrationIdToServer(context);

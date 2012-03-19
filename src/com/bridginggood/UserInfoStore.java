@@ -12,7 +12,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class UserSessionStore {
+public class UserInfoStore {
 
 	private static final String TOKEN = "loginToken";					//BG Token attribute
 	private static final String TYPE = "userType";						//User login type

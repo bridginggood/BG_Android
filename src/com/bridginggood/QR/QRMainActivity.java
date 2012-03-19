@@ -176,8 +176,7 @@ public class QRMainActivity extends Activity{
 		//Display progress dialog
 		protected void onPreExecute()
 		{
-			mProgressDialog = ProgressDialog.show(this.mContext, "", "Please wait...", true, true);
-			mProgressDialog.setCancelable(false);
+			mProgressDialog = ProgressDialog.show(this.mContext, "", "Please wait...", true, false);
 		}
 
 		//Load current location
@@ -215,8 +214,7 @@ public class QRMainActivity extends Activity{
 		//Display progress dialog
 		protected void onPreExecute()
 		{
-			mProgressDialog = ProgressDialog.show(this.mContext, "", "Please wait...", true, true);
-			mProgressDialog.setCancelable(false);
+			mProgressDialog = ProgressDialog.show(this.mContext, "", "Please wait...", true, false);
 		}
 
 		//Load current location
