@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_margin="10dp"
         android:layout_weight="95"
-        android:background="@drawable/background_listview"
+        android:background="@drawable/background_sublayout"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="10dp" >

@@ -63,6 +63,9 @@
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ThankyouActivity"
+            android:screenOrientation="portrait" />
 
         <!-- Charity -->
         <activity
