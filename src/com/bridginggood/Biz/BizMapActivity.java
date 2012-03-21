@@ -91,12 +91,12 @@ public class BizMapActivity extends MapActivity{
 
 		//Set MapView button as selected
 		Button btnGoBizMap = (Button) findViewById(R.id.btnGoToBizMap);
-		btnGoBizMap.setPressed(true);
+		Button btnGoListView = (Button) findViewById(R.id.btnGoToListView);
+		btnGoListView.setEnabled(true);
 		btnGoBizMap.setEnabled(false);
 
 
 		//Action to ListView button
-		Button btnGoListView = (Button) findViewById(R.id.btnGoToListView);
 		//Button Handler
 		final Intent intent = new Intent(this, BizListActivity.class);
 		btnGoListView.setOnClickListener(new OnClickListener(){
@@ -345,7 +345,7 @@ public class BizMapActivity extends MapActivity{
 	private class LoadUserLocationAndDisplayAsyncTask extends AsyncTask<Context, Void, Context>
 	{
 		private Context mContext;
-		private LoadUserLocationAndDisplayAsyncTask _this = this;
+		//private LoadUserLocationAndDisplayAsyncTask _this = this;
 
 		public LoadUserLocationAndDisplayAsyncTask(Context context){
 			this.mContext = context;

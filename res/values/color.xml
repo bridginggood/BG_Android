@@ -5,20 +5,32 @@
     <color name="transparent">#00000000</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="gray">#808080</color>
+
+    <!-- Tabs -->
     <color name="tab_unselected_bg_gradient">#36353b</color>
     <color name="tab_selected_bg_gradient_start">#6a6971</color>
     <color name="tab_selected_bg_gradient_center">#515056</color>
     <color name="tab_text_unselected">#b5b5b5</color>
+
+    <!-- Background Layout -->
     <color name="background_gradient_start">#fea900</color>
-    <color name="background_gradient_end">#f9ce07</color>
-    
+    <color name="background_gradient_end">#fed000</color>
+
+    <!-- Action bar -->
     <color name="actionbar_gradient_start">#cd4400</color>
-    <color name="actionbar_gradient_end">#bd3f00</color>
+    <color name="actionbar_gradient_end">#e08c62</color>
+    <color name="actionbar_gradient_center">#ce4704</color>
     
+    <!-- Button -->
+    <color name="button_unpressed_start">#ba240d</color>
+    <color name="button_unpressed_end">#d55e22</color>
+    <color name="button_pressed_start">#fec30e</color>
+    <color name="button_pressed_end">#f79f2d</color>
+    <color name="button_stroke">#733516</color>
+
+    <!-- Extra -->
     <color name="dark_brown">#2d1c00</color>
-    <color name="gray">#808080</color>
-    <color name="gray_tab_unselected">#757575</color>
-    <color name="gray_tab_selected">#989898</color>
     <color name="gray_unselected">#7f7f7f</color>
     <color name="lime">#d2d900</color>
 

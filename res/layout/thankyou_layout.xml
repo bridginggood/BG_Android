@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
-        android:layout_weight="75"
+        android:layout_weight="2"
         android:background="@drawable/background_sublayout"
         android:gravity="center"
         android:orientation="vertical"
@@ -30,23 +30,35 @@
             android:text="THANK YOU!" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10"
-        android:orientation="horizontal" >
+        android:layout_weight="2"
+        android:padding="10dp" >
+
+        <EditText
+            android:id="@+id/thankyou_edtWriteComment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" >
+
+            <requestFocus />
+        </EditText>
 
         <TextView
+            android:id="@+id/thankyou_txtShareOn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notify campaign status?" />
-    </LinearLayout>
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/thankyou_edtWriteComment"
+            android:text="@string/thankyou_txtShareOn" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="15"
-        android:text="DONE" />
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="DONE" />
+    </RelativeLayout>
 
 </LinearLayout>

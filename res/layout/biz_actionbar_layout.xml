@@ -3,7 +3,6 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_weight="5"
     android:background="@drawable/background_actionbar"
     android:orientation="horizontal"
     android:padding="5dp" >
@@ -14,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:text="BridgingGood" />
+        style = "@style/ActionBarTextHeader"
+        android:text="@string/actionbar_txtheader" />
 
     <ProgressBar
         android:id="@+id/actionbar_loading"
@@ -32,6 +32,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:background="@color/transparent"
+        android:contentDescription="@string/actionbar_txtheader"
         android:src="@drawable/ic_action_locate" />
 
 </RelativeLayout>

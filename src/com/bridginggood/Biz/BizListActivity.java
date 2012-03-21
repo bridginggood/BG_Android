@@ -69,17 +69,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		 */
 		mBizArrayList = new ArrayList<Business>();
 
-		/*
-		 * Initialize location variables to NYC City Center
-		 * 
-		 * Set default location to New York City
-		 */
-		//sample random location
-		mUserLocation = new Location("CurrentLocation");
-		mUserLocation.setLatitude(40.714353);
-		mUserLocation.setLongitude(-74.005973);
 		mPage = 1;
-
 		mEndOfList = false;
 
 		//Initialize listview
@@ -96,7 +86,9 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		//Reset list
 		mBizListAdapter.clear();
 		mPage = 1;
-		
+		mEndOfList = false;
+		mIsLocationAvailable = false;
+
 		mBizMyLocation = new BizMyLocation();
 		mBizMyLocation.getLocation(this, mLocationResult);
 
@@ -159,8 +151,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			else{
 				mPage++;
 			}
-			Log.d("BgBiz", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+
-					" ) with page: "+mPage);
+			Log.d("BgBiz", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+" ) with page: "+mPage);
 			runOnUiThread(updateListView);
 		}
 	};
@@ -193,10 +184,13 @@ public class BizListActivity extends Activity implements OnScrollListener{
 
 				//Tell to the adapter that changes have been made, this will cause the list to refresh
 				mBizListAdapter.notifyDataSetChanged();
-				Log.d("BgBiz", "mBizListAdpater notified!");		
+				Log.d("BgBiz", "mBizListAdpater notified!");	
 			}
 			//Done loading more
 			mIsListLoadingMore = false;	
+
+			//Change the header
+			toggleLayout(false);
 		}
 	};
 
@@ -230,8 +224,8 @@ public class BizListActivity extends Activity implements OnScrollListener{
 
 		//Set ListView button as selected
 		Button btnGoListView = (Button) findViewById(R.id.btnGoToListView);
-		btnGoListView.setPressed(true);
 		btnGoListView.setEnabled(false);
+		btnGoBizMap.setEnabled(true);
 	}
 
 	AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
@@ -343,9 +337,6 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			mUserLocation.setLongitude(-74.005973);
 			mPage = 1;
 		}
-
-		toggleLayout(false);
-
 		//Loads with default location defined in onCreate()
 		new Thread(null, loadMoreListItems).start();
 	}
@@ -357,6 +348,8 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			//Loading layout
 			LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
 			layoutBizListLoading.setVisibility(View.VISIBLE);
+			findViewById(R.id.progressbarBizListLoading).setVisibility(View.VISIBLE);
+			((TextView)findViewById(R.id.txtBizListLoading)).setText(R.string.bizListLoading);
 
 			//Change action bar state
 			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.GONE);
@@ -404,10 +397,6 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			if (mUserLocation != null)
 			{
 				Log.d("BgBiz", "Location found!: "+mUserLocation.getLatitude()+" | "+mUserLocation.getLongitude());
-
-				//Change the header
-				toggleLayout(false);
-
 				Log.d("BgBiz", "Load new items");
 				new Thread(null, loadMoreListItems).start();
 			}

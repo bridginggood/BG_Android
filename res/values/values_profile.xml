@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_txtheader">You\'ve donated \n $000 this month</string>
+    <string name="profile_tbl_place">Place</string>
+    <string name="profile_tbl_category">Category</string>
+    <string name="profile_tbl_total">Total</string>
+    
+    <string name="profile_select_charity">By Charity</string>
+    <string name="profile_select_place">By Places</string>
+    
+    <string name="profile_stat_today">Today</string>
+    <string name="profile_stat_week">Week</string>
+    <string name="profile_stat_month">Month</string>
+    
+    <string name="profile_preferences">Preferences</string>
+</resources>
