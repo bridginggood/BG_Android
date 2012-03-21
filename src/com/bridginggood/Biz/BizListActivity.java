@@ -25,6 +25,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -78,24 +79,28 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		mUserLocation.setLatitude(40.714353);
 		mUserLocation.setLongitude(-74.005973);
 		mPage = 1;
-		
-		mEndOfList = false;
 
-		//Initialize myLocation to get current loc
-		retrieveUserLocation();
+		mEndOfList = false;
 
 		//Initialize listview
 		this.initListView();
 
 		//Initialize button
 		this.initButtonViews();
+
+		//Initialize myLocation to get current loc
+		retrieveUserLocation();
 	}
-	
+
 	private void retrieveUserLocation(){
+		//Reset list
+		mBizListAdapter.clear();
+		mPage = 1;
+		
 		mBizMyLocation = new BizMyLocation();
 		mBizMyLocation.getLocation(this, mLocationResult);
 
-		mLoadUserLocationAndDisplayAsyncTask = new LoadUserLocationAndDisplayAsyncTask(getParent());
+		mLoadUserLocationAndDisplayAsyncTask = new LoadUserLocationAndDisplayAsyncTask();
 		mLoadUserLocationAndDisplayAsyncTask.execute(this);
 	}
 
@@ -147,7 +152,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 
 			BusinessJSON bizDB = new BusinessJSON(myLat, myLng, mPage);		
 			mTmpBizListAdapter = bizDB.getBizListJSON();
-			
+
 			if (mTmpBizListAdapter == null){
 				mEndOfList = true;
 			}
@@ -169,10 +174,11 @@ public class BizListActivity extends Activity implements OnScrollListener{
 				{
 					TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
 					txtBizListLoading.setText(R.string.bizNoResult);
-					//txtBizListLoading.setVisibility(View.VISIBLE);
+
 					LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
 					layoutBizListLoading.setVisibility(View.VISIBLE);
-					
+					findViewById(R.id.progressbarBizListLoading).setVisibility(View.GONE);
+
 					mBizListView.setVisibility(View.GONE);
 				}
 
@@ -184,7 +190,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 				for(Business biz : mTmpBizListAdapter){
 					mBizListAdapter.add(biz);
 				}
-				
+
 				//Tell to the adapter that changes have been made, this will cause the list to refresh
 				mBizListAdapter.notifyDataSetChanged();
 				Log.d("BgBiz", "mBizListAdpater notified!");		
@@ -210,6 +216,15 @@ public class BizListActivity extends Activity implements OnScrollListener{
 						.getDecorView();
 
 				bizActivityGroup.getBizActivityGroup().changeView(newView);	//Replace View
+			}
+		});
+
+		ImageButton btnReloadLocation = (ImageButton) findViewById(R.id.actionbar_imgbtn_findlocation);
+		btnReloadLocation.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d("BgBiz", "Reload location");
+				retrieveUserLocation();
 			}
 		});
 
@@ -290,7 +305,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		stopLocationLoading();
 		super.onStop();
 	}
-	
+
 	@Override
 	public void onPause(){
 		Log.d("BgBiz", "onPause called from BizListController");
@@ -319,6 +334,48 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		alert.show();
 	}
 
+	private void changeViewOnLocationNotFound(){
+		Toast.makeText(getParent(), "Unable to identify your location.", Toast.LENGTH_SHORT).show();
+
+		if(mUserLocation == null){
+			mUserLocation = new Location("CurrentLocation");
+			mUserLocation.setLatitude(40.714353);
+			mUserLocation.setLongitude(-74.005973);
+			mPage = 1;
+		}
+
+		toggleLayout(false);
+
+		//Loads with default location defined in onCreate()
+		new Thread(null, loadMoreListItems).start();
+	}
+
+	private void toggleLayout(boolean isLoading){
+		if (isLoading){
+			mBizListView.setVisibility(View.GONE);
+
+			//Loading layout
+			LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
+			layoutBizListLoading.setVisibility(View.VISIBLE);
+
+			//Change action bar state
+			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.GONE);
+			findViewById(R.id.actionbar_loading).setVisibility(View.VISIBLE);
+		}else{
+			LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
+			layoutBizListLoading.setVisibility(View.GONE);
+
+			mBizListView.setVisibility(View.VISIBLE);
+
+			//Change action bar state
+			findViewById(R.id.actionbar_loading).setVisibility(View.GONE);
+			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.VISIBLE);
+
+			//Temp code: display location
+			((TextView) findViewById(R.id.actionbar_txtheader)).setText(mUserLocation.getLatitude()+", "+mUserLocation.getLongitude());
+		}
+	}
+
 	/**
 	 * Class to find current user location
 	 * @author wns349
@@ -326,12 +383,10 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	 */
 	private class LoadUserLocationAndDisplayAsyncTask extends AsyncTask<Context, Void, Void>
 	{
-		private Context mContext;
-
-		public LoadUserLocationAndDisplayAsyncTask(Context context){
-			this.mContext = context;
+		protected void onPreExecute(){
+			toggleLayout(true);
 		}
-		
+
 		protected Void doInBackground(Context... params)
 		{
 			//Wait x seconds to see if we can get a location from either network or GPS, otherwise stop
@@ -351,12 +406,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 				Log.d("BgBiz", "Location found!: "+mUserLocation.getLatitude()+" | "+mUserLocation.getLongitude());
 
 				//Change the header
-				//TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
-				//txtBizListLoading.setVisibility(View.GONE);
-				LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
-				layoutBizListLoading.setVisibility(View.GONE);
-				
-				mBizListView.setVisibility(View.VISIBLE);
+				toggleLayout(false);
 
 				Log.d("BgBiz", "Load new items");
 				new Thread(null, loadMoreListItems).start();
@@ -364,8 +414,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			else
 			{
 				Log.d("BgBiz", "Location not found!");
-				//Couldn't find location, do something like show an alert dialog
-				Toast.makeText(this.mContext, "Unable to identify your location.", Toast.LENGTH_SHORT).show();
+				changeViewOnLocationNotFound();
 			}
 		}
 	}

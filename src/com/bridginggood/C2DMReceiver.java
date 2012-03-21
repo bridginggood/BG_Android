@@ -105,6 +105,7 @@ public class C2DMReceiver extends BroadcastReceiver{
 	private void sendRegistrationIdToServer(final Context context){
 		Thread threadStartLogin = new Thread(new Runnable() {
 			public void run() {
+				Log.d("BGB", "Sending C2dm registration to BG server");
 				boolean isSucc = UserLoginJSON.sendC2DMRegistrationId();
 				if (isSucc){
 					UserInfoStore.saveUserSessionC2DMOnly(context);

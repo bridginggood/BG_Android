@@ -19,7 +19,8 @@ public class UserActivity extends Activity{
 		setContentView(R.layout.main);
 		TextView txtHello = (TextView) findViewById(R.id.txtHello);
 		txtHello.setText("Hello "+UserInfo.getUserFirstName()+" "+UserInfo.getUserLastName()+"\n"+
-				UserInfo.getUserEmail()+" | Type: "+UserInfo.getUserType());
+				UserInfo.getUserEmail()+" | Type: "+UserInfo.getUserType()+" | DeviceId: "+UserInfo.getDeviceId()
+			+" | c2dm: "+UserInfo.getC2DMRegistrationId());
 
 		initButton();
 	}

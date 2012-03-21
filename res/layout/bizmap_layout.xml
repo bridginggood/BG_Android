@@ -4,19 +4,7 @@
     android:layout_height="fill_parent"
     android:background="@drawable/background_layout"
     android:orientation="vertical" >
-
-    <LinearLayout
-        android:id="@+id/bizMapHeaderLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5" >
-
-        <TextView
-            android:id="@+id/txtBizMapHeader"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hello" />
-    </LinearLayout>
+    <include layout="@layout/biz_actionbar_layout" />
     <!--
     	Work: "0bJec5GDn0KoM9Ir2A-9mTV8W4iTfMqx1GgASHA"
     	Home: "0Xl-E6OnUWprJYt6D4dhvh-Ub-A3Fq2SC3-u8mw"

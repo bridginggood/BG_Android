@@ -3,9 +3,7 @@ package com.bridginggood.Biz;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -16,7 +14,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bridginggood.R;
@@ -37,15 +37,10 @@ public class BizMapActivity extends MapActivity{
 	private LoadBusinessAndDisplayAsyncTask mLoadBusinessAndDisplayAsyncTask;
 	private LoadUserLocationAndDisplayAsyncTask mLoadUserLocationAndDisplayAsyncTask;
 	private Location mUserLocation;
-
-	private ProgressDialog mProgressDialog;
-
 	private float mDistanceRadius = 1.0f;
 
 	private boolean mIsLoadingBizLocation = false; 		//Lock
 	private boolean mIsLocationAvailable = false;	// Triggers when location becomes available
-
-	private Context mMasterContext;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -54,8 +49,6 @@ public class BizMapActivity extends MapActivity{
 		setContentView(R.layout.bizmap_layout);
 
 		Log.d("BgMap", "Welcome to BizMapController");
-
-		mMasterContext = getParent();
 
 		//Initialize ArrayLists
 		mGeoPointArrayList = new ArrayList<GeoPoint>();
@@ -117,6 +110,15 @@ public class BizMapActivity extends MapActivity{
 				bizActivityGroup.getBizActivityGroup().changeView(newView);	//Replace View
 			}
 		});
+		
+		ImageButton btnReloadLocation = (ImageButton) findViewById(R.id.actionbar_imgbtn_findlocation);
+		btnReloadLocation.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d("BgBiz", "Reload location");
+				retrieveUserLocation();
+			}
+		});
 	}
 
 	private void retrieveUserLocation(){
@@ -125,6 +127,22 @@ public class BizMapActivity extends MapActivity{
 
 		mLoadUserLocationAndDisplayAsyncTask = new LoadUserLocationAndDisplayAsyncTask(getParent());
 		mLoadUserLocationAndDisplayAsyncTask.execute();
+	}
+	
+	private void toggleLayout(boolean isLoading){
+		if (isLoading){	
+			//Change action bar state
+			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.GONE);
+			findViewById(R.id.actionbar_loading).setVisibility(View.VISIBLE);
+		}else{
+			//Change action bar state
+			findViewById(R.id.actionbar_loading).setVisibility(View.GONE);
+			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.VISIBLE);
+			
+			//Temp code: display location
+			if(mUserLocation != null)
+				((TextView) findViewById(R.id.actionbar_txtheader)).setText(mUserLocation.getLatitude()+", "+mUserLocation.getLongitude());
+		}
 	}
 
 	private void retrieveBizLocation(){
@@ -145,15 +163,14 @@ public class BizMapActivity extends MapActivity{
 	}
 
 	private void createUserLocationOverlayOnMapView(){
-		if(mProgressDialog.isShowing())
-			mProgressDialog.dismiss();
+		//if(mProgressDialog.isShowing())
+		//	mProgressDialog.dismiss();
 
 		float myLat = (float)mUserLocation.getLatitude();
 		float myLng = (float)mUserLocation.getLongitude();
 
 		GeoPoint myPoint = new GeoPoint (convFloatToIntE6(myLat), convFloatToIntE6(myLng));
-		MapController mapController = mMapView.getController();
-		mapController.animateTo(myPoint);
+
 		Log.d("BgMap", "createUserPositionOverlayOnMap :"+myLat+" , "+myLng);
 
 		// Marker
@@ -161,10 +178,13 @@ public class BizMapActivity extends MapActivity{
 				LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT, myPoint,
 				MapView.LayoutParams.TOP_LEFT);
-		ImageView mapMarker = new ImageView(
-				getApplicationContext());
+		ImageView mapMarker = new ImageView(getApplicationContext());
 		mapMarker.setImageResource(R.drawable.icon);
+		mMapView.removeAllViews();	//Clean the location and then add new map view
 		mMapView.addView(mapMarker, mapMarkerParams);
+		
+		MapController mapController = mMapView.getController();
+		mapController.animateTo(myPoint); //Animate to the location
 	}
 
 	//To create overlay on the map
@@ -331,10 +351,11 @@ public class BizMapActivity extends MapActivity{
 			this.mContext = context;
 		}
 
-
 		//Display progress dialog
 		protected void onPreExecute()
 		{
+			toggleLayout(true);
+			/*
 			mProgressDialog = ProgressDialog.show(mMasterContext, "", "Identifying your location...", true, true);
 			mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 				@Override
@@ -344,7 +365,7 @@ public class BizMapActivity extends MapActivity{
 					}
 					_this.cancel(true);
 				}
-			});
+			});*/
 		}
 
 		//Load current location
@@ -362,10 +383,12 @@ public class BizMapActivity extends MapActivity{
 		}
 		protected void onPostExecute(final Context context)
 		{
+			/*
 			if(mProgressDialog.isShowing())
 			{
 				mProgressDialog.dismiss();
 			}
+			*/
 
 			if (mUserLocation != null)
 			{
@@ -377,6 +400,7 @@ public class BizMapActivity extends MapActivity{
 				Log.d("BgMap", "Location not found!");
 				Toast.makeText(this.mContext, "Unable to identify your location.", Toast.LENGTH_SHORT).show();
 			}
+			toggleLayout(false);
 		}
 	}
 

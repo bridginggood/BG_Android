@@ -7,11 +7,10 @@
         android:id="@+id/txtBizListViewHeader"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#336699"
+        android:background="@color/white"
         android:gravity="center_vertical"
-        android:padding="10dp"
+        android:padding="2dp"
         android:text="@string/bizListHeader"
-        android:textColor="#FFFFFF"
-        android:textSize="22dp"
-        android:textStyle="bold" />
+        style="@style/TextviewText"
+        />
 </LinearLayout>

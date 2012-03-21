@@ -5,7 +5,9 @@
     android:background="@drawable/background_layout"
     android:baselineAligned="false"
     android:orientation="vertical" >
-
+	
+	<include layout="@layout/biz_actionbar_layout" />
+	
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
@@ -48,6 +50,8 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:cacheColorHint="@color/transparent"
+            android:divider = "@color/gray"
+            android:dividerHeight = "1dp"
             android:visibility="gone" />
     </LinearLayout>
 
