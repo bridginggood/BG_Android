@@ -108,7 +108,7 @@ public class LoginActivity extends Activity{
 			mProgressDialog.dismiss(); // Close dialog
 			// Update view
 			if(mIsLoginSuccess){
-				Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
 				UserInfoStore.saveUserSession(getApplicationContext());
 				finish();
 				startActivity(new Intent().setClass(LoginActivity.this, MainActivity.class));

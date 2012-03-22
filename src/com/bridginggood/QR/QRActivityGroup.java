@@ -2,16 +2,20 @@ package com.bridginggood.QR;
 
 import java.util.ArrayList;
 
+import com.bridginggood.R;
+
 import android.app.ActivityGroup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 public class QRActivityGroup extends ActivityGroup {
 	
 	private ArrayList<View> historyQRActivityGroup; 		// ArrayList to manage Views.
 	private QRActivityGroup qrActivityGroup; 				// BizActivityGroup that Activity can access.
+	private boolean mExitApplication;
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,7 @@ public class QRActivityGroup extends ActivityGroup {
 	}
 
 	public void replaceView(View v) {   // Changing to new activity level.
-		//Log.d("BgBiz","Replacing View...");
+		mExitApplication = false;
 		historyQRActivityGroup.add(v);   
 		setContentView(v); 
 	}   
@@ -48,9 +52,14 @@ public class QRActivityGroup extends ActivityGroup {
 			historyQRActivityGroup.remove(historyQRActivityGroup.size()-1);   
 			setContentView(historyQRActivityGroup.get(historyQRActivityGroup.size()-1)); 
 		} else {   
-			finish(); // Finish tabactivity
-			Log.d("BgQR", "onDestroy called from "+this.getClass().toString());
-			System.exit(0);
+			if(mExitApplication){
+				finish(); // Finish tabactivity
+				Log.d("BG", "onDestroy called from "+this.getClass().toString());
+				System.exit(0);
+			}else{
+				Toast.makeText(this, R.string.application_backtoexit, Toast.LENGTH_SHORT).show();
+				mExitApplication = true;
+			}
 		}   
 	}  
 

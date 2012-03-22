@@ -105,14 +105,6 @@
             android:name=".QR.QRMainActivity"
             android:screenOrientation="portrait" />
 
-        <!-- Bg -->
-        <activity
-            android:name=".Setting.SettingActivityGroup"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Setting.SettingActivity"
-            android:screenOrientation="portrait" />
-
         <!-- Google Map -->
         <uses-library
             android:name="com.google.android.maps"

@@ -1,40 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:gravity="center|right"
-    android:orientation="horizontal" >
+    android:gravity="center" >
 
     <ImageView
         android:id="@+id/bizLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
         android:contentDescription="@string/bizListCellIconDescription"
-        android:gravity="center_vertical"
         android:src="@drawable/shop_default" />
 
     <TextView
         android:id="@+id/bizName"
+        style="@style/business_listview_business_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello" 
-        style="@style/TextviewText"/>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/bizLogo"
+        android:text="@string/hello" />
+    <!--
+    <ImageView
+        android:id="@+id/showdetail"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical" >
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/show_detail_arrow" />
+    -->
 
-        <!-- FIRST ROW: bizName, distanceAway -->
+    <TextView
+        android:id="@+id/distanceAway"
+        style="@style/business_listview_business_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:text="@string/hello" />
 
-        <TextView
-            android:id="@+id/distanceAway"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:text="@string/hello" />
-
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

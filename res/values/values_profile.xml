@@ -13,4 +13,11 @@
     <string name="profile_stat_month">Month</string>
     
     <string name="profile_preferences">Preferences</string>
+
+    <string name="profile_preferences_support"><u>Support</u></string>
+    <string name="profile_preferences_sendfeedback"><u>Send Feedback</u></string>
+    <string name="profile_preferences_faq"><u>FAQ</u></string>
+    <string name="profile_preferences_termsofservice">Terms of Service</string>
+    <string name="profile_preferences_privacypolicy">Privacy Policy</string>
+    
 </resources>

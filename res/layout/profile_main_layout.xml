@@ -6,14 +6,7 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Button" />
-
+    <!-- Upper half, displaying select menu and header -->
     <TextView
         android:id="@+id/profile_txtheader"
         style="@style/profile_textview_header"
@@ -24,12 +17,93 @@
         android:padding="20dp"
         android:text="@string/profile_txtheader" />
 
-    <TableLayout
-        android:id="@+id/tableLayout1"
+    <LinearLayout
+        android:id="@+id/profile_select_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" >
+        android:layout_below="@id/profile_txtheader"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/profile_select_charity"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_button"
+            android:text="@string/profile_select_charity" />
+
+        <Button
+            android:id="@+id/profile_select_place"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_button"
+            android:text="@string/profile_select_place" />
+    </LinearLayout>
+
+    <!-- Profile Navigation Layout -->
+    <RelativeLayout
+        android:id="@+id/profile_navigation_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:background="@drawable/background_actionbar"
+        android:gravity="center"
+        android:padding="5dp" >
+
+        <Button
+            android:id="@+id/profile_stat_today"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/selector_button"
+            android:enabled="false"
+            android:text="@string/profile_stat_today" />
+
+        <Button
+            android:id="@+id/profile_stat_week"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/profile_stat_today"
+            android:background="@drawable/selector_button"
+            android:text="@string/profile_stat_week" />
+
+        <Button
+            android:id="@+id/profile_stat_month"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/profile_stat_week"
+            android:background="@drawable/selector_button"
+            android:text="@string/profile_stat_month" />
+
+        <Button
+            android:id="@+id/profile_preferences"
+            style="@style/ButtonText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/selector_button"
+            android:text="@string/profile_preferences" />
+    </RelativeLayout>
+
+    
+    <!-- Table layout to display stats -->
+    <TableLayout
+        android:id="@+id/profile_table_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/profile_navigation_layout"
+        android:layout_below="@id/profile_select_layout"
+        android:layout_margin="5dp"
+        android:background="@drawable/background_sublayout" >
 
         <TableRow
             android:id="@+id/tableRow1"
@@ -63,19 +137,81 @@
             android:id="@+id/tableRow2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_place" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_category" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_total" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow3"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_place" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_category" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_total" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow4"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_place" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_category" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/profile_tbl_total" />
         </TableRow>
     </TableLayout>
-
 </RelativeLayout>

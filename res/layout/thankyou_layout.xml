@@ -41,24 +41,76 @@
             android:id="@+id/thankyou_edtWriteComment"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" >
+            android:layout_alignParentTop="true"
+            android:hint="@string/thankyou_txtCommentHint" >
 
             <requestFocus />
         </EditText>
 
         <TextView
             android:id="@+id/thankyou_txtShareOn"
+            style="@style/thankyou_txtshare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/thankyou_edtWriteComment"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"
             android:text="@string/thankyou_txtShareOn" />
 
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/thankyou_txtShareOn"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/background_sublayout"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/thankyou_txtShareOn"
+                android:src="@drawable/icon_facebook" />
+
+            <View
+                android:layout_width="2dip"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/gray" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/thankyou_txtShareOn"
+                android:src="@drawable/icon_twitter" />
+
+            <View
+                android:layout_width="2dip"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/gray" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/thankyou_txtShareOn"
+                android:src="@drawable/icon_twitter" />
+        </LinearLayout>
+
         <Button
+            style="@style/thankyou_txtdone"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:text="DONE" />
+            android:background="@drawable/selector_button"
+            android:padding="10dp"
+            android:text="@string/thankyou_btnDone" />
     </RelativeLayout>
 
 </LinearLayout>

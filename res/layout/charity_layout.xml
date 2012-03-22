@@ -5,86 +5,91 @@
     android:background="@drawable/background_layout"
     android:orientation="vertical" >
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_margin="10dp"
         android:layout_weight="95"
-        android:background="@drawable/background_sublayout"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp" >
+        android:background="@drawable/background_sublayout" >
 
-        <ImageView
-            android:id="@+id/charity_img"
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:scaleType="fitStart"
-            android:src="@drawable/water" />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp" >
 
-        <TableLayout
-            android:id="@+id/charity_stat_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/charity_img"
-            android:orientation="horizontal"
-            android:padding="5dp" >
+            <ImageView
+                android:id="@+id/charity_img"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitStart"
+                android:src="@drawable/water" />
 
-            <TableRow>
+            <TableLayout
+                android:id="@+id/charity_stat_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/charity_img"
+                android:orientation="horizontal"
+                android:padding="5dp" >
 
-                <TextView
-                    android:id="@+id/aa"
-                    style="@style/Textview_Charity_Black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="$ 0000" />
+                <TableRow>
 
-                <TextView
-                    android:id="@+id/bb"
-                    style="@style/Textview_Charity_Black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="$ 000" />
+                    <TextView
+                        android:id="@+id/aa"
+                        style="@style/charity_textview_black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="$ 0000" />
 
-                <TextView
-                    android:id="@+id/cc"
-                    style="@style/Textview_Charity_Black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="$ 000" />
-            </TableRow>
+                    <TextView
+                        android:id="@+id/bb"
+                        style="@style/charity_textview_black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="$ 000" />
 
-            <TableRow>
+                    <TextView
+                        android:id="@+id/cc"
+                        style="@style/charity_textview_black"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="$ 000" />
+                </TableRow>
 
-                <TextView
-                    android:id="@+id/charity_fixed_donated"
-                    style="@style/Textview_Charity_Gray"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Donated" />
+                <TableRow>
 
-                <TextView
-                    android:id="@+id/charity_fixed_people"
-                    style="@style/Textview_Charity_Gray"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="People" />
+                    <TextView
+                        android:id="@+id/charity_fixed_donated"
+                        style="@style/charity_textview_gray"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Donated" />
 
-                <TextView
-                    android:id="@+id/charity_fixed_days"
-                    style="@style/Textview_Charity_Gray"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Days to go" />
-            </TableRow>
-        </TableLayout>
-    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/charity_fixed_people"
+                        style="@style/charity_textview_gray"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="People" />
+
+                    <TextView
+                        android:id="@+id/charity_fixed_days"
+                        style="@style/charity_textview_gray"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Days to go" />
+                </TableRow>
+            </TableLayout>
+        </RelativeLayout>
+    </ScrollView>
 
     <include layout="@layout/charity_navigation_layout" />
 

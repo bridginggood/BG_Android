@@ -36,13 +36,14 @@ import com.bridginggood.Biz.BizMyLocation.LocationResult;
 import com.bridginggood.DB.BusinessJSON;
 
 public class BizListActivity extends Activity implements OnScrollListener{
-	private ArrayList<Business> mBizArrayList, mTmpBizListAdapter;		//Stores Business objects in array
+	private ArrayList<Business> mBizArrayList;		//Stores Business objects in array
 	private BizMyLocation mBizMyLocation;
 	private Location mUserLocation;
 	private float mMyLat, mMyLng;	//For API search
 	private int mPage;				//For API search
 
-	private boolean mIsListLoadingMore, mEndOfList;					//To lock the list while handling onScroll event
+	private boolean mEndOfList;					//To lock the list while handling onScroll event
+	private boolean mIsLoadUserLocationAsyncTaskRunning, mIsLoadBusinessToDisplayAsyncTaskRunning;
 
 	private BizListAdapter mBizListAdapter;			//ListView adapter
 
@@ -50,7 +51,9 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	private View mBizListViewFooter;				//ListView footer - Loading message
 
 	private boolean mIsLocationAvailable = false;
-	private LoadUserLocationAndDisplayAsyncTask mLoadUserLocationAndDisplayAsyncTask;
+
+	private LoadBusinessToDisplayAsyncTask mLoadBusinessToDisplayAsyncTask;
+	private LoadUserLocationAsyncTask mLoadUserLocationAsyncTask;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,9 +71,11 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		 * Initialize array list that stores business objects
 		 */
 		mBizArrayList = new ArrayList<Business>();
-
 		mPage = 1;
 		mEndOfList = false;
+
+		mIsLoadUserLocationAsyncTaskRunning = false;
+		mIsLoadBusinessToDisplayAsyncTaskRunning = false;
 
 		//Initialize listview
 		this.initListView();
@@ -80,20 +85,6 @@ public class BizListActivity extends Activity implements OnScrollListener{
 
 		//Initialize myLocation to get current loc
 		retrieveUserLocation();
-	}
-
-	private void retrieveUserLocation(){
-		//Reset list
-		mBizListAdapter.clear();
-		mPage = 1;
-		mEndOfList = false;
-		mIsLocationAvailable = false;
-
-		mBizMyLocation = new BizMyLocation();
-		mBizMyLocation.getLocation(this, mLocationResult);
-
-		mLoadUserLocationAndDisplayAsyncTask = new LoadUserLocationAndDisplayAsyncTask();
-		mLoadUserLocationAndDisplayAsyncTask.execute(this);
 	}
 
 	private void initListView(){
@@ -117,82 +108,8 @@ public class BizListActivity extends Activity implements OnScrollListener{
 
 		//Attach scroll listener
 		mBizListView.setOnScrollListener(this);
-		mIsListLoadingMore = true;
 		mEndOfList = false;
 	}
-
-	public LocationResult mLocationResult = new LocationResult()
-	{
-		@Override
-		public void gotLocation(final Location location)
-		{
-			mUserLocation = location;
-			mIsLocationAvailable = true;
-		}
-	};
-
-	private Runnable loadMoreListItems = new Runnable(){
-		@Override
-		public void run() {
-			//set flag so items are not loaded twice at the same time
-			mIsListLoadingMore = true;
-			mTmpBizListAdapter = null;
-
-			//Get new items
-			float myLat = (float) mUserLocation.getLatitude();
-			float myLng = (float) mUserLocation.getLongitude();
-
-			BusinessJSON bizDB = new BusinessJSON(myLat, myLng, mPage);		
-			mTmpBizListAdapter = bizDB.getBizListJSON();
-
-			if (mTmpBizListAdapter == null){
-				mEndOfList = true;
-			}
-			else{
-				mPage++;
-			}
-			Log.d("BgBiz", "ListLoaded with size: "+mBizArrayList.size()+" . Search paramter: ("+mMyLat+", "+mMyLng+" ) with page: "+mPage);
-			runOnUiThread(updateListView);
-		}
-	};
-
-	private Runnable updateListView = new Runnable(){
-		@Override
-		public void run() {
-			if (mEndOfList){
-				//Display found none message if the list adapter is empty
-				if(mBizListAdapter.isEmpty())
-				{
-					TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
-					txtBizListLoading.setText(R.string.bizNoResult);
-
-					LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
-					layoutBizListLoading.setVisibility(View.VISIBLE);
-					findViewById(R.id.progressbarBizListLoading).setVisibility(View.GONE);
-
-					mBizListView.setVisibility(View.GONE);
-				}
-
-				//Remove Loading footer from the list
-				boolean isRemoved = mBizListView.removeFooterView(mBizListViewFooter);
-				Log.d("BgBiz", "Removing footer result: "+isRemoved);
-			}
-			else {
-				for(Business biz : mTmpBizListAdapter){
-					mBizListAdapter.add(biz);
-				}
-
-				//Tell to the adapter that changes have been made, this will cause the list to refresh
-				mBizListAdapter.notifyDataSetChanged();
-				Log.d("BgBiz", "mBizListAdpater notified!");	
-			}
-			//Done loading more
-			mIsListLoadingMore = false;	
-
-			//Change the header
-			toggleLayout(false);
-		}
-	};
 
 	//Load button to BizMap.java
 	public void initButtonViews(){
@@ -226,6 +143,12 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		Button btnGoListView = (Button) findViewById(R.id.btnGoToListView);
 		btnGoListView.setEnabled(false);
 		btnGoBizMap.setEnabled(true);
+	}
+
+
+	private void retrieveUserLocation(){
+		mLoadUserLocationAsyncTask = new LoadUserLocationAsyncTask(this); 
+		mLoadUserLocationAsyncTask.execute();
 	}
 
 	AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
@@ -273,11 +196,11 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		int lastInScreen = firstVisibleItem+visibleItemCount;
 
 		//is the bottom item visible & not loading more already? Load more!
-		if(lastInScreen == totalItemCount && totalItemCount != 0 && mIsListLoadingMore == false && mEndOfList == false)
+		if(lastInScreen == totalItemCount && totalItemCount != 0 && mEndOfList == false)
 		{
 			Log.d("BgBiz", "Load next items");
-			Thread thread = new Thread(null, loadMoreListItems);
-			thread.start();
+			mLoadBusinessToDisplayAsyncTask = new LoadBusinessToDisplayAsyncTask();
+			mLoadBusinessToDisplayAsyncTask.execute();
 		} 
 	}
 
@@ -289,8 +212,14 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	private void stopLocationLoading(){
 		if(mBizMyLocation != null)
 			mBizMyLocation.stopLocationUpdates();
-		if (mLoadUserLocationAndDisplayAsyncTask != null || !mLoadUserLocationAndDisplayAsyncTask.isCancelled())
-			mLoadUserLocationAndDisplayAsyncTask.cancel(true);
+
+		if(mLoadUserLocationAsyncTask != null && 
+				!mLoadUserLocationAsyncTask.getStatus().equals(AsyncTask.Status.FINISHED))
+			mLoadUserLocationAsyncTask.cancel(true);
+
+		if(mLoadBusinessToDisplayAsyncTask != null && 
+				!mLoadBusinessToDisplayAsyncTask.getStatus().equals(AsyncTask.Status.FINISHED))
+			mLoadBusinessToDisplayAsyncTask.cancel(true);
 	}
 
 	@Override
@@ -328,19 +257,6 @@ public class BizListActivity extends Activity implements OnScrollListener{
 		alert.show();
 	}
 
-	private void changeViewOnLocationNotFound(){
-		Toast.makeText(getParent(), "Unable to identify your location.", Toast.LENGTH_SHORT).show();
-
-		if(mUserLocation == null){
-			mUserLocation = new Location("CurrentLocation");
-			mUserLocation.setLatitude(40.714353);
-			mUserLocation.setLongitude(-74.005973);
-			mPage = 1;
-		}
-		//Loads with default location defined in onCreate()
-		new Thread(null, loadMoreListItems).start();
-	}
-
 	private void toggleLayout(boolean isLoading){
 		if (isLoading){
 			mBizListView.setVisibility(View.GONE);
@@ -355,11 +271,25 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.GONE);
 			findViewById(R.id.actionbar_loading).setVisibility(View.VISIBLE);
 		}else{
-			LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
-			layoutBizListLoading.setVisibility(View.GONE);
+			//Loading is done. 
+			if (mBizListAdapter.isEmpty()){		//If empty, display no result found.
+				//Update textview
+				TextView txtBizListLoading = (TextView)findViewById(R.id.txtBizListLoading);
+				txtBizListLoading.setText(R.string.bizNoResult);
 
-			mBizListView.setVisibility(View.VISIBLE);
+				LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
+				layoutBizListLoading.setVisibility(View.VISIBLE);
+				findViewById(R.id.progressbarBizListLoading).setVisibility(View.GONE);
 
+				mBizListView.setVisibility(View.GONE);
+			} else {
+
+				LinearLayout layoutBizListLoading = (LinearLayout)findViewById(R.id.layoutBizListLoading);
+				layoutBizListLoading.setVisibility(View.GONE);
+
+				mBizListView.setVisibility(View.VISIBLE);
+			}
+			
 			//Change action bar state
 			findViewById(R.id.actionbar_loading).setVisibility(View.GONE);
 			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.VISIBLE);
@@ -374,10 +304,31 @@ public class BizListActivity extends Activity implements OnScrollListener{
 	 * @author wns349
 	 *
 	 */
-	private class LoadUserLocationAndDisplayAsyncTask extends AsyncTask<Context, Void, Void>
+	private class LoadUserLocationAsyncTask extends AsyncTask<Context, Void, Void>
 	{
+		private Context mContext;
+
+		public LoadUserLocationAsyncTask(Context context){
+			this.mContext = context;
+		}
+
 		protected void onPreExecute(){
+			//Lock
+			if(mIsLoadUserLocationAsyncTaskRunning)
+				this.cancel(true);
+			else
+				mIsLoadUserLocationAsyncTaskRunning = true;
+
 			toggleLayout(true);
+			//Reset list
+			mBizListAdapter.clear();
+			mBizArrayList.clear();
+			mPage = 1;
+			mEndOfList = false;
+			mIsLocationAvailable = false;
+
+			mBizMyLocation = new BizMyLocation();
+			mBizMyLocation.getLocation(this.mContext, mLocationResult);
 		}
 
 		protected Void doInBackground(Context... params)
@@ -392,19 +343,94 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			};
 			return null;
 		}
+
 		protected void onPostExecute(final Void unused)
 		{
 			if (mUserLocation != null)
 			{
 				Log.d("BgBiz", "Location found!: "+mUserLocation.getLatitude()+" | "+mUserLocation.getLongitude());
 				Log.d("BgBiz", "Load new items");
-				new Thread(null, loadMoreListItems).start();
 			}
 			else
 			{
 				Log.d("BgBiz", "Location not found!");
-				changeViewOnLocationNotFound();
+				Toast.makeText(getParent(), "Unable to identify your location.", Toast.LENGTH_SHORT).show();
+
+				if(mUserLocation == null){
+					mUserLocation = new Location("CurrentLocation");
+					mUserLocation.setLatitude(40.714353);
+					mUserLocation.setLongitude(-74.005973);
+					mPage = 1;
+				}
 			}
+
+			mLoadBusinessToDisplayAsyncTask = new LoadBusinessToDisplayAsyncTask();
+			mLoadBusinessToDisplayAsyncTask.execute();
+
+			mIsLoadUserLocationAsyncTaskRunning = false;
+		}
+
+		private LocationResult mLocationResult = new LocationResult()
+		{
+			@Override
+			public void gotLocation(final Location location)
+			{
+				mUserLocation = location;
+				mIsLocationAvailable = true;
+			}
+		};
+	}
+
+	private class LoadBusinessToDisplayAsyncTask extends AsyncTask<Context, Void, Void>
+	{
+		private ArrayList<Business> tmpBizListAdapter;
+
+		protected void onPreExecute(){
+			//Lock
+			if(mIsLoadBusinessToDisplayAsyncTaskRunning)
+				this.cancel(true);
+			else
+				mIsLoadBusinessToDisplayAsyncTaskRunning = true;
+
+			tmpBizListAdapter = null;
+		}
+		protected Void doInBackground(Context... params){
+			//Get new items
+			float myLat = (float) mUserLocation.getLatitude();
+			float myLng = (float) mUserLocation.getLongitude();
+
+			BusinessJSON bizDB = new BusinessJSON(myLat, myLng, mPage);		
+			tmpBizListAdapter = bizDB.getBizListJSON();
+
+			if (tmpBizListAdapter == null){
+				mEndOfList = true;
+			}
+			else{
+				mPage++;
+			}
+			Log.d("BgBiz", "Search paramter: ("+mMyLat+", "+mMyLng+" ) with page: "+mPage);
+			return null;
+		}
+		protected void onPostExecute(final Void unused){
+			if (mEndOfList){
+				//Remove Loading footer from the list
+				boolean isRemoved = mBizListView.removeFooterView(mBizListViewFooter);
+				Log.d("BgBiz", "Removing footer result: "+isRemoved);
+			}
+			else {
+				for(Business biz : tmpBizListAdapter){
+					mBizListAdapter.add(biz);
+				}
+
+				//Tell to the adapter that changes have been made, this will cause the list to refresh
+				mBizListAdapter.notifyDataSetChanged();
+				Log.d("BgBiz", "mBizListAdpater notified!");	
+			}
+
+			//Change the header
+			toggleLayout(false);
+
+			mIsLoadBusinessToDisplayAsyncTaskRunning = false;
 		}
 	}
 }

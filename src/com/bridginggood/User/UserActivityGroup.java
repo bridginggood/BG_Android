@@ -2,16 +2,20 @@ package com.bridginggood.User;
 
 import java.util.ArrayList;
 
+import com.bridginggood.R;
+
 import android.app.ActivityGroup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 public class UserActivityGroup extends ActivityGroup {
 	
 	private ArrayList<View> historyUserActivityGroup; 		// ArrayList to manage Views.
 	private UserActivityGroup UserActivityGroup; 				// BgActivityGroup that Activity can access.
+	private boolean mExitApplication;
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,7 @@ public class UserActivityGroup extends ActivityGroup {
 	}
 
 	public void replaceView(View v) {   // Changing to new activity level.
-		//Log.d("BG","Replacing View...");
+		mExitApplication = false;
 		historyUserActivityGroup.add(v);   
 		setContentView(v); 
 	}   
@@ -48,9 +52,14 @@ public class UserActivityGroup extends ActivityGroup {
 			historyUserActivityGroup.remove(historyUserActivityGroup.size()-1);   
 			setContentView(historyUserActivityGroup.get(historyUserActivityGroup.size()-1)); 
 		} else {   
-			finish(); // Finish tabactivity
-			Log.d("BG", "onDestroy called from "+this.getClass().toString());
-			System.exit(0);
+			if(mExitApplication){
+				finish(); // Finish tabactivity
+				Log.d("BG", "onDestroy called from "+this.getClass().toString());
+				System.exit(0);
+			}else{
+				Toast.makeText(this,  R.string.application_backtoexit, Toast.LENGTH_SHORT).show();
+				mExitApplication = true;
+			}
 		}   
 	}  
 
