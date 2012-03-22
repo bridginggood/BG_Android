@@ -26,7 +26,7 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/profile_select_charity"
+            android:id="@+id/profile_btn_select_charity"
             style="@style/ButtonText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:text="@string/profile_select_charity" />
 
         <Button
-            android:id="@+id/profile_select_place"
+            android:id="@+id/profile_btn_select_place"
             style="@style/ButtonText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
         android:padding="5dp" >
 
         <Button
-            android:id="@+id/profile_stat_today"
+            android:id="@+id/profile_btn_stat_today"
             style="@style/ButtonText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,27 +64,27 @@
             android:text="@string/profile_stat_today" />
 
         <Button
-            android:id="@+id/profile_stat_week"
+            android:id="@+id/profile_btn_stat_week"
             style="@style/ButtonText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/profile_stat_today"
+            android:layout_toRightOf="@id/profile_btn_stat_today"
             android:background="@drawable/selector_button"
             android:text="@string/profile_stat_week" />
 
         <Button
-            android:id="@+id/profile_stat_month"
+            android:id="@+id/profile_btn_stat_month"
             style="@style/ButtonText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/profile_stat_week"
+            android:layout_toRightOf="@id/profile_btn_stat_week"
             android:background="@drawable/selector_button"
             android:text="@string/profile_stat_month" />
 
         <Button
-            android:id="@+id/profile_preferences"
+            android:id="@+id/profile_btn_preferences"
             style="@style/ButtonText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

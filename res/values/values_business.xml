@@ -10,5 +10,6 @@
     <string name="bizNoResult">No result found</string>
     <string name="bizRefreshList">Refresh</string>
     
+    <string name="bizDonateWithBridgingGood">Donate with BridgingGood</string>
 
 </resources>

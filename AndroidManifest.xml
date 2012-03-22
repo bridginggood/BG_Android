@@ -96,6 +96,9 @@
         <activity
             android:name=".User.UserActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".User.UserPreferencesActivity"
+            android:screenOrientation="portrait" />
 
         <!-- Donate -->
         <activity
