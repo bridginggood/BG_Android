@@ -9,14 +9,10 @@
  */
 package com.bridginggood;
 
-import java.util.UUID;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.bridginggood.DB.UserLoginJSON;
@@ -79,10 +75,18 @@ public class SplashActivity extends Activity {
 				/*
 				 *===============END Loading Job==================== 
 				 */
+				Intent newIntent = new Intent().setClass(SplashActivity.this, targetClass);
+				newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				
+				//C2DM Receiver
+				/*Bundle bundle = getIntent().getExtras();
+				if(bundle != null && bundle.getString(CONST.BUNDLE_C2DM_KEY) != null){
+					UserInfo.setLoadThankyouActivity(true);
+				}*/
 
 				mProgressDialog.dismiss();
 				finish();
-				startActivity(new Intent().setClass(SplashActivity.this, targetClass));
+				startActivity(newIntent);
 			}
 		};
 		splashTread.start();

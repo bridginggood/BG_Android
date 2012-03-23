@@ -21,6 +21,7 @@ import com.bridginggood.User.UserActivityGroup;
 
 public class MainActivity extends TabActivity {
 	private TabHost mTabHost;
+	public static MainActivity _this;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -28,15 +29,17 @@ public class MainActivity extends TabActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabhost_layout);
 
+		_this = this;
+
 		//Apply customed tab layout
 		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
 		setupTab("Profile", R.drawable.selector_tab_profile, new Intent().setClass(this, UserActivityGroup.class));
 		setupTab("Explore", R.drawable.selector_tab_explore, new Intent().setClass(this, BizActivityGroup.class));
 		setupTab("Donate", R.drawable.selector_tab_donate, new Intent().setClass(this, QRActivityGroup.class));
 		setupTab("Causes", R.drawable.selector_tab_causes, new Intent().setClass(this, CharityActivityGroup.class));
-		
-		mTabHost.setCurrentTab(1);
-		
+
+		mTabHost.setCurrentTab(2);	//Donate tab is default
+
 		initC2DMRegistration();
 	}
 
@@ -73,5 +76,17 @@ public class MainActivity extends TabActivity {
 		super.onDestroy();
 		Log.d("BG", "onDestroy called");
 		System.exit(0);
+	}
+
+	@Override
+	public void onResume(){
+		super.onResume();
+		//C2DM Handle
+		if(UserInfo.getLoadThankyouActivity()){
+			Intent newIntent = new Intent().setClass(MainActivity.this, ThankyouActivity.class);
+			//newIntent.putExtra(CONST.BUNDLE_C2DM_KEY, tmp);
+			//newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			startActivity(newIntent);
+		}
 	}
 }

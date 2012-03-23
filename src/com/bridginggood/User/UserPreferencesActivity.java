@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bridginggood.LoginActivity;
+import com.bridginggood.MainActivity;
 import com.bridginggood.R;
 import com.bridginggood.UserInfo;
 import com.bridginggood.UserInfoStore;
@@ -116,7 +117,11 @@ public class UserPreferencesActivity extends Activity{
 					UserInfoStore.clearSession(getApplicationContext());
 					
 					//Start login activity
-					startActivity(new Intent().setClass(UserPreferencesActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+					startActivity(new Intent().setClass(UserPreferencesActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+					finish();	//Finish this activity
+					if(MainActivity._this!=null)	//Finish main tab, if running.
+						MainActivity._this.finish();
+					
 				} else {
 					//Logout failed
 					Toast.makeText(UserPreferencesActivity.this, "An error has occured while logging out.", Toast.LENGTH_SHORT).show();

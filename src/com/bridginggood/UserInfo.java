@@ -21,6 +21,7 @@ public class UserInfo extends Application{
 	private static int mUserType;
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
+	private static boolean mLoadThankyouActivity;
 	
 	public static void init(){
 		setUserId(null);
@@ -160,5 +161,13 @@ public class UserInfo extends Application{
 		String deviceId = deviceUuid.toString();
 
 		return deviceId;
+	}
+
+	public static boolean getLoadThankyouActivity() {
+		return mLoadThankyouActivity;
+	}
+
+	public static void setLoadThankyouActivity(boolean mLoadThankyouActivity) {
+		UserInfo.mLoadThankyouActivity = mLoadThankyouActivity;
 	}
 }
