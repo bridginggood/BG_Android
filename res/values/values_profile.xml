@@ -20,4 +20,13 @@
     <string name="profile_preferences_termsofservice">Terms of Service</string>
     <string name="profile_preferences_privacypolicy">Privacy Policy</string>
     
+    
+    <string name="profile_preferences_menu_youaccount">Your Account</string>
+    <string name="profile_preferences_menu_donationpriorities">Donation Priorities</string>
+    <string name="profile_preferences_menu_privacysettings">Privacy Settings</string>
+    <string name="profile_preferences_menu_pushnotification">Push Notification</string>
+    <string name="profile_preferences_menu_socialnetwork">Facebook Twitter</string>
+    <string name="profile_preferences_menu_mapandgeosettings">Map and Geo Settings</string>
+    <string name="profile_preferences_menu_clearimagecache">Clear image cache</string>
+    <string name="profile_preferences_menu_logout">Logout</string>
 </resources>

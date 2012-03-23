@@ -57,12 +57,8 @@ public class C2DMReceiver extends BroadcastReceiver{
 
 	    } else if (registration != null) {
 	    	Log.d("BG_C2DM", registration);
-	    	//Update the userInfo and save it
-	    	UserInfo.setC2DMRegistrationId(registration);
-	    	//UserInfoStore.saveUserSessionC2DMOnly(context);
-	    	
 	       // Send the registration ID to the 3rd party site that is sending the messages.
-	    	sendRegistrationIdToServer(context);
+	    	sendRegistrationIdToServer(context, registration);
 	    }
 	}
 	
@@ -101,11 +97,11 @@ public class C2DMReceiver extends BroadcastReceiver{
 	 * Sends registration Id to the server
 	 * @param context Got it from MainController
 	 */
-	private void sendRegistrationIdToServer(final Context context){
+	private void sendRegistrationIdToServer(final Context context, final String regId){
 		Thread threadStartLogin = new Thread(new Runnable() {
 			public void run() {
 				Log.d("BGB", "Sending C2dm registration to BG server");
-				boolean isSucc = UserLoginJSON.sendC2DMRegistrationId();
+				boolean isSucc = UserLoginJSON.sendC2DMRegistrationId(UserInfo.calcDeviceId(context), regId);
 				if (isSucc){
 					UserInfoStore.saveUserSessionC2DMOnly(context);
 				}

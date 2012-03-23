@@ -118,12 +118,13 @@
         android:layout_above="@id/profile_preferences_gray_box"
         android:layout_below="@id/profile_preferences_header_layout"
         android:layout_margin="5dp"
+        android:padding="5dp"
         android:background="@drawable/background_sublayout" >
 
         <ListView
-            android:id="@+id/profile_preferences_listview"
+            android:id="@+id/profile_preferences_menu_listview"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -6,6 +6,7 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="gray">#808080</color>
+    <color name="gold">#D4A017</color>
 
     <!-- Tabs -->
     <color name="tab_unselected_bg_gradient">#36353b</color>

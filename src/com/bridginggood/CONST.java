@@ -3,6 +3,8 @@ package com.bridginggood;
 public class CONST {
 	private static final String API_URL = "http://api.bridginggood.com:8080";
 	
+	public static final String DEVICE_TYPE = "ANDRO";
+	
 	//SplashController: Splash time
 	public static final long SPLASH_DELAY = 1500;
 	
@@ -40,5 +42,6 @@ public class CONST {
 	
 	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQrcodeFromMobile.json";
 	public static final String API_REGISTER_QRCODE_URL = API_URL+"/auth/RegisterQrcodeFromMobile.json";
+	public static final String API_LOGOUT = API_URL+"/auth/Logout.json";
 	
 }

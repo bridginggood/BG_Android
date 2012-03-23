@@ -116,13 +116,12 @@ public class UserLoginJSON {
 	/**
 	 * Sends C2DM registration info to the server
 	 */
-	public static boolean sendC2DMRegistrationId(){
+	public static boolean sendC2DMRegistrationId(final String devId, final String regId){
 		try{
 			String targetURL = CONST.API_CREATE_C2DM_DEVICE_URL;
 			String[][] param = {	
-					{PARAM_USER_ID, UserInfo.getUserId()+""},
-					{PARAM_C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId()},
-					{PARAM_DEVICE_ID, UserInfo.getDeviceId()}};
+					{PARAM_C2DM_REGISTRATION_ID, regId},
+					{PARAM_DEVICE_ID, devId}};
 			String requestParam = BgHttpHelper.generateParamData(param);
 
 			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
@@ -172,6 +171,34 @@ public class UserLoginJSON {
 		catch(Exception e){
 			Log.d("BgDB", "createQRCode Exception: "+e.getLocalizedMessage());
 		}
+	}
+	
+	public static boolean logoutUser(){
+		try{
+			String targetURL = CONST.API_LOGOUT;
+			String[][] param = {	{PARAM_USER_ID, UserInfo.getUserId()+""},
+					{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
+					{PARAM_DEVICE_TYPE, CONST.DEVICE_TYPE}};
+			String requestParam = BgHttpHelper.generateParamData(param);
+
+			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
+
+			JSONObject jsonObject = new JSONObject(jsonStr);
+
+			//TODO: Maybe this needs to be changed later on.
+			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+				//Login succeed!
+				Log.d("BgDB", "Logout success");
+				return true;
+			} else {
+				Log.d("BgDB", "Logout failed");
+				return false;
+			}
+		}
+		catch(Exception e){
+			Log.d("BgDB", "Logout Exception: "+e.getLocalizedMessage());
+		}
+		return false;
 	}
 
 

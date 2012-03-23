@@ -42,7 +42,6 @@ public class UserInfoStore {
 		editor.putString(FBUID, UserInfo.getFbUid());
 		editor.putString(FBTOKEN, UserInfo.mFacebook.getAccessToken());
         editor.putLong(FBTOKEN_EXPIRES_IN, UserInfo.mFacebook.getAccessExpires());
-		//editor.putString(C2DM_REGISTRATION_ID, UserInfo.getC2DMRegistrationId());
 		return editor.commit();
 	}
 

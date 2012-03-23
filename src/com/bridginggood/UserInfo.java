@@ -5,7 +5,11 @@
  */
 package com.bridginggood;
 
+import java.util.UUID;
+
 import android.app.Application;
+import android.content.Context;
+import android.telephony.TelephonyManager;
 
 import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.Facebook;
@@ -137,5 +141,24 @@ public class UserInfo extends Application{
 
 	public static void setFbUid(String mFbUid) {
 		UserInfo.mFbUid = mFbUid;
+	}
+	
+
+	/**
+	 * Combination of TelephonyManager and Settings.Secure to generate unique device id
+	 * @return unique device id
+	 */
+	public static String calcDeviceId(Context context){
+		final TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+		final String tmDevice, tmSerial, androidId;
+		tmDevice = "" + tm.getDeviceId();
+		tmSerial = "" + tm.getSimSerialNumber();
+		androidId = "" + android.provider.Settings.Secure.getString(context.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
+		UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+		String deviceId = deviceUuid.toString();
+
+		return deviceId;
 	}
 }

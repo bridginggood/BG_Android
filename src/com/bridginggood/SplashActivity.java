@@ -47,7 +47,7 @@ public class SplashActivity extends Activity {
 
 				//Get device ID
 				if(UserInfo.getDeviceId()==null){
-					UserInfo.setDeviceId(getDeviceId());
+					UserInfo.setDeviceId(UserInfo.calcDeviceId(getBaseContext()));
 					Log.d("BG", "Splash: device id is "+UserInfo.getDeviceId());
 				}
 
@@ -122,23 +122,5 @@ public class SplashActivity extends Activity {
 		Log.d("BG", "SplashActivity onResume called. FacebookAPI.extendFacebookToken will be called");
 		super.onResume();
 		FacebookAPI.extendFacebookToken(getApplicationContext());
-	}
-
-	/**
-	 * Combination of TelephonyManager and Settings.Secure to generate unique device id
-	 * @return unique device id
-	 */
-	private String getDeviceId(){
-		final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-
-		final String tmDevice, tmSerial, androidId;
-		tmDevice = "" + tm.getDeviceId();
-		tmSerial = "" + tm.getSimSerialNumber();
-		androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-
-		UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
-		String deviceId = deviceUuid.toString();
-
-		return deviceId;
 	}
 }
