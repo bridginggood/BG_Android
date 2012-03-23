@@ -13,7 +13,6 @@ import android.util.Log;
 
 import com.bridginggood.CONST;
 import com.bridginggood.UserInfo;
-import com.bridginggood.UserInfoStore;
 
 public class UserLoginJSON {
 

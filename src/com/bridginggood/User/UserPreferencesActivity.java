@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -106,7 +107,15 @@ public class UserPreferencesActivity extends Activity{
 
 				boolean isSucc = UserLoginJSON.logoutUser();
 				if(isSucc){
+					//Unregister C2DM
+					Intent unregIntent = new Intent("com.google.android.c2dm.intent.UNREGISTER");
+					unregIntent.putExtra("app", PendingIntent.getBroadcast(UserPreferencesActivity.this, 0, new Intent(), 0));
+					startService(unregIntent);
+					
+					//Clear remembered data
 					UserInfoStore.clearSession(getApplicationContext());
+					
+					//Start login activity
 					startActivity(new Intent().setClass(UserPreferencesActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 				} else {
 					//Logout failed

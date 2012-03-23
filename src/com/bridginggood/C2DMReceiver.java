@@ -83,8 +83,9 @@ public class C2DMReceiver extends BroadcastReceiver{
 		// Hide the notification after its selected
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-		Intent intent = new Intent(context, SplashActivity.class);
+		Intent intent = new Intent(context, ThankyouActivity.class);
 		intent.putExtra("payload", payload);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
 				intent, 0);
 		notification.setLatestEventInfo(context, "Message",
@@ -103,7 +104,7 @@ public class C2DMReceiver extends BroadcastReceiver{
 				Log.d("BGB", "Sending C2dm registration to BG server");
 				boolean isSucc = UserLoginJSON.sendC2DMRegistrationId(UserInfo.calcDeviceId(context), regId);
 				if (isSucc){
-					UserInfoStore.saveUserSessionC2DMOnly(context);
+					UserInfoStore.saveUserSessionC2DMOnly(context, regId);
 				}
 				
 				handlerRegistration.sendEmptyMessage(0);
