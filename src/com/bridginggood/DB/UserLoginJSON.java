@@ -34,8 +34,6 @@ public class UserLoginJSON {
 	private static final String PARAM_RESULT_CODE = "resultCode";
 	private static final String PARAM_RESULT_MSG = "resultMsg";
 
-	private static final String DATA_DEVICE_TYPE = "ANDRO";
-
 	/**
 	 * Interacts with server to do user login.
 	 * 
@@ -71,7 +69,7 @@ public class UserLoginJSON {
 						{PARAM_USER_FIRSTNAME, UserInfo.getUserFirstName()},
 						{PARAM_USER_LASTNAME, UserInfo.getUserLastName()},
 						{PARAM_DEVICE_ID, UserInfo.getDeviceId()},
-						{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}
+						{PARAM_DEVICE_TYPE, CONST.DEVICE_TYPE}
 				};
 				requestParam = BgHttpHelper.generateParamData(paramFacebook);
 				break;

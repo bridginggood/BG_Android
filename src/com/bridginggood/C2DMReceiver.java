@@ -18,6 +18,7 @@ import android.util.Log;
 import com.bridginggood.DB.UserLoginJSON;
 
 public class C2DMReceiver extends BroadcastReceiver{
+	private static int mCountNotification = 0;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -75,6 +76,11 @@ public class C2DMReceiver extends BroadcastReceiver{
 	{
 		//Do whatever you want with the message
 		String message = intent.getStringExtra("message");
+
+		//Store message to sharedpreference
+		UserInfoStore.savePushMessage(context, message);
+
+		//Check if BridgingGood application is running or not. 
 		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> taskInfo = am.getRunningTasks(1);
 		ComponentName cn = taskInfo.get(0).topActivity;
@@ -82,17 +88,14 @@ public class C2DMReceiver extends BroadcastReceiver{
 		if (cn.getClassName().contains(CONST.PACKAGE_NAME)){
 			//Intent to Thankyou page
 			Intent nextIntent = new Intent(context, ThankyouActivity.class);
-			nextIntent.putExtra(CONST.BUNDLE_C2DM_KEY, message);
 			nextIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			//BridgingGood application is currently running!
-	        context.startActivity(nextIntent);
+			context.startActivity(nextIntent);
 		}
 		else {
 			//BridgingGood application is not running.
 			//Intent to Splash page
-			UserInfo.setLoadThankyouActivity(true);
 			Intent nextIntent = new Intent(context, SplashActivity.class);
-			nextIntent.putExtra(CONST.BUNDLE_C2DM_KEY, message);
 			nextIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			createNotification(context, nextIntent);
 		}
@@ -100,13 +103,21 @@ public class C2DMReceiver extends BroadcastReceiver{
 
 	public void createNotification(Context context, Intent intent) {
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification(R.drawable.icon, context.getResources().getString(R.string.c2dm_receive_message) , System.currentTimeMillis());
+		Notification notification = null;
+
+		mCountNotification++;
+
+		if (mCountNotification == 1){
+			notification = new Notification(R.drawable.icon, context.getResources().getString(R.string.c2dm_receive_message) , System.currentTimeMillis());
+		}else{
+			notification = new Notification(R.drawable.icon, "You have "+mCountNotification+" donations" , System.currentTimeMillis());
+		}
 		// Hide the notification after its selected
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
 		//Notificatino configuration
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-		notification.setLatestEventInfo(context, context.getResources().getString(R.string.app_name), context.getResources().getString(R.string.c2dm_notification_message), pendingIntent);
+		notification.setLatestEventInfo(context, context.getResources().getString(R.string.app_name), "You have "+mCountNotification+" donations!", pendingIntent);
 		notificationManager.notify(0, notification);
 
 	}

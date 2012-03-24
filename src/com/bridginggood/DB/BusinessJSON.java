@@ -12,18 +12,22 @@ import com.bridginggood.Biz.Business;
 
 
 public class BusinessJSON {
-	private static final String REQUEST_PARAM_LATITUDE = "lat";
-	private static final String REQUEST_PARAM_LONGITUDE = "lng";
-	private static final String REQUEST_PARAM_PAGE = "page";
-	private static final String REQUEST_PARAM_DISTANCE = "dist";
+	private static final String PARAM_LATITUDE = "lat";
+	private static final String PARAM_LONGITUDE = "lng";
+	private static final String PARAM_PAGE = "page";
+	private static final String PARAM_DISTANCE = "dist";
 
-	private static final String REPLY_PARAM_BUSINESS_ID = "BusinessId";
-	private static final String REPLY_PARAM_BUSINESS_NAME = "BusinessName";
-	private static final String REPLY_PARAM_BUSINESS_ADDRESS = "BusinessAddress";
-	private static final String REPLY_PARAM_BUSINESS_LATITUDE = "Latitude";
-	private static final String REPLY_PARAM_BUSINESS_LONGITUDE = "Longitude";
-	private static final String REPLY_PARAM_BUSINESS_CHARITYID = "CharityId";
-	private static final String REPLY_PARAM_BUSINESS_DISTANCE = "distance";
+	private static final String PARAM_BUSINESS_ID = "BusinessId";
+	private static final String PARAM_BUSINESS_NAME = "BusinessName";
+	private static final String PARAM_BUSINESS_ADDRESS = "BusinessAddress";
+	private static final String PARAM_BUSINESS_DESCRIPTION = "BusinessDescription";
+	private static final String PARAM_BUSINESS_LATITUDE = "Latitude";
+	private static final String PARAM_BUSINESS_LONGITUDE = "Longitude";
+	private static final String PARAM_BUSINESS_CHARITYID = "CharityId";
+	private static final String PARAM_BUSINESS_DISTANCE = "distance";
+	
+	private static final String PARAM_RESULT_CODE = "resultCode";
+	private static final String PARAM_RESULT_MSG = "resultMsg";
 
 	private float mMyLat, mMyLng, mDistance;
 	private int mPage;
@@ -43,9 +47,9 @@ public class BusinessJSON {
 	public ArrayList<Business> getBizListJSON(){
 		ArrayList<Business> bizList = new ArrayList<Business>();
 		try {
-			String[][] paramData = {{REQUEST_PARAM_LATITUDE, mMyLat+""}, 
-					{REQUEST_PARAM_LONGITUDE, mMyLng+""}, 
-					{REQUEST_PARAM_PAGE, mPage+""}};
+			String[][] paramData = {{PARAM_LATITUDE, mMyLat+""}, 
+					{PARAM_LONGITUDE, mMyLng+""}, 
+					{PARAM_PAGE, mPage+""}};
 			String paramStr = BgHttpHelper.generateParamData(paramData);
 			String jsonStr = BgHttpHelper.requestHttpRequest(CONST.API_READ_BUSINESS_LIST_URL, paramStr, "GET");
 
@@ -59,13 +63,13 @@ public class BusinessJSON {
 			for(int i=0;i<jsonArray.length();i++){
 				JSONObject jsonObject = (JSONObject) jsonArray.get(i);
 
-				String bid = jsonObject.getString(REPLY_PARAM_BUSINESS_ID);
-				String name = jsonObject.getString(REPLY_PARAM_BUSINESS_NAME);
-				String address = jsonObject.getString(REPLY_PARAM_BUSINESS_ADDRESS);
-				float lat = Float.parseFloat(jsonObject.getString(REPLY_PARAM_BUSINESS_LATITUDE));
-				float lng = Float.parseFloat(jsonObject.getString(REPLY_PARAM_BUSINESS_LONGITUDE));
-				String cid = jsonObject.getString(REPLY_PARAM_BUSINESS_CHARITYID);
-				float distanceAway = Float.parseFloat(jsonObject.getString(REPLY_PARAM_BUSINESS_DISTANCE));
+				String bid = jsonObject.getString(PARAM_BUSINESS_ID);
+				String name = jsonObject.getString(PARAM_BUSINESS_NAME);
+				String address = jsonObject.getString(PARAM_BUSINESS_ADDRESS);
+				float lat = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_LATITUDE));
+				float lng = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_LONGITUDE));
+				String cid = jsonObject.getString(PARAM_BUSINESS_CHARITYID);
+				float distanceAway = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_DISTANCE));
 
 				biz = new Business(bid, 0, name, address, lat, lng, cid, distanceAway);
 				bizList.add(biz); //add to ArrayList
@@ -80,9 +84,9 @@ public class BusinessJSON {
 	public ArrayList<Business> getBizMapJSON(){
 		ArrayList<Business> bizList = new ArrayList<Business>();
 		try {
-			String[][] paramData = {{REQUEST_PARAM_LATITUDE, mMyLat+""}, 
-					{REQUEST_PARAM_LONGITUDE, mMyLng+""}, 
-					{REQUEST_PARAM_DISTANCE, mDistance+""}};
+			String[][] paramData = {{PARAM_LATITUDE, mMyLat+""}, 
+					{PARAM_LONGITUDE, mMyLng+""}, 
+					{PARAM_DISTANCE, mDistance+""}};
 			String paramStr = BgHttpHelper.generateParamData(paramData);
 			String jsonStr = BgHttpHelper.requestHttpRequest(CONST.API_READ_BUSINESS_MAP_URL, paramStr, "GET");
 
@@ -96,13 +100,13 @@ public class BusinessJSON {
 			for(int i=0;i<jsonArray.length();i++){
 				JSONObject jsonObject = (JSONObject) jsonArray.get(i);
 
-				String bid = jsonObject.getString(REPLY_PARAM_BUSINESS_ID);
-				String name = jsonObject.getString(REPLY_PARAM_BUSINESS_NAME);
-				String address = jsonObject.getString(REPLY_PARAM_BUSINESS_ADDRESS);
-				float lat = Float.parseFloat(jsonObject.getString(REPLY_PARAM_BUSINESS_LATITUDE));
-				float lng = Float.parseFloat(jsonObject.getString(REPLY_PARAM_BUSINESS_LONGITUDE));
-				String cid = jsonObject.getString(REPLY_PARAM_BUSINESS_CHARITYID);
-				float distanceAway = Float.parseFloat(jsonObject.getString(REPLY_PARAM_BUSINESS_DISTANCE));
+				String bid = jsonObject.getString(PARAM_BUSINESS_ID);
+				String name = jsonObject.getString(PARAM_BUSINESS_NAME);
+				String address = jsonObject.getString(PARAM_BUSINESS_ADDRESS);
+				float lat = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_LATITUDE));
+				float lng = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_LONGITUDE));
+				String cid = jsonObject.getString(PARAM_BUSINESS_CHARITYID);
+				float distanceAway = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_DISTANCE));
 
 				biz = new Business(bid, 0, name, address, lat, lng, cid, distanceAway);
 				bizList.add(biz); //add to ArrayList
@@ -112,5 +116,35 @@ public class BusinessJSON {
 			Log.d("BgDB", "getBizMapJSON Exception:"+e.getLocalizedMessage());
 		}
 		return bizList;
+	}
+	
+	public static Business getBusinessDetail(String businessId){
+		try{
+			String targetURL = CONST.API_GET_BUSINESS_DETAIL;
+			String[][] param = {{PARAM_BUSINESS_ID, businessId}};
+			String requestParam = BgHttpHelper.generateParamData(param);
+
+			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
+
+			JSONObject jsonObject = new JSONObject(jsonStr);
+
+			//TODO: Maybe this needs to be changed later on.
+			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+				//Registration success! 
+				Log.d("BgDB", "C2DM registration completed: "+jsonObject.getString(PARAM_RESULT_MSG));
+				Business b = new Business();
+				b.setBizName(jsonObject.getString(PARAM_BUSINESS_NAME));
+				b.setBizDescription(jsonObject.getString(PARAM_BUSINESS_DESCRIPTION));
+				return b;
+
+			} else {
+				Log.d("BgDB", "C2DM registration failed: "+jsonObject.getString(PARAM_RESULT_MSG));
+				return null;
+			}
+		}
+		catch(Exception e){
+			Log.d("BgDB", "sendC2DMRegistrationId Exception: "+e.getLocalizedMessage());
+		}
+		return null;
 	}
 }

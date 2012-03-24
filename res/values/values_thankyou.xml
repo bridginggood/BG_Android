@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="thankyou_txtHeader">Thank You AAA!</string>
-    <string name="thankyou_txtCommentHint">Write a comment..</string>
-    <string name="thankyou_txtShareOn">Share on</string>
-    <string name="thankyou_btnDone">Done</string>
+    <string name="thankyou_header_text">Thank You AAA!</string>
+    <string name="thankyou_writecomment_hint_text">Write a comment..</string>
+    <string name="thankyou_shareon_text">Share on</string>
+    <string name="thankyou_done_button_text">Done</string>
     
 </resources>

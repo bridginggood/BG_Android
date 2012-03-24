@@ -18,7 +18,9 @@ public class CONST {
 	
 	//Facebook APP ID
 	public static final String FACEBOOK_APP_ID = "248815235212965";
-	public static final String[] FACEBOOK_PERMISSION = {"email", "publish_checkins"};
+	public static final String[] FACEBOOK_PERMISSION = {"email", "publish_stream"};
+	
+	public static final String FACEBOOK_POST_ICON = "https://s3.amazonaws.com/BG_S3/media/common/bg_post_logo.png";
 	
 	//QRcode image URL
 	public static final String QRCODE_S3_URL_PREFIX = "https://s3.amazonaws.com/BG_S3/media/qrcode/";
@@ -30,6 +32,7 @@ public class CONST {
 	//For BridgingGood Database API
 	public static final String API_READ_BUSINESS_LIST_URL = API_URL+"/business_details/readlist.json";
 	public static final String API_READ_BUSINESS_MAP_URL = API_URL+"/business_details/readmap.json";
+	public static final String API_GET_BUSINESS_DETAIL = API_URL+"/business_details/BusinessDetail.json";
 	
 	public static final String API_LOGIN_BY_FACEBOOK_URL = API_URL+"/auth/LoginByFacebook.json";
 	public static final String API_CREATE_C2DM_DEVICE_URL = API_URL+"/auth/CreateC2DMDevice.json";

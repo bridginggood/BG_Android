@@ -18,60 +18,62 @@
         <ImageView
             android:layout_width="74dp"
             android:layout_height="102dp"
+            android:contentDescription="@string/hello"
             android:scaleType="fitXY"
             android:src="@drawable/thankyou_logo" />
 
         <TextView
-            android:id="@+id/txtThankYouHeader"
+            android:id="@+id/thankyou_header_textview"
             style="@style/TextviewText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="THANK YOU!" />
+            android:text="@string/thankyou_header_text" />
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/linearLayout1"
+        android:id="@+id/thankyou_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
         android:padding="10dp" >
 
         <EditText
-            android:id="@+id/thankyou_edtWriteComment"
+            android:id="@+id/thankyou_writecomment_edittext"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:hint="@string/thankyou_txtCommentHint" >
+            android:hint="@string/thankyou_writecomment_hint_text" >
 
             <requestFocus />
         </EditText>
 
         <TextView
-            android:id="@+id/thankyou_txtShareOn"
-            style="@style/thankyou_txtshare"
+            android:id="@+id/thankyou_shareon_textview"
+            style="@style/thankyou_shareon_text_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/thankyou_edtWriteComment"
+            android:layout_below="@id/thankyou_writecomment_edittext"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="10dp"
-            android:text="@string/thankyou_txtShareOn" />
+            android:text="@string/thankyou_shareon_text" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/thankyou_txtShareOn"
+            android:layout_below="@id/thankyou_shareon_textview"
             android:layout_centerHorizontal="true"
             android:background="@drawable/background_sublayout"
             android:orientation="horizontal"
             android:padding="10dp" >
 
-            <ImageView
+            <ImageButton
+                android:id="@+id/thankyou_facebook_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="@string/thankyou_txtShareOn"
+                android:contentDescription="@string/app_name"
                 android:src="@drawable/icon_facebook" />
 
             <View
@@ -85,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="@string/thankyou_txtShareOn"
+                android:contentDescription="@string/app_name"
                 android:src="@drawable/icon_twitter" />
 
             <View
@@ -99,18 +101,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="@string/thankyou_txtShareOn"
+                android:contentDescription="@string/app_name"
                 android:src="@drawable/icon_twitter" />
         </LinearLayout>
 
         <Button
-            style="@style/thankyou_txtdone"
+            android:id="@+id/thankyou_done_button"
+            style="@style/thankyou_done_text_style"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@drawable/selector_button"
             android:padding="10dp"
-            android:text="@string/thankyou_btnDone" />
+            android:text="@string/thankyou_done_button_text" />
     </RelativeLayout>
 
 </LinearLayout>

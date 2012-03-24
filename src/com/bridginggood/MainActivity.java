@@ -18,6 +18,8 @@ import com.bridginggood.Biz.BizActivityGroup;
 import com.bridginggood.Charity.CharityActivityGroup;
 import com.bridginggood.QR.QRActivityGroup;
 import com.bridginggood.User.UserActivityGroup;
+import com.facebook.android.Facebook.ServiceListener;
+import com.facebook.android.FacebookError;
 
 public class MainActivity extends TabActivity {
 	private TabHost mTabHost;
@@ -81,12 +83,34 @@ public class MainActivity extends TabActivity {
 	@Override
 	public void onResume(){
 		super.onResume();
+
 		//C2DM Handle
-		if(UserInfo.getLoadThankyouActivity()){
+		String pushMessage = UserInfoStore.loadPushMessage(getApplicationContext());
+		if (pushMessage.length()>0){
 			Intent newIntent = new Intent().setClass(MainActivity.this, ThankyouActivity.class);
-			//newIntent.putExtra(CONST.BUNDLE_C2DM_KEY, tmp);
-			//newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			startActivity(newIntent);
+		}
+
+
+		final Context context = getApplicationContext();
+
+		//Facebook token
+		if(UserInfo.mFacebook != null && !UserInfo.mFacebook.isSessionValid()){
+			ServiceListener serviceListener = new ServiceListener() {
+				@Override
+				public void onFacebookError(FacebookError e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void onError(Error e) {
+					// TODO Auto-generated method stub
+				}
+				@Override
+				public void onComplete(Bundle values) {
+					UserInfoStore.saveFacebookSessionOnly(context);
+				}
+			};
+			UserInfo.mFacebook.extendAccessToken(context, serviceListener);
 		}
 	}
 }

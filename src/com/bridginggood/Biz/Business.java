@@ -11,6 +11,7 @@ public class Business implements Serializable {
 	private static final long serialVersionUID = -5579923920896416265L;
 	private int bizLogo, charityLogo;						//bizLogo: Business Logo, charityLogo: Charity Logo
 	private String bizId, bizName, bizAddress, bizCharity; 	//bizCharity: Charity index - used to match charityLogo
+	private String bizDescription;
 	private float bizLat, bizLng;
 	private float distanceAway;								//distanceAway: distance from current location
 
@@ -19,6 +20,7 @@ public class Business implements Serializable {
 		setBizLogo(0);
 		setBizName("");
 		setBizAddress("");
+		setBizDescription("");
 		setBizCharity("");
 		setBizLat(0.0f);
 		setBizLng(0.0f);
@@ -112,5 +114,13 @@ public class Business implements Serializable {
 
 	public void setCharityLogo(int charityLogo) {
 		this.charityLogo = charityLogo;
+	}
+
+	public String getBizDescription() {
+		return bizDescription;
+	}
+
+	public void setBizDescription(String bizDescription) {
+		this.bizDescription = bizDescription;
 	}
 }

@@ -35,7 +35,7 @@ public class SplashActivity extends Activity {
 				/*
 				 *===============START Loading Job==================== 
 				 */
-				
+
 				//Load saved session settings
 				UserInfo.init();
 				UserInfoStore.loadUserSession(getApplicationContext());
@@ -77,12 +77,6 @@ public class SplashActivity extends Activity {
 				 */
 				Intent newIntent = new Intent().setClass(SplashActivity.this, targetClass);
 				newIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-				
-				//C2DM Receiver
-				/*Bundle bundle = getIntent().getExtras();
-				if(bundle != null && bundle.getString(CONST.BUNDLE_C2DM_KEY) != null){
-					UserInfo.setLoadThankyouActivity(true);
-				}*/
 
 				mProgressDialog.dismiss();
 				finish();
@@ -102,6 +96,7 @@ public class SplashActivity extends Activity {
 		Log.d("BG", "Stored Facebook getFbUid: "+UserInfo.getFbUid());
 		Log.d("BG", "Stored Facebook token: "+UserInfo.mFacebook.getAccessToken());
 		Log.d("BG", "Stored Facebook expiry: "+UserInfo.mFacebook.getAccessExpires());
+		Log.d("BG", "Stored C2DM token:"+UserInfo.getC2DMRegistrationId());
 		return UserLoginJSON.loginUser(UserInfo.getUserType());
 	}
 
