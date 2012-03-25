@@ -5,6 +5,8 @@
     <string name="charity_people">People</string>
     <string name="charity_daystogo">Days to go</string>
     
+    <string name="charity_empty_string">$0000</string>
+    
     <!-- Navigatino Menu -->
     <string name="charity_navigation_food">Food</string>
     <string name="charity_navigation_water">Water</string>

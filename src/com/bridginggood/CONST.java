@@ -20,8 +20,6 @@ public class CONST {
 	public static final String FACEBOOK_APP_ID = "248815235212965";
 	public static final String[] FACEBOOK_PERMISSION = {"email", "publish_stream"};
 	
-	public static final String FACEBOOK_POST_ICON = "https://s3.amazonaws.com/BG_S3/media/common/bg_post_logo.png";
-	
 	//QRcode image URL
 	public static final String QRCODE_S3_URL_PREFIX = "https://s3.amazonaws.com/BG_S3/media/qrcode/";
 
@@ -40,5 +38,12 @@ public class CONST {
 	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQrcodeFromMobile.json";
 	public static final String API_REGISTER_QRCODE_URL = API_URL+"/auth/RegisterQrcodeFromMobile.json";
 	public static final String API_LOGOUT = API_URL+"/auth/Logout.json";
+	
+
+	public static final String FACEBOOK_POST_ICON = "https://s3.amazonaws.com/BG_S3/media/common/bg_post_logo.png";
+	
+	public static final String IMAGES_PREFIX_CHARITY = "https://s3.amazonaws.com/BG_S3/media/charity/";
+	public static final String IMAGES_PREFIX_BUSINESS = "https://s3.amazonaws.com/BG_S3/media/business/";
+	public static final String IMAGES_PREFIX_COMMON = "https://s3.amazonaws.com/BG_S3/media/common/";
 	
 }

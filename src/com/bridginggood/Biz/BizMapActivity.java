@@ -191,8 +191,8 @@ public class BizMapActivity extends MapActivity{
 	private void createBusinessOverlayOnMapView(ArrayList<Business> businesArrayList){
 		Log.d("BgMap", "CreateOverLay called");
 		List<Overlay> mapOverlays = mMapView.getOverlays();
-		//TODO: change the drawable
-		Drawable drawable = this.getResources().getDrawable(R.drawable.shop_default);
+		
+		Drawable drawable = this.getResources().getDrawable(R.drawable.map_pin);
 		BizMapOverlay itemizedOverlay = new BizMapOverlay(drawable, mMapView, businesArrayList, getParent());	//getParent() since alert only works on the upper-most context.
 
 		//Create GeoPoints
