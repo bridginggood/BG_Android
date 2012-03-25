@@ -1,5 +1,6 @@
 package com.bridginggood;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -108,18 +109,22 @@ public class ThankyouActivity extends Activity{
 					comment = "";
 				}
 
-				float sumTotal = 0.0f;
+				//Calculate sum, round to 2 decimal places
+				float sumTotalf = 0.0f;
 				for(VisitedBusiness vb : mPushMessageArrayList){
-					sumTotal += vb.getDonationAmount();
+					sumTotalf += vb.getDonationAmount();
 				}
+				DecimalFormat dFormat = new DecimalFormat("#0.00");
+				String sumTotal = dFormat.format(sumTotalf);
 
+				//Select random business
 				Random rnd = new Random();
 				int ind = rnd.nextInt(mPushMessageArrayList.size());
 				String businessId = mPushMessageArrayList.get(ind).getBusinessId();
 
 				Business b = BusinessJSON.getBusinessDetail(businessId);
 				if (b== null){
-					return false;
+					return false;	//How is this possible?
 				}
 
 				//FACEBOOK post
@@ -128,6 +133,7 @@ public class ThankyouActivity extends Activity{
 					bundle.putString("message", comment);
 					bundle.putString("caption", "BridgingGood");
 					bundle.putString("description", b.getBizDescription());
+					bundle.putString("link", "http://www.bridginggood.com/");
 					bundle.putString("picture", CONST.FACEBOOK_POST_ICON);
 					
 					if(mPushMessageArrayList.size()>1){
