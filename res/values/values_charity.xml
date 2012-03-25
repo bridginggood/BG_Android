@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="charity_detail_header">Causes</string>
+    <string name="charity_donated">Donated</string>
+    <string name="charity_people">People</string>
+    <string name="charity_daystogo">Days to go</string>
+    
+    <!-- Navigatino Menu -->
+    <string name="charity_navigation_food">Food</string>
+    <string name="charity_navigation_water">Water</string>
+    <string name="charity_navigation_all">All</string>
+    <string name="charity_navigation_education">Education</string>
+    <string name="charity_navigation_medical">Medical</string>
+</resources>

@@ -8,8 +8,7 @@
     <string name="bizMyLocationLoading">Identifying your location… </string>
     <string name="bizListLoading">Loading..</string>
     <string name="bizNoResult">No result found</string>
-    <string name="bizRefreshList">Refresh</string>
-    
-    <string name="bizDonateWithBridgingGood">Donate with BridgingGood</string>
 
+     <string name="business_detail_header">Places</string>
+     <string name="business_detail_donate">Donate with BridgingGood</string>
 </resources>

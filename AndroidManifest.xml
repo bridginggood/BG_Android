@@ -75,6 +75,9 @@
         <activity
             android:name=".Charity.CharityCurationActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".Charity.CharityDetailActivity"
+            android:screenOrientation="portrait"/>
 
         <!-- Biz -->
         <activity

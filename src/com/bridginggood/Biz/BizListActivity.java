@@ -168,13 +168,7 @@ public class BizListActivity extends Activity implements OnScrollListener{
 			extra.putSerializable("biz", (Serializable) biz);
 			intent.putExtras(extra);
 
-			BizActivityGroup bizActivityGroup = ((BizActivityGroup)getParent());
-			View newView = bizActivityGroup.getBizActivityGroup().getLocalActivityManager()
-					.startActivity("BizDetail", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-					.getDecorView();
-
-			bizActivityGroup.getBizActivityGroup().replaceView(newView);	//Replace View
-
+			startActivity(intent);
 		}
 	};
 

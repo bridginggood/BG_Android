@@ -5,43 +5,57 @@
     android:layout_gravity="center"
     android:background="@drawable/background_actionbar"
     android:gravity="center"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:paddingTop="5dp" 
+     android:paddingBottom="5dp" >
 
     <Button
-        android:id="@+id/a"
+        android:id="@+id/charity_navigation_food_button"
         style="@style/ButtonText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="2"
         android:background="@drawable/selector_button"
-        android:text="@string/bizGoToBizMap" />
+        android:text="@string/charity_navigation_food" />
 
     <Button
-        android:id="@+id/b"
+        android:id="@+id/charity_navigation_water_button"
         style="@style/ButtonText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="2"
         android:background="@drawable/selector_button"
-        android:text="@string/bizGoToListView" />
+        android:text="@string/charity_navigation_water" />
 
     <Button
-        android:id="@+id/c"
+        android:id="@+id/charity_navigation_all_button"
         style="@style/ButtonText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="2"
         android:background="@drawable/selector_button"
-        android:text="@string/bizGoToListView" />
+        android:text="@string/charity_navigation_all" />
 
     <Button
-        android:id="@+id/d"
+        android:id="@+id/charity_navigation_education_button"
         style="@style/ButtonText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="3"
         android:background="@drawable/selector_button"
-        android:text="@string/bizGoToListView" />
+        android:text="@string/charity_navigation_education" />
 
+    <Button
+        android:id="@+id/charity_navigation_medical_button"
+        style="@style/ButtonText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:background="@drawable/selector_button"
+        android:text="@string/charity_navigation_medical" />
 
 </LinearLayout>

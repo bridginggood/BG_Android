@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.View;
 
 import com.bridginggood.BalloonItemizedOverlay;
 import com.google.android.maps.MapView;
@@ -45,13 +44,8 @@ public class BizMapOverlay extends BalloonItemizedOverlay<OverlayItem>{
 		Bundle extra = new Bundle();
 		extra.putSerializable("biz", (Serializable) biz);
 		intent.putExtras(extra);
-		
-		BizActivityGroup bizActivityGroup = ((BizActivityGroup)context);
-		View newView = bizActivityGroup.getBizActivityGroup().getLocalActivityManager()
-				.startActivity("BizDetail", intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
-				.getDecorView();
 
-		bizActivityGroup.getBizActivityGroup().replaceView(newView);	//Replace View
+		context.startActivity(intent);
 		return true;
 	}
 
