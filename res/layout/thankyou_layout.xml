@@ -68,41 +68,13 @@
             android:orientation="horizontal"
             android:padding="10dp" >
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/thankyou_facebook_button"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/icon_facebook" />
-
-            <View
-                android:layout_width="2dip"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/gray" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/icon_twitter" />
-
-            <View
-                android:layout_width="2dip"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/gray" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/icon_twitter" />
         </LinearLayout>
 
         <Button

@@ -199,28 +199,4 @@ public class AuthJSON {
 		}
 		return false;
 	}
-
-	public static boolean updateSNSNotification(boolean state){
-		try{
-			String targetURL = CONST.API_UPDATE_SNS_NOTIFICATION_URL;
-			String paramAutoPost = (state)?"Y":"N";
-			String[][] param = {	{PARAM_USER_ID, UserInfo.getUserId()+""},
-					{PARAM_AUTO_POST, paramAutoPost}};
-			String requestParam = BgHttpHelper.generateParamData(param);
-
-			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
-
-			JSONObject jsonObject = new JSONObject(jsonStr);
-
-			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-				return true;
-			} else {
-				return false;
-			}
-		}
-		catch(Exception e){
-			Log.d("BgDB", "Logout Exception: "+e.getLocalizedMessage());
-		}
-		return false;
-	}
 }

@@ -15,23 +15,27 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bridginggood.Biz.Business;
 import com.bridginggood.DB.BusinessJSON;
+import com.bridginggood.DB.LogJSON;
 import com.facebook.android.R;
 
 public class ThankyouActivity extends Activity{
 
 	private ArrayList<VisitedBusiness> mPushMessageArrayList;
 	private Activity _this = this;
+	private boolean mPostOnFacebook;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.thankyou_layout);
+		mPostOnFacebook = true;
 
 		//Load stacked c2dm messages
 		String pushMessage = UserInfoStore.loadPushMessage(getApplicationContext());
@@ -65,6 +69,25 @@ public class ThankyouActivity extends Activity{
 	}
 
 	private void initButtons(){
+		//Facebook button
+		final ImageView btnFacebook = (ImageView)findViewById(R.id.thankyou_facebook_button);
+		btnFacebook.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if(mPostOnFacebook){
+					//Turn off posting
+					mPostOnFacebook = false;
+					
+					//TODO: change image!
+					btnFacebook.setImageResource(R.drawable.icon);
+				}else{
+					//Turn on posting
+					mPostOnFacebook = true;
+					btnFacebook.setImageResource(R.drawable.icon_facebook);
+				}
+			}
+		});
+		
+		//Done button
 		Button btnDone = (Button)findViewById(R.id.thankyou_done_button);
 		btnDone.setOnClickListener(new OnClickListener() {
 			@Override
@@ -128,7 +151,7 @@ public class ThankyouActivity extends Activity{
 				}
 
 				//FACEBOOK post
-				if(UserInfo.isFbAutoPost() && UserInfo.mFacebook.isSessionValid()){
+				if(mPostOnFacebook && UserInfo.mFacebook.isSessionValid()){
 					Bundle bundle = new Bundle();
 					bundle.putString("message", comment);
 					bundle.putString("caption", "BridgingGood");
@@ -147,7 +170,12 @@ public class ThankyouActivity extends Activity{
 					if(response==null || response.equals("") || response.equals("false"))	//Error
 						return false;
 				}
-				//TEMP CODE
+				
+				//Log
+				String posted = (mPostOnFacebook)?"Y":"N";
+				LogJSON.createSNSLog(businessId, posted);
+				
+				//Clear notifications
 				UserInfoStore.clearPushMessage(getApplicationContext());
 				return true;
 			}catch(Exception e){

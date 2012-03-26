@@ -19,7 +19,6 @@ public class UserInfo extends Application{
 	private static String mTokenString, mDeviceId, mC2DMRegistrationId, mQRCodeURL;
 	private static Long mUserId;
 	private static int mUserType;
-	private static boolean mFbAutoPost;
 	public static Facebook mFacebook;
 	public static AsyncFacebookRunner mAsyncRunner;
 	
@@ -34,7 +33,6 @@ public class UserInfo extends Application{
 		setQRCodeURL(null);
 		setFbUid(null);
 		setUserType(0);
-		setFbAutoPost(true);
 		mFacebook = new Facebook(CONST.FACEBOOK_APP_ID);
 		mAsyncRunner= new AsyncFacebookRunner(mFacebook);
 	}
@@ -164,11 +162,4 @@ public class UserInfo extends Application{
 		return deviceId;
 	}
 
-	public static boolean isFbAutoPost() {
-		return mFbAutoPost;
-	}
-
-	public static void setFbAutoPost(boolean mFbAutoPost) {
-		UserInfo.mFbAutoPost = mFbAutoPost;
-	}
 }

@@ -42,8 +42,8 @@ public class CONST {
 	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQrcodeFromMobile.json";
 	public static final String API_REGISTER_QRCODE_URL = API_URL+"/auth/RegisterQrcodeFromMobile.json";
 	
-	//SNS related
-	public static final String API_UPDATE_SNS_NOTIFICATION_URL = API_URL+"/auth/UpdateSNSNotification.json";
+	//Log related
+	public static final String API_LOG_SNS_URL = API_URL+"/log/CreateSNSLog.json";
 	
 	//Stat related
 	public static final String API_STATS_TOTAL_AMOUNT_DONATED = API_URL+"/stats/UserTotalDonation.json";	
