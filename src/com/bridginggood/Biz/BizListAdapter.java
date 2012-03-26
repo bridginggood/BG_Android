@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
 import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
@@ -26,7 +27,7 @@ public class BizListAdapter extends ArrayAdapter<Business>{
         this.mLayoutResourceId = layoutResourceId;
         this.mData = data;
         this.mActivity = activity;
-        mImageManager = new ImageManager(activity.getApplicationContext(), true, mImageDownloaded);
+        mImageManager = new ImageManager(activity.getApplicationContext(), false, mImageDownloaded);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class BizListAdapter extends ArrayAdapter<Business>{
             	holder.updateDistanceAway(biz.getDistanceAwayStr());
             	//holder.updateBizAddress(biz.getBizAddress());
             	//TODO: change the ICON URL!
-            	mImageManager.displayImage("https://s3.amazonaws.com/BG_S3/media/business/shop_default.png", mActivity, holder.bizLogo);
+            	mImageManager.displayImage(CONST.IMAGES_PREFIX_BUSINESS+biz.getBizId()+"_thumbnail.png", mActivity, holder.bizLogo);
             }
         }
         

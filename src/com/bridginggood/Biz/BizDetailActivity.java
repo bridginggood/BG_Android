@@ -3,7 +3,9 @@ package com.bridginggood.Biz;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,7 +26,7 @@ import com.bridginggood.UserInfo;
 public class BizDetailActivity extends Activity{
 	private ImageManager mImageManager;
 	private ArrayList<String> mImageViewURLArrayList;
-	private final int TOTAL_IMAGEVIEWS = 3;		//Number of imageviews to load in this activity
+	private final int TOTAL_IMAGEVIEWS = 4;		//Number of imageviews to load in this activity
 	private int mImageViewCounter;
 	private Business mBusiness;		//Business object
 	private View mPopupview;
@@ -34,28 +36,54 @@ public class BizDetailActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.bizdetail_layout);
 
-		//Show loading
-		toggleLayout(true);
+		LoadBizDetailAsyncTask loadbizAsyncTask = new LoadBizDetailAsyncTask();
+		loadbizAsyncTask.execute();
+	}
+	
+	private class LoadBizDetailAsyncTask extends AsyncTask<Context, Boolean, Boolean>{
+		//Display progress dialog
+		protected void onPreExecute()
+		{
+			//Show loading
+			toggleLayout(true);
+		}
 
-		//Init business name and address
-		initTextViews();
-		mImageViewURLArrayList = new ArrayList<String>();
-		mImageViewCounter = 0;
-		mImageManager = new ImageManager(getApplicationContext(), false, mImageDownloaded);
-		initImageViews();
+		//Load current location
+		protected Boolean doInBackground(Context... contexts)
+		{
+			//Init business name and address
+			initTextViews();
+			mImageViewURLArrayList = new ArrayList<String>();
+			mImageViewCounter = 0;
+			mImageManager = new ImageManager(getApplicationContext(), false, mImageDownloaded);
+			mPopupview = View.inflate(BizDetailActivity.this,R.layout.popup_qrcode,null);
+			initImageViews();
 
-		initButtons();
+			initButtons();
+			
+
+			//Wait until everything is loaded
+			while(mImageViewCounter < TOTAL_IMAGEVIEWS){
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			return false;
+		}
+		protected void onPostExecute(final Boolean isSuccess)
+		{
+			toggleLayout(false);
+		}
 	}
 
 	private void initButtons(){
-		mPopupview = View.inflate(this,R.layout.popup_qrcode,null);
 		Button btnDonate = (Button) findViewById(R.id.business_detail_donate_button);
 		btnDonate.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ImageView imgQrcode = (ImageView)mPopupview.findViewById(R.id.popup_qrcode_imageview);
-				mImageManager.displayImage(UserInfo.getQRCodeURL(), BizDetailActivity.this, imgQrcode);
-				mImageViewURLArrayList.add(UserInfo.getQRCodeURL());
 				PopupWindow popup = new PopupWindow(mPopupview, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
 				popup.setOutsideTouchable(true);
 				popup.setBackgroundDrawable(new BitmapDrawable());
@@ -86,20 +114,29 @@ public class BizDetailActivity extends Activity{
 		String url = CONST.IMAGES_PREFIX_CHARITY+"charity_bridgedwith.png";
 
 		ImageView imgBridged = (ImageView) findViewById(R.id.business_detail_bridgedwith_img);
-		mImageManager.displayImage(url, this, imgBridged);
 		mImageViewURLArrayList.add(url);
+		mImageManager.displayImage(url, this, imgBridged);
+
 
 		//Detail
 		url = CONST.IMAGES_PREFIX_BUSINESS+mBusiness.getBizId()+"_detail.png";
 		ImageView imgDetail = (ImageView) findViewById(R.id.business_detail_img);
-		mImageManager.displayImage(url, this, imgDetail);
 		mImageViewURLArrayList.add(url);
+		mImageManager.displayImage(url, this, imgDetail);
+		
 
 		//Rest type
 		url = CONST.IMAGES_PREFIX_COMMON+"category/REST.png";
 		ImageView imgType = (ImageView) findViewById(R.id.business_detail_type_img);
-		mImageManager.displayImage(url, this, imgType);
 		mImageViewURLArrayList.add(url);
+		mImageManager.displayImage(url, this, imgType);
+		
+		
+		//QRCode
+		ImageView imgQrcode = (ImageView)mPopupview.findViewById(R.id.popup_qrcode_imageview);
+		mImageViewURLArrayList.add(UserInfo.getQRCodeURL());
+		mImageManager.displayImage(UserInfo.getQRCodeURL(), BizDetailActivity.this, imgQrcode);
+		
 	}
 
 	public ImageManagerResult mImageDownloaded = new ImageManagerResult()
@@ -123,10 +160,6 @@ public class BizDetailActivity extends Activity{
 				}
 			}
 			Log.d("BG", "GotImage called: "+isLoaded+" , "+url+", counter:"+mImageViewCounter);
-
-			//Display content when all loaded
-			if(mImageViewCounter >= TOTAL_IMAGEVIEWS)
-				toggleLayout(false);
 		}
 	};
 }

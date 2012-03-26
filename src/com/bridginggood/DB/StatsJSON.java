@@ -19,6 +19,8 @@ public class StatsJSON {
 	private static final String PARAM_RESULT_MSG = "resultMsg";
 	private static final String PARAM_BUSINESS_NAME = "BusinessName";
 	private static final String PARAM_CHARITY_NAME = "CharityName";
+	
+	private static final int BY_CHARITY = 0;
 
 	public static String getTotalDonationAmount(){
 		try {
@@ -50,10 +52,15 @@ public class StatsJSON {
 		return null;
 	}
 	
-	public static ArrayList<ValuePair<String, String>> getDonationAmountByCharity(){
+	public static ArrayList<ValuePair<String, String>> getDonationAmount(int type){
 		ArrayList<ValuePair<String, String>> dataArrayList = new ArrayList<ValuePair<String, String>>();
 		try {
-			String targetURL = CONST.API_STATS_DONATION_BY_CHARITY;
+			String targetURL;
+			if (type == BY_CHARITY)
+				targetURL = CONST.API_STATS_DONATION_BY_CHARITY;
+			else
+				targetURL = CONST.API_STATS_DONATION_BY_PLACE;
+			
 			String requestParam = "";
 
 			String[][] param = {{PARAM_USER_ID, UserInfo.getUserId()+""}};
@@ -70,7 +77,12 @@ public class StatsJSON {
 				JSONObject jsonObject = (JSONObject) jsonArray.get(i);
 				if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
 					//Retrieve data
-					String charityName = jsonObject.getString(PARAM_CHARITY_NAME);
+					String name;
+					if (type == BY_CHARITY )	//By Charity
+						name = jsonObject.getString(PARAM_CHARITY_NAME);
+					else //By Place
+						name = jsonObject.getString(PARAM_BUSINESS_NAME);
+					
 					String amount = jsonObject.getString(PARAM_TOTAL);
 					
 					//Change amount format
@@ -78,7 +90,7 @@ public class StatsJSON {
 					amount = "$" + dFormat.format(Float.parseFloat(amount));
 					
 					//Add to list
-					dataArrayList.add(new ValuePair<String, String>(charityName, amount));
+					dataArrayList.add(new ValuePair<String, String>(name, amount));
 				} else {
 					Log.d("BgDB", "Login failed: "+jsonObject.getString(PARAM_RESULT_MSG));
 					return null;
@@ -91,7 +103,7 @@ public class StatsJSON {
 		}
 		return null;
 	}
-	
+	/*
 	public static ArrayList<ValuePair<String, String>> getDonationAmountByPlace(){
 		ArrayList<ValuePair<String, String>> dataArrayList = new ArrayList<ValuePair<String, String>>();
 		try {
@@ -115,6 +127,10 @@ public class StatsJSON {
 					String businessName = jsonObject.getString(PARAM_BUSINESS_NAME);
 					String amount = jsonObject.getString(PARAM_TOTAL);
 					
+					//Change amount format
+					DecimalFormat dFormat = new DecimalFormat("#0.00");
+					amount = "$" + dFormat.format(Float.parseFloat(amount));
+					
 					//Add to list
 					dataArrayList.add(new ValuePair<String, String>(businessName, amount));
 				} else {
@@ -128,5 +144,5 @@ public class StatsJSON {
 			Log.d("BgDB", "Exception occured: "+e.getLocalizedMessage());
 		}
 		return null;
-	}
+	}*/
 }

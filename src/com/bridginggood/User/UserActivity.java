@@ -4,10 +4,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -29,16 +27,11 @@ public class UserActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile_main_layout);
 
-		LoadUserActivity loadUserActivity = new LoadUserActivity(getParent());
+		LoadUserActivity loadUserActivity = new LoadUserActivity();
 		loadUserActivity.execute();
 	}
 
 	private class LoadUserActivity extends AsyncTask<Context, Boolean, Boolean>{
-		private Context mContext;
-		public LoadUserActivity(Context context){
-			this.mContext = context;
-		}
-		
 		//Display progress dialog
 		protected void onPreExecute()
 		{
@@ -54,7 +47,7 @@ public class UserActivity extends Activity{
 		protected void onPostExecute(final Boolean b)
 		{
 			toggleLayout(false);
-			mLoadUserDataAsyncTask = new LoadUserDataAsyncTask(this.mContext, BY_CHARITY);
+			mLoadUserDataAsyncTask = new LoadUserDataAsyncTask(BY_CHARITY);
 			mLoadUserDataAsyncTask.execute();
 		}
 	}
@@ -109,7 +102,7 @@ public class UserActivity extends Activity{
 					mLoadUserDataAsyncTask.cancel(true);	//Cancel running thread
 				}
 				//Run thread
-				mLoadUserDataAsyncTask = new LoadUserDataAsyncTask(getParent(), BY_CHARITY);
+				mLoadUserDataAsyncTask = new LoadUserDataAsyncTask(BY_CHARITY);
 				mLoadUserDataAsyncTask.execute();
 				
 				//Make me selected
@@ -121,17 +114,14 @@ public class UserActivity extends Activity{
 		//By Places
 		btnByPlace.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				if(btnByPlace.isPressed())	//Ignore if button is already pressed
-					return;
-				
+			public void onClick(View v) {				
 				if(mLoadUserDataAsyncTask!= null 
 						&& (mLoadUserDataAsyncTask.getStatus().equals(AsyncTask.Status.RUNNING)
 						|| mLoadUserDataAsyncTask.getStatus().equals(AsyncTask.Status.PENDING))){
 					mLoadUserDataAsyncTask.cancel(true);	//Cancel running thread
 				}
 				//Run thread
-				mLoadUserDataAsyncTask = new LoadUserDataAsyncTask(getParent(), BY_PLACE);
+				mLoadUserDataAsyncTask = new LoadUserDataAsyncTask(BY_PLACE);
 				mLoadUserDataAsyncTask.execute();
 				
 				//Make me selected
@@ -152,11 +142,10 @@ public class UserActivity extends Activity{
 
 	private class LoadUserDataAsyncTask extends AsyncTask<Context, ArrayList<ValuePair<String, String>>, ArrayList<ValuePair<String, String>>>
 	{
-		private Context mContext;
 		private int mType;	//Determine which data to load
 
-		public LoadUserDataAsyncTask(Context context, int type){
-			this.mContext = context;
+		public LoadUserDataAsyncTask(int type){
+
 			this.mType = type;
 		}
 
@@ -169,14 +158,7 @@ public class UserActivity extends Activity{
 		//Load current location
 		protected ArrayList<ValuePair<String, String>> doInBackground(Context... contexts)
 		{
-			switch(this.mType){
-			case BY_CHARITY:
-				return StatsJSON.getDonationAmountByCharity();
-			case BY_PLACE:
-				return StatsJSON.getDonationAmountByPlace();
-			default:
-				return null;
-			}
+			return StatsJSON.getDonationAmount(this.mType);
 		}
 		protected void onPostExecute(final ArrayList<ValuePair<String, String>> dataList)
 		{

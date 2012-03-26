@@ -129,22 +129,16 @@
             android:layout_margin="5dp"
             android:background="@drawable/background_sublayout" >
 
-            <TableLayout
+            <LinearLayout
                 android:id="@+id/profile_table_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" >
-
-                <TableRow
-                    android:id="@+id/tableRow1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center" >
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
+                        style="@style/profile_data_list_title"
                         android:text="@string/profile_tbl_place" />
 
                     <TextView
@@ -152,9 +146,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
+                        style="@style/profile_data_list_title"
                         android:text="@string/profile_tbl_total" />
-                </TableRow>
-            </TableLayout>
+            </LinearLayout>
             <!-- List View -->
 
             <ListView

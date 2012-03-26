@@ -3,6 +3,8 @@ package com.bridginggood.Charity;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,8 +12,8 @@ import android.widget.ImageView;
 
 import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
-import com.bridginggood.R;
 import com.bridginggood.ImageManager.ImageManagerResult;
+import com.bridginggood.R;
 
 public class CharityDetailActivity extends Activity{
 	private ImageManager mImageManager;
@@ -23,14 +25,44 @@ public class CharityDetailActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.charity_detail_layout);
-
-		//Show loading
-		toggleLayout(true);
-		mImageViewURLArrayList = new ArrayList<String>();
-		mImageViewCounter = 0;
-		mImageManager = new ImageManager(getApplicationContext(), false, mImageDownloaded);
-		initImageViews();
+		
+		LoadPageAsyncTask loadAsyncTask = new LoadPageAsyncTask();
+		loadAsyncTask.execute();
 	}
+	
+	private class LoadPageAsyncTask extends AsyncTask<Context, Boolean, Boolean>{
+		//Display progress dialog
+		protected void onPreExecute()
+		{
+			//Show loading
+			toggleLayout(true);
+		}
+
+		protected Boolean doInBackground(Context... contexts)
+		{
+
+			mImageViewURLArrayList = new ArrayList<String>();
+			mImageViewCounter = 0;
+			mImageManager = new ImageManager(getApplicationContext(), false, mImageDownloaded);
+			initImageViews();
+
+			//Wait until everything is loaded
+			while(mImageViewCounter < TOTAL_IMAGEVIEWS){
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+			return false;
+		}
+		protected void onPostExecute(final Boolean isSuccess)
+		{
+			toggleLayout(false);
+		}
+	}
+
 
 	private void toggleLayout(boolean isLoading){
 		if(isLoading){
@@ -53,14 +85,10 @@ public class CharityDetailActivity extends Activity{
 		@Override
 		public void gotImage(final boolean isLoaded, String url)
 		{
-			if(isLoaded && mImageViewURLArrayList.contains(url)){
+			if(mImageViewURLArrayList.contains(url)){
 				mImageViewCounter++;
 			}
 			Log.d("BG", "GotImage called: "+isLoaded+" , "+url+", counter:"+mImageViewCounter);
-			
-			//Display content when all loaded
-			if(mImageViewCounter >= TOTAL_IMAGEVIEWS)
-				toggleLayout(false);
 		}
 	};
 }
