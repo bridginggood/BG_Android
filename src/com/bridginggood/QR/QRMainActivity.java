@@ -138,9 +138,9 @@ public class QRMainActivity extends Activity{
 	public ImageManagerResult mImageDownloaded = new ImageManagerResult()
 	{
 		@Override
-		public void gotImage(final boolean isLoaded)
+		public void gotImage(final boolean isLoaded, String url)
 		{
-			if(isLoaded){
+			if(isLoaded && url.equals(UserInfo.getQRCodeURL())){
 				findViewById(R.id.qrcode_loading).setVisibility(View.GONE);
 				findViewById(R.id.qrcode_imgview).setVisibility(View.VISIBLE);
 			}

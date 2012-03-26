@@ -3,10 +3,12 @@ package com.bridginggood.User;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
@@ -17,7 +19,7 @@ import com.bridginggood.MainActivity;
 import com.bridginggood.R;
 import com.bridginggood.UserInfo;
 import com.bridginggood.UserInfoStore;
-import com.bridginggood.DB.UserLoginJSON;
+import com.bridginggood.DB.AuthJSON;
 
 public class UserPreferencesActivity extends Activity{
 
@@ -42,11 +44,11 @@ public class UserPreferencesActivity extends Activity{
 			@Override
 			public void onClick(View v) {
 				checkboxSNS.setChecked(!checkboxSNS.isChecked());	//Reverse the selection
-				
+
 				handleSocialNetwork(checkboxSNS.isChecked());
 			}
 		});
-		
+
 		//Privacy policy
 		findViewById(R.id.profile_preferences_menu_privacypolicy_textview).setOnClickListener(new OnClickListener() {
 			@Override
@@ -54,7 +56,7 @@ public class UserPreferencesActivity extends Activity{
 				handlePrivacyPolicy();
 			}
 		});
-		
+
 		//Terms of service
 		findViewById(R.id.profile_preferences_menu_termsofservice_textview).setOnClickListener(new OnClickListener() {
 			@Override
@@ -71,13 +73,14 @@ public class UserPreferencesActivity extends Activity{
 			}
 		});
 	}
-	
+
 	private void handlePrivacyPolicy(){
-		
+
 	}
 
-	private void handleSocialNetwork(boolean oldState){
-		Toast.makeText(this, "Status:"+oldState, Toast.LENGTH_SHORT).show();
+	private void handleSocialNetwork(boolean newState){
+		UpdateSNSNotificationAsyncTask updateSNSAsyncTask = new UpdateSNSNotificationAsyncTask(this, newState);
+		updateSNSAsyncTask.execute();
 	}
 
 	private void handleTermsOfService(){
@@ -109,7 +112,7 @@ public class UserPreferencesActivity extends Activity{
 		.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			public void onClick(final DialogInterface dialog, final int id) {
 
-				boolean isSucc = UserLoginJSON.logoutUser();
+				boolean isSucc = AuthJSON.logoutUser();
 				if(isSucc){
 					//Unregister C2DM
 					Intent unregIntent = new Intent("com.google.android.c2dm.intent.UNREGISTER");
@@ -138,5 +141,47 @@ public class UserPreferencesActivity extends Activity{
 		});
 		final AlertDialog alert = builder.create();
 		alert.show();
+	}
+
+	//Asynctask for sns notification
+	private class UpdateSNSNotificationAsyncTask extends AsyncTask<Context, Boolean, Boolean>{
+		private Context mContext;
+		private ProgressDialog mProgressDialog;
+		private boolean mState;
+
+		public UpdateSNSNotificationAsyncTask(Context context, boolean state){
+			this.mContext = context;
+			this.mState = state;
+		}
+
+		//Display progress dialog
+		protected void onPreExecute()
+		{
+			mProgressDialog = ProgressDialog.show(this.mContext, "", "Please wait...", true, false);
+		}
+
+		//Load current location
+		protected Boolean doInBackground(Context... contexts)
+		{
+			return AuthJSON.updateSNSNotification(this.mState);
+		}
+		protected void onPostExecute(final Boolean isSuccess)
+		{
+			if(mProgressDialog.isShowing())
+			{
+				mProgressDialog.dismiss();
+			}
+
+			if(isSuccess){
+				UserInfo.setFbAutoPost(this.mState);
+				UserInfoStore.saveFacebookAutoPostOnly(this.mContext);
+				Toast.makeText(this.mContext, "Saved!", Toast.LENGTH_SHORT).show();
+			}
+			else{
+				Toast.makeText(this.mContext, "An error has occurred.", Toast.LENGTH_SHORT).show();
+				CheckBox checkboxSNS = (CheckBox)findViewById(R.id.profile_preferences_menu_socialnetwork_checkbox);
+				checkboxSNS.setChecked(!this.mState);	//Reverse the selection on error
+			}
+		}
 	}
 }

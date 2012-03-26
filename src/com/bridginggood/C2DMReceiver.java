@@ -15,7 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.bridginggood.DB.UserLoginJSON;
+import com.bridginggood.DB.AuthJSON;
 
 public class C2DMReceiver extends BroadcastReceiver{
 	private static int mCountNotification = 0;
@@ -130,7 +130,7 @@ public class C2DMReceiver extends BroadcastReceiver{
 		Thread threadStartLogin = new Thread(new Runnable() {
 			public void run() {
 				Log.d("BGB", "Sending C2dm registration to BG server");
-				boolean isSucc = UserLoginJSON.sendC2DMRegistrationId(UserInfo.calcDeviceId(context), regId);
+				boolean isSucc = AuthJSON.sendC2DMRegistrationId(UserInfo.calcDeviceId(context), regId);
 				if (isSucc){
 					UserInfoStore.saveUserSessionC2DMOnly(context, regId);
 				}

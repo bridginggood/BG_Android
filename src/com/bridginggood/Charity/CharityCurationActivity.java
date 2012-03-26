@@ -1,5 +1,7 @@
 package com.bridginggood.Charity;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +18,9 @@ import com.bridginggood.R;
 
 public class CharityCurationActivity extends Activity{
 	private ImageManager mImageManager;
+	private ArrayList<String> mImageViewURLArrayList;
+	private final int TOTAL_IMAGEVIEWS = 1;		//Number of imageviews to load in this activity
+	private int mImageViewCounter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +29,10 @@ public class CharityCurationActivity extends Activity{
 		
 		//Show loading message
 		toggleLayout(true);	
-		
+		mImageViewURLArrayList = new ArrayList<String>();
+		mImageViewCounter = 0;
 		mImageManager = new ImageManager(getApplicationContext(), false, mImageDownloaded);
+		
 		
 		initButtons();
 		initImageViews();
@@ -53,19 +60,25 @@ public class CharityCurationActivity extends Activity{
 	}
 	
 	private void initImageViews(){
-		Log.d("BG", "Loading:"+CONST.IMAGES_PREFIX_CHARITY+"charity_main.png");
+		String imgMainURL = CONST.IMAGES_PREFIX_CHARITY+"charity_main.png";
 		ImageView imgMain = (ImageView) findViewById(R.id.charity_img);
-		mImageManager.displayImage(CONST.IMAGES_PREFIX_CHARITY+"charity_main.png", this, imgMain);
+		mImageViewURLArrayList.add(imgMainURL);
+		mImageManager.displayImage(imgMainURL, this, imgMain);
 	}
 	
 	public ImageManagerResult mImageDownloaded = new ImageManagerResult()
 	{
 		@Override
-		public void gotImage(final boolean isLoaded)
+		public void gotImage(final boolean isLoaded, String url)
 		{
-			Log.d("BG", "Done!");
-			//Done. Show content
-			toggleLayout(false);
+			if(isLoaded && mImageViewURLArrayList.contains(url)){
+				mImageViewCounter++;
+			}
+			Log.d("BG", "GotImage called: "+isLoaded+" , "+url+", counter:"+mImageViewCounter);
+			
+			//Display content when all loaded
+			if(mImageViewCounter >= TOTAL_IMAGEVIEWS)
+				toggleLayout(false);
 		}
 	};
 }

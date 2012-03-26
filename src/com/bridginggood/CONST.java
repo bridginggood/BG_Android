@@ -27,21 +27,29 @@ public class CONST {
 	public static final int USER_SESSION_TYPE_BG = 0;
 	public static final int USER_SESSION_TYPE_FACEBOOK = 1;
 
-	//For BridgingGood Database API
+	/** For BridgingGood Database API**/
+	//Business related
 	public static final String API_READ_BUSINESS_LIST_URL = API_URL+"/business_details/readlist.json";
 	public static final String API_READ_BUSINESS_MAP_URL = API_URL+"/business_details/readmap.json";
 	public static final String API_GET_BUSINESS_DETAIL = API_URL+"/business_details/BusinessDetail.json";
 	
+	//Login related
 	public static final String API_LOGIN_BY_FACEBOOK_URL = API_URL+"/auth/LoginByFacebook.json";
 	public static final String API_CREATE_C2DM_DEVICE_URL = API_URL+"/auth/CreateC2DMDevice.json";
-	
-	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQrcodeFromMobile.json";
-	public static final String API_REGISTER_QRCODE_URL = API_URL+"/auth/RegisterQrcodeFromMobile.json";
 	public static final String API_LOGOUT = API_URL+"/auth/Logout.json";
 	
-
-	public static final String FACEBOOK_POST_ICON = "https://s3.amazonaws.com/BG_S3/media/common/bg_post_logo.png";
+	//QR related
+	public static final String API_CREATE_QRCODE_URL = API_URL+"/auth/CreateQrcodeFromMobile.json";
+	public static final String API_REGISTER_QRCODE_URL = API_URL+"/auth/RegisterQrcodeFromMobile.json";
 	
+	//SNS related
+	public static final String API_UPDATE_SNS_NOTIFICATION_URL = API_URL+"/auth/UpdateSNSNotification.json";
+	
+	//Stat related
+	public static final String API_STATS_TOTAL_AMOUNT_DONATED = API_URL+"/stats/UserTotalDonation.json";	
+
+	//S3
+	public static final String FACEBOOK_POST_ICON = "https://s3.amazonaws.com/BG_S3/media/common/bg_post_logo.png";
 	public static final String IMAGES_PREFIX_CHARITY = "https://s3.amazonaws.com/BG_S3/media/charity/";
 	public static final String IMAGES_PREFIX_BUSINESS = "https://s3.amazonaws.com/BG_S3/media/business/";
 	public static final String IMAGES_PREFIX_COMMON = "https://s3.amazonaws.com/BG_S3/media/common/";

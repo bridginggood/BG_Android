@@ -14,7 +14,7 @@ import android.util.Log;
 import com.bridginggood.CONST;
 import com.bridginggood.UserInfo;
 
-public class UserLoginJSON {
+public class AuthJSON {
 
 	private static final String PARAM_USER_ID = "UserId";
 	private static final String PARAM_USER_EMAIL = "Email";
@@ -23,9 +23,11 @@ public class UserLoginJSON {
 	private static final String PARAM_USER_PASSWORD = "UserPassword";
 	private static final String PARAM_USER_TYPE = "UserType";
 	private static final String PARAM_TOKEN_STRING = "TokenString";
-	
+
 	private static final String PARAM_FB_UID = "FacebookUid";
-	
+
+	private static final String PARAM_AUTO_POST = "AutoPost";
+
 	private static final String PARAM_DEVICE_ID = "DeviceId";
 	private static final String PARAM_DEVICE_TYPE = "DeviceType";
 	private static final String PARAM_C2DM_REGISTRATION_ID = "C2DMRegId";
@@ -58,9 +60,9 @@ public class UserLoginJSON {
 						{PARAM_DEVICE_TYPE, DATA_DEVICE_TYPE}
 				};
 				requestParam = BgHttpHelper.generateParamData(paramBG);
-				*/
+				 */
 				break;
-				
+
 			case CONST.USER_SESSION_TYPE_FACEBOOK:
 				targetURL = CONST.API_LOGIN_BY_FACEBOOK_URL;
 				String[][] paramFacebook = {	
@@ -73,16 +75,16 @@ public class UserLoginJSON {
 				};
 				requestParam = BgHttpHelper.generateParamData(paramFacebook);
 				break;
-				
+
 			default:
 				return false;
 			}
 
 			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
 			Log.d("BgDB", "LoginJSON received:"+jsonStr);
-			
+
 			JSONObject jsonObject = new JSONObject(jsonStr);
-			
+
 			//TODO: Maybe this needs to be changed later on.
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
 				//Login succeed!
@@ -169,7 +171,7 @@ public class UserLoginJSON {
 			Log.d("BgDB", "createQRCode Exception: "+e.getLocalizedMessage());
 		}
 	}
-	
+
 	public static boolean logoutUser(){
 		try{
 			String targetURL = CONST.API_LOGOUT;
@@ -198,5 +200,27 @@ public class UserLoginJSON {
 		return false;
 	}
 
+	public static boolean updateSNSNotification(boolean state){
+		try{
+			String targetURL = CONST.API_UPDATE_SNS_NOTIFICATION_URL;
+			String paramAutoPost = (state)?"Y":"N";
+			String[][] param = {	{PARAM_USER_ID, UserInfo.getUserId()+""},
+					{PARAM_AUTO_POST, paramAutoPost}};
+			String requestParam = BgHttpHelper.generateParamData(param);
 
+			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
+
+			JSONObject jsonObject = new JSONObject(jsonStr);
+
+			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+				return true;
+			} else {
+				return false;
+			}
+		}
+		catch(Exception e){
+			Log.d("BgDB", "Logout Exception: "+e.getLocalizedMessage());
+		}
+		return false;
+	}
 }

@@ -15,7 +15,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.bridginggood.DB.UserLoginJSON;
+import com.bridginggood.DB.AuthJSON;
 import com.bridginggood.Facebook.FacebookAPI;
 
 public class SplashActivity extends Activity {
@@ -97,7 +97,7 @@ public class SplashActivity extends Activity {
 		Log.d("BG", "Stored Facebook token: "+UserInfo.mFacebook.getAccessToken());
 		Log.d("BG", "Stored Facebook expiry: "+UserInfo.mFacebook.getAccessExpires());
 		Log.d("BG", "Stored C2DM token:"+UserInfo.getC2DMRegistrationId());
-		return UserLoginJSON.loginUser(UserInfo.getUserType());
+		return AuthJSON.loginUser(UserInfo.getUserType());
 	}
 
 	/**

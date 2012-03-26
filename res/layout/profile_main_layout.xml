@@ -6,212 +6,238 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <!-- Upper half, displaying select menu and header -->
-    <TextView
-        android:id="@+id/profile_txtheader"
-        style="@style/profile_textview_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:padding="20dp"
-        android:text="@string/profile_txtheader" />
+    <!-- Loading -->
 
-    <LinearLayout
-        android:id="@+id/profile_select_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/profile_txtheader"
-        android:gravity="center"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/profile_btn_select_charity"
-            style="@style/ButtonText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_button"
-            android:text="@string/profile_select_charity" />
-
-        <Button
-            android:id="@+id/profile_btn_select_place"
-            style="@style/ButtonText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_button"
-            android:text="@string/profile_select_place" />
-    </LinearLayout>
-
-    <!-- Profile Navigation Layout -->
     <RelativeLayout
-        android:id="@+id/profile_navigation_layout"
+        android:id="@+id/profile_main_loading_layout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:background="@drawable/background_actionbar"
-        android:gravity="center"
-        android:padding="5dp" >
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:visibility="gone" >
 
-        <Button
-            android:id="@+id/profile_btn_stat_today"
-            style="@style/ButtonText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:background="@drawable/selector_button"
-            android:enabled="false"
-            android:text="@string/profile_stat_today" />
-
-        <Button
-            android:id="@+id/profile_btn_stat_week"
-            style="@style/ButtonText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/profile_btn_stat_today"
-            android:background="@drawable/selector_button"
-            android:text="@string/profile_stat_week" />
-
-        <Button
-            android:id="@+id/profile_btn_stat_month"
-            style="@style/ButtonText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/profile_btn_stat_week"
-            android:background="@drawable/selector_button"
-            android:text="@string/profile_stat_month" />
-
-        <Button
-            android:id="@+id/profile_btn_preferences"
-            style="@style/ButtonText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/selector_button"
-            android:text="@string/profile_preferences" />
+        <ProgressBar
+            style="@style/GenericProgressIndicator"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true" />
     </RelativeLayout>
 
-    
-    <!-- Table layout to display stats -->
-    <TableLayout
-        android:id="@+id/profile_table_layout"
+    <RelativeLayout
+        android:id="@+id/profile_main_loaded_layout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/profile_navigation_layout"
-        android:layout_below="@id/profile_select_layout"
-        android:layout_margin="5dp"
-        android:background="@drawable/background_sublayout" >
+        android:layout_height="fill_parent" >
 
-        <TableRow
-            android:id="@+id/tableRow1"
+        <!-- Upper half, displaying select menu and header -->
+
+        <TextView
+            android:id="@+id/profile_main_header_textview"
+            style="@style/profile_textview_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:padding="20dp"
+            android:text="@string/profile_txtheader" />
+
+        <LinearLayout
+            android:id="@+id/profile_select_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center" >
+            android:layout_below="@id/profile_main_header_textview"
+            android:gravity="center"
+            android:orientation="horizontal" >
 
-            <TextView
+            <Button
+                android:id="@+id/profile_btn_select_charity"
+                style="@style/ButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_place" />
+                android:background="@drawable/selector_button"
+                android:text="@string/profile_select_charity" />
 
-            <TextView
+            <Button
+                android:id="@+id/profile_btn_select_place"
+                style="@style/ButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_category" />
+                android:background="@drawable/selector_button"
+                android:text="@string/profile_select_place" />
+        </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_total" />
-        </TableRow>
+        <!-- Profile Navigation Layout -->
 
-        <TableRow
-            android:id="@+id/tableRow2"
+        <RelativeLayout
+            android:id="@+id/profile_navigation_layout"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:background="@drawable/background_actionbar"
+            android:gravity="center"
+            android:padding="5dp" >
 
-            <TextView
+            <Button
+                android:id="@+id/profile_btn_stat_today"
+                style="@style/ButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_place" />
+                android:layout_centerVertical="true"
+                android:background="@drawable/selector_button"
+                android:enabled="false"
+                android:text="@string/profile_stat_today" />
 
-            <TextView
+            <Button
+                android:id="@+id/profile_btn_stat_week"
+                style="@style/ButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_category" />
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/profile_btn_stat_today"
+                android:background="@drawable/selector_button"
+                android:text="@string/profile_stat_week" />
 
-            <TextView
+            <Button
+                android:id="@+id/profile_btn_stat_month"
+                style="@style/ButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_total" />
-        </TableRow>
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/profile_btn_stat_week"
+                android:background="@drawable/selector_button"
+                android:text="@string/profile_stat_month" />
 
-        <TableRow
-            android:id="@+id/tableRow3"
+            <Button
+                android:id="@+id/profile_btn_preferences"
+                style="@style/ButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/selector_button"
+                android:text="@string/profile_preferences" />
+        </RelativeLayout>
+
+        <!-- Table layout to display stats -->
+
+        <TableLayout
+            android:id="@+id/profile_table_layout"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_above="@id/profile_navigation_layout"
+            android:layout_below="@id/profile_select_layout"
+            android:layout_margin="5dp"
+            android:background="@drawable/background_sublayout" >
 
-            <TextView
-                android:layout_width="wrap_content"
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_place" />
+                android:gravity="center" >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_category" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_place" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_total" />
-        </TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_category" />
 
-        <TableRow
-            android:id="@+id/tableRow4"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_total" />
+            </TableRow>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_place" />
+            <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_category" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_place" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/profile_tbl_total" />
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_category" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_total" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_place" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_category" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_total" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow4"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_place" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_category" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/profile_tbl_total" />
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+
 </RelativeLayout>

@@ -1,5 +1,7 @@
 package com.bridginggood.Charity;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +15,10 @@ import com.bridginggood.ImageManager.ImageManagerResult;
 
 public class CharityDetailActivity extends Activity{
 	private ImageManager mImageManager;
-
+	private ArrayList<String> mImageViewURLArrayList;
+	private final int TOTAL_IMAGEVIEWS = 1;		//Number of imageviews to load in this activity
+	private int mImageViewCounter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,7 +26,8 @@ public class CharityDetailActivity extends Activity{
 
 		//Show loading
 		toggleLayout(true);
-
+		mImageViewURLArrayList = new ArrayList<String>();
+		mImageViewCounter = 0;
 		mImageManager = new ImageManager(getApplicationContext(), false, mImageDownloaded);
 		initImageViews();
 	}
@@ -36,19 +42,25 @@ public class CharityDetailActivity extends Activity{
 		}
 	}
 	private void initImageViews(){
-		Log.d("BG", "Loading:"+CONST.IMAGES_PREFIX_CHARITY+"charity_detail.png");
+		String imgDetailURL = CONST.IMAGES_PREFIX_CHARITY+"charity_detail.png";
 		ImageView imgDetail = (ImageView) findViewById(R.id.charity_detail_img);
-		mImageManager.displayImage(CONST.IMAGES_PREFIX_CHARITY+"charity_detail.png", this, imgDetail);
+		mImageViewURLArrayList.add(imgDetailURL);
+		mImageManager.displayImage(imgDetailURL, this, imgDetail);
 	}
 
 	public ImageManagerResult mImageDownloaded = new ImageManagerResult()
 	{
 		@Override
-		public void gotImage(final boolean isLoaded)
+		public void gotImage(final boolean isLoaded, String url)
 		{
-			Log.d("BG", "Done!");
-			//Done. Show content
-			toggleLayout(false);
+			if(isLoaded && mImageViewURLArrayList.contains(url)){
+				mImageViewCounter++;
+			}
+			Log.d("BG", "GotImage called: "+isLoaded+" , "+url+", counter:"+mImageViewCounter);
+			
+			//Display content when all loaded
+			if(mImageViewCounter >= TOTAL_IMAGEVIEWS)
+				toggleLayout(false);
 		}
 	};
 }

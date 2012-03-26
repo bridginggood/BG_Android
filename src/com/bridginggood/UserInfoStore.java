@@ -84,6 +84,12 @@ public class UserInfoStore {
 		return editor.commit();
 	}
 	
+	public static boolean saveFacebookAutoPostOnly(Context context){
+		Editor editor = context.getSharedPreferences(KEY, Context.MODE_PRIVATE).edit();
+		editor.putBoolean(FBAUTO_POST, UserInfo.isFbAutoPost());
+		return editor.commit();
+	}
+	
 	public static boolean savePushMessage(Context context, String newPushMessage){
 		SharedPreferences savedSession = context.getSharedPreferences(KEY, Context.MODE_PRIVATE);
 		Editor editor = savedSession.edit();

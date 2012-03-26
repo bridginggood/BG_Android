@@ -79,7 +79,7 @@ public class BizListAdapter extends ArrayAdapter<Business>{
     public ImageManagerResult mImageDownloaded = new ImageManagerResult()
 	{
 		@Override
-		public void gotImage(final boolean isLoaded)
+		public void gotImage(final boolean isLoaded, String url)
 		{
 			;
 		}

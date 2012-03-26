@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="profile_txtheader">You\'ve donated \n $000 this month</string>
+    <string name="profile_txtheader">You\'ve donated \n $</string>
     <string name="profile_tbl_place">Place</string>
     <string name="profile_tbl_category">Category</string>
     <string name="profile_tbl_total">Total</string>

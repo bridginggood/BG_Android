@@ -19,7 +19,7 @@ import android.widget.ImageView;
 
 public class ImageManager {
 
-	private HashMap<String, SoftReference<Bitmap>> imageMap = new HashMap<String, SoftReference<Bitmap>>();
+	private static HashMap<String, SoftReference<Bitmap>> imageMap = new HashMap<String, SoftReference<Bitmap>>();
 
 	private File cacheDir;
 	private ImageQueue imageQueue = new ImageQueue();
@@ -53,12 +53,12 @@ public class ImageManager {
 		if(imageMap.containsKey(url)){
 			Log.d("BG", "imageMap contains the url: "+url);
 			imageView.setImageBitmap(imageMap.get(url).get());
-			mImageManagerResult.gotImage(true);
+			mImageManagerResult.gotImage(true, url);
 		}
 		else {
 			Log.d("BG", "imageMap does not contain the url:"+url);
 			queueImage(url, activity, imageView);
-			//imageView.setImageResource(R.drawable.icon);
+			imageView.setImageResource(R.drawable.noimage);
 		}
 	}
 
@@ -169,7 +169,7 @@ public class ImageManager {
 
 						// Make sure we have the right view - thread safety defender
 						if(!mIsList || tag != null && ((String)tag).equals(imageToLoad.url)) {
-							BitmapDisplayer bmpDisplayer = new BitmapDisplayer(bmp, imageToLoad.imageView);
+							BitmapDisplayer bmpDisplayer = new BitmapDisplayer(bmp, imageToLoad.imageView, imageToLoad.url);
 
 							Activity a = (Activity)imageToLoad.imageView.getContext();
 
@@ -188,26 +188,28 @@ public class ImageManager {
 	private class BitmapDisplayer implements Runnable {
 		Bitmap bitmap;
 		ImageView imageView;
+		String url;
 
-		public BitmapDisplayer(Bitmap b, ImageView i) {
+		public BitmapDisplayer(Bitmap b, ImageView i, String u) {
 			bitmap=b;
 			imageView=i;
+			url = u;
 		}
 
 		public void run() {
 			if(bitmap != null){
 				imageView.setImageBitmap(bitmap);
-				mImageManagerResult.gotImage(true);
+				mImageManagerResult.gotImage(true, url);
 			}
 			else{
-				//imageView.setImageResource(R.drawable.icon);
-				mImageManagerResult.gotImage(false);
+				imageView.setImageResource(R.drawable.noimage);
+				mImageManagerResult.gotImage(false, url);
 			}
 		}
 	}
 	
 	public static abstract class ImageManagerResult{
-		public abstract void gotImage(boolean isLoaded);
+		public abstract void gotImage(boolean isLoaded, String url);
 	}
 }
 

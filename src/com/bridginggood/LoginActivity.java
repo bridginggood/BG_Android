@@ -24,7 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bridginggood.DB.UserLoginJSON;
+import com.bridginggood.DB.AuthJSON;
 import com.bridginggood.Facebook.FacebookAPI;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook.DialogListener;
@@ -88,7 +88,7 @@ public class LoginActivity extends Activity{
 		mProgressDialog = ProgressDialog.show(this, "", "Logging in, please wait...", true, false);
 		Thread threadStartLogin = new Thread(new Runnable() {
 			public void run() {
-				mIsLoginSuccess = UserLoginJSON.loginUser(UserInfo.getUserType());
+				mIsLoginSuccess = AuthJSON.loginUser(UserInfo.getUserType());
 				
 				Log.d("BG", "mIsLoginSuccess: "+mIsLoginSuccess);
 				handlerLogin.sendEmptyMessage(0);
