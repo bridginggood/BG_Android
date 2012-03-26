@@ -20,8 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bridginggood.DB.AuthJSON;
@@ -45,19 +43,7 @@ public class LoginActivity extends Activity{
 	}
 
 	private void initButtonViews(){
-		//BridgingGood login button
-		Button btnLogin = (Button) findViewById(R.id.login_btnLogin);
-		btnLogin.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){
-				Log.d("BG", "Login button Clicked");
-				EditText edtEmail = (EditText) findViewById(R.id.login_edtEmail);
-				EditText edtPassword = (EditText) findViewById(R.id.login_edtPassword);
-
-				UserInfo.createUserInfoForBG(edtEmail.getText().toString(), edtPassword.getText().toString(), CONST.USER_SESSION_TYPE_BG);
-				startBridgingGoodLogin();
-			}
-		});
-
+		
 		//Facebook login button
 		Button btnLoginFB = (Button) findViewById(R.id.login_btnLoginFacebook);
 		btnLoginFB.setOnClickListener(new OnClickListener(){
@@ -65,16 +51,6 @@ public class LoginActivity extends Activity{
 				Log.d("BG", "FB Login button Clicked");
 				UserInfo.setUserType(CONST.USER_SESSION_TYPE_FACEBOOK);
 				startFacebookLogin();
-			}
-		});
-		
-		//Signup button
-		TextView txtSignup = (TextView) findViewById(R.id.login_lblNeedAccount);
-		txtSignup.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.d("BG", "Need an account clicked");
-				startActivity(new Intent().setClass(LoginActivity.this, SignupActivity.class));
 			}
 		});
 	}
