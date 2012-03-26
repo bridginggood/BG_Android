@@ -26,7 +26,7 @@ import com.facebook.android.R;
 
 public class ThankyouActivity extends Activity{
 
-	private ArrayList<VisitedBusiness> mPushMessageArrayList;
+	private ArrayList<ValuePair<String, Float>> mPushMessageArrayList;
 	private Activity _this = this;
 	private boolean mPostOnFacebook;
 
@@ -46,7 +46,7 @@ public class ThankyouActivity extends Activity{
 	}
 
 	private void createPushMessageArrayListFromString(String pushMessage){
-		mPushMessageArrayList = new ArrayList<VisitedBusiness>();
+		mPushMessageArrayList = new ArrayList<ValuePair<String, Float>>();
 		try{
 			StringTokenizer st = new StringTokenizer(pushMessage, "|");
 			StringTokenizer sub_st;
@@ -55,7 +55,7 @@ public class ThankyouActivity extends Activity{
 				//Parse each c2dm message
 				sub_st = new StringTokenizer(message, ",");
 				sub_st.nextToken();	//DonationSuccess message
-				VisitedBusiness vb = new VisitedBusiness(sub_st.nextToken(), Float.parseFloat(sub_st.nextToken()));
+				ValuePair<String, Float> vb = new ValuePair<String, Float>(sub_st.nextToken(), Float.parseFloat(sub_st.nextToken()));
 				mPushMessageArrayList.add(vb);
 			}
 		} catch (Exception e){
@@ -134,8 +134,8 @@ public class ThankyouActivity extends Activity{
 
 				//Calculate sum, round to 2 decimal places
 				float sumTotalf = 0.0f;
-				for(VisitedBusiness vb : mPushMessageArrayList){
-					sumTotalf += vb.getDonationAmount();
+				for(ValuePair<String, Float> vb : mPushMessageArrayList){
+					sumTotalf += vb.getValue();
 				}
 				DecimalFormat dFormat = new DecimalFormat("#0.00");
 				String sumTotal = dFormat.format(sumTotalf);
@@ -143,7 +143,7 @@ public class ThankyouActivity extends Activity{
 				//Select random business
 				Random rnd = new Random();
 				int ind = rnd.nextInt(mPushMessageArrayList.size());
-				String businessId = mPushMessageArrayList.get(ind).getBusinessId();
+				String businessId = mPushMessageArrayList.get(ind).getKey();
 
 				Business b = BusinessJSON.getBusinessDetail(businessId);
 				if (b== null){
@@ -192,32 +192,6 @@ public class ThankyouActivity extends Activity{
 				//Success!
 				_this.finish();	//Finish ThankyouActivity
 			}
-		}
-	}
-
-	private class VisitedBusiness{
-		private String mBusinessId;
-		private float mDonationAmount;
-
-		public VisitedBusiness(String businessId, float donationAmount){
-			setBusinessId(businessId);
-			setDonationAmount(donationAmount);
-		}
-
-		public String getBusinessId() {
-			return mBusinessId;
-		}
-
-		public void setBusinessId(String mBusinessId) {
-			this.mBusinessId = mBusinessId;
-		}
-
-		public float getDonationAmount() {
-			return mDonationAmount;
-		}
-
-		public void setDonationAmount(float mDonationAmount) {
-			this.mDonationAmount = mDonationAmount;
 		}
 	}
 }

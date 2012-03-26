@@ -46,7 +46,9 @@ public class CONST {
 	public static final String API_LOG_SNS_URL = API_URL+"/log/CreateSNSLog.json";
 	
 	//Stat related
-	public static final String API_STATS_TOTAL_AMOUNT_DONATED = API_URL+"/stats/UserTotalDonation.json";	
+	public static final String API_STATS_TOTAL_AMOUNT_DONATED = API_URL+"/stats/UserTotalDonation.json";
+	public static final String API_STATS_DONATION_BY_CHARITY = API_URL+"/stats/UserDonationByCharity.json";
+	public static final String API_STATS_DONATION_BY_PLACE = API_URL+"/stats/UserDonationByPlace.json";
 
 	//S3
 	public static final String FACEBOOK_POST_ICON = "https://s3.amazonaws.com/BG_S3/media/common/bg_post_logo.png";
