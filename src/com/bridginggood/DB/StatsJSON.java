@@ -24,7 +24,7 @@ public class StatsJSON {
 
 	public static String getTotalDonationAmount(){
 		try {
-			String targetURL = CONST.API_STATS_TOTAL_AMOUNT_DONATED;
+			String targetURL = CONST.API_STATS_TOTAL_AMOUNT_DONATED_URL;
 			String requestParam = "";
 
 			String[][] param = {{PARAM_USER_ID, UserInfo.getUserId()+""}};
@@ -57,9 +57,9 @@ public class StatsJSON {
 		try {
 			String targetURL;
 			if (type == BY_CHARITY)
-				targetURL = CONST.API_STATS_DONATION_BY_CHARITY;
+				targetURL = CONST.API_STATS_DONATION_BY_CHARITY_URL;
 			else
-				targetURL = CONST.API_STATS_DONATION_BY_PLACE;
+				targetURL = CONST.API_STATS_DONATION_BY_PLACE_URL;
 			
 			String requestParam = "";
 
