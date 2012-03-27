@@ -4,7 +4,7 @@ public class CONST {
 	private static final String API_URL = "http://api.bridginggood.com:8080";
 	
 	public static final String DEVICE_TYPE = "ANDRO";
-	public static final String PACKAGE_NAME = "com.bridginggood";	
+	public static final String PACKAGE_NAME = "com.bridginggood.";	
 	public static final String BUNDLE_C2DM_KEY = "C2DM_msg";		//Used to handle C2DM received message
 	
 	//SplashController: Splash time
