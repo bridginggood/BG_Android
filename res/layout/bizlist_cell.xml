@@ -13,7 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:contentDescription="@string/bizListCellIconDescription"
-        android:src="@drawable/shop_default" />
+        android:src="@drawable/noimage" />
 
     <TextView
         android:id="@+id/bizName"

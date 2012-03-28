@@ -179,7 +179,7 @@ public class BizMapActivity extends MapActivity{
 				LayoutParams.WRAP_CONTENT, myPoint,
 				MapView.LayoutParams.TOP_LEFT);
 		ImageView mapMarker = new ImageView(getApplicationContext());
-		mapMarker.setImageResource(R.drawable.icon);
+		mapMarker.setImageResource(R.drawable.map_pin_current_position);
 		mMapView.removeAllViews();	//Clean the location and then add new map view
 		mMapView.addView(mapMarker, mapMarkerParams);
 		

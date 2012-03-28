@@ -77,12 +77,11 @@ public class ThankyouActivity extends Activity{
 					//Turn off posting
 					mPostOnFacebook = false;
 					
-					//TODO: change image!
-					btnFacebook.setImageResource(R.drawable.icon);
+					btnFacebook.setImageResource(R.drawable.icon_facebook_disabled);
 				}else{
 					//Turn on posting
 					mPostOnFacebook = true;
-					btnFacebook.setImageResource(R.drawable.icon_facebook);
+					btnFacebook.setImageResource(R.drawable.icon_facebook_enabled);
 				}
 			}
 		});
