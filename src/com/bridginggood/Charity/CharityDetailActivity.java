@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
+import com.bridginggood.DB.StatsJSON;
 import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
 
@@ -36,6 +38,7 @@ public class CharityDetailActivity extends Activity{
 		{
 			//Show loading
 			toggleLayout(true);
+			updateCharityData();
 		}
 
 		protected Boolean doInBackground(Context... contexts)
@@ -63,6 +66,19 @@ public class CharityDetailActivity extends Activity{
 		}
 	}
 
+	private void updateCharityData(){
+		//TODO CHANGE CHARITY ID
+		String[] data = StatsJSON.getCharityDonation("3000000002");
+		if(data!=null){
+			TextView txtAmount = (TextView)findViewById(R.id.charity_detail_donated_textview);
+			TextView txtPeople = (TextView)findViewById(R.id.charity_detail_people_textview);
+			TextView txtDays = (TextView)findViewById(R.id.charity_detail_daystogo_textview);
+
+			txtAmount.setText(data[0]);
+			txtPeople.setText(data[1]);
+			txtDays.setText(data[2]);
+		}
+	}
 
 	private void toggleLayout(boolean isLoading){
 		if(isLoading){

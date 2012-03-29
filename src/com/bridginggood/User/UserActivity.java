@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bridginggood.CONST;
 import com.bridginggood.R;
 import com.bridginggood.ValuePair;
 import com.bridginggood.DB.StatsJSON;
@@ -60,11 +61,9 @@ public class UserActivity extends Activity{
 
 	private void loadData(){
 		//Load total donation amount
-		String total = StatsJSON.getTotalDonationAmount();
+		String total = StatsJSON.getUserTotalDonationAmount();
 		if(total != null){
-			Float totalf = Float.parseFloat(total);
-			DecimalFormat dFormat = new DecimalFormat("#0.00");
-			total = dFormat.format(totalf);
+			total = CONST.convToDollarFormat(total);
 		}
 		TextView txtTotal = (TextView)findViewById(R.id.profile_main_header_textview);
 		txtTotal.setText(txtTotal.getText()+total);	//Appened total at the back of the existing string
@@ -158,7 +157,7 @@ public class UserActivity extends Activity{
 		//Load current location
 		protected ArrayList<ValuePair<String, String>> doInBackground(Context... contexts)
 		{
-			return StatsJSON.getDonationAmount(this.mType);
+			return StatsJSON.getUserDonationAmount(this.mType);
 		}
 		protected void onPostExecute(final ArrayList<ValuePair<String, String>> dataList)
 		{

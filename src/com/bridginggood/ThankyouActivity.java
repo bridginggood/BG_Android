@@ -1,6 +1,5 @@
 package com.bridginggood;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -136,8 +135,7 @@ public class ThankyouActivity extends Activity{
 				for(ValuePair<String, Float> vb : mPushMessageArrayList){
 					sumTotalf += vb.getValue();
 				}
-				DecimalFormat dFormat = new DecimalFormat("#0.00");
-				String sumTotal = dFormat.format(sumTotalf);
+				String sumTotal = CONST.convToDollarFormat(sumTotalf);
 
 				//Select random business
 				Random rnd = new Random();

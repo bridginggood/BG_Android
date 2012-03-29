@@ -1,6 +1,5 @@
 package com.bridginggood.DB;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -19,10 +18,14 @@ public class StatsJSON {
 	private static final String PARAM_RESULT_MSG = "resultMsg";
 	private static final String PARAM_BUSINESS_NAME = "BusinessName";
 	private static final String PARAM_CHARITY_NAME = "CharityName";
-	
+	private static final String PARAM_CHARITY_ID = "CharityId";
+	private static final String PARAM_CHARITY_TOTAL_DONATION = "DonationAmount";
+	private static final String PARAM_CHARITY_PEOPLE = "People";
+	private static final String PARAM_CHARITY_REMAINING_DAYS = "RemainingDays";
+
 	private static final int BY_CHARITY = 0;
 
-	public static String getTotalDonationAmount(){
+	public static String getUserTotalDonationAmount(){
 		try {
 			String targetURL = CONST.API_STATS_TOTAL_AMOUNT_DONATED_URL;
 			String requestParam = "";
@@ -51,8 +54,8 @@ public class StatsJSON {
 		}
 		return null;
 	}
-	
-	public static ArrayList<ValuePair<String, String>> getDonationAmount(int type){
+
+	public static ArrayList<ValuePair<String, String>> getUserDonationAmount(int type){
 		ArrayList<ValuePair<String, String>> dataArrayList = new ArrayList<ValuePair<String, String>>();
 		try {
 			String targetURL;
@@ -60,7 +63,7 @@ public class StatsJSON {
 				targetURL = CONST.API_STATS_DONATION_BY_CHARITY_URL;
 			else
 				targetURL = CONST.API_STATS_DONATION_BY_PLACE_URL;
-			
+
 			String requestParam = "";
 
 			String[][] param = {{PARAM_USER_ID, UserInfo.getUserId()+""}};
@@ -71,7 +74,7 @@ public class StatsJSON {
 			//If retreived empty string, return empty ArrayList
 			if (jsonStr.equals("[]") || jsonStr.equals("{}"))
 				return null;
-			
+
 			JSONArray jsonArray = new JSONArray(jsonStr);
 			for(int i=0;i<jsonArray.length();i++){
 				JSONObject jsonObject = (JSONObject) jsonArray.get(i);
@@ -82,13 +85,12 @@ public class StatsJSON {
 						name = jsonObject.getString(PARAM_CHARITY_NAME);
 					else //By Place
 						name = jsonObject.getString(PARAM_BUSINESS_NAME);
-					
+
 					String amount = jsonObject.getString(PARAM_TOTAL);
-					
+
 					//Change amount format
-					DecimalFormat dFormat = new DecimalFormat("#0.00");
-					amount = "$" + dFormat.format(Float.parseFloat(amount));
-					
+					amount = CONST.convToDollarFormat(amount);
+
 					//Add to list
 					dataArrayList.add(new ValuePair<String, String>(name, amount));
 				} else {
@@ -103,14 +105,15 @@ public class StatsJSON {
 		}
 		return null;
 	}
-	/*
-	public static ArrayList<ValuePair<String, String>> getDonationAmountByPlace(){
-		ArrayList<ValuePair<String, String>> dataArrayList = new ArrayList<ValuePair<String, String>>();
+
+	public static String[] getCharityDonation(String charityId){
+		String[] resultArray = new String[4];
 		try {
-			String targetURL = CONST.API_STATS_DONATION_BY_PLACE;
+			String targetURL = CONST.API_STATS_CHARITY_DONATION_DETAIL_URL;
+
 			String requestParam = "";
 
-			String[][] param = {{PARAM_USER_ID, UserInfo.getUserId()+""}};
+			String[][] param = {{PARAM_CHARITY_ID, charityId}};
 			requestParam = BgHttpHelper.generateParamData(param);
 
 			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
@@ -118,31 +121,26 @@ public class StatsJSON {
 			//If retreived empty string, return empty ArrayList
 			if (jsonStr.equals("[]") || jsonStr.equals("{}"))
 				return null;
-			
+
 			JSONArray jsonArray = new JSONArray(jsonStr);
-			for(int i=0;i<jsonArray.length();i++){
-				JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-				if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-					//Retrieve data
-					String businessName = jsonObject.getString(PARAM_BUSINESS_NAME);
-					String amount = jsonObject.getString(PARAM_TOTAL);
-					
-					//Change amount format
-					DecimalFormat dFormat = new DecimalFormat("#0.00");
-					amount = "$" + dFormat.format(Float.parseFloat(amount));
-					
-					//Add to list
-					dataArrayList.add(new ValuePair<String, String>(businessName, amount));
-				} else {
-					Log.d("BgDB", "Login failed: "+jsonObject.getString(PARAM_RESULT_MSG));
-					return null;
-				}	
-			}
-			return dataArrayList;
+			JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+
+			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+				String amount = jsonObject.getString(PARAM_CHARITY_TOTAL_DONATION);
+				amount = CONST.convToDollarFormat(amount);
+				resultArray[0] = amount;
+				resultArray[1] = jsonObject.getString(PARAM_CHARITY_PEOPLE);
+				resultArray[2] = jsonObject.getString(PARAM_CHARITY_REMAINING_DAYS);
+				
+				return resultArray;
+			} else {
+				Log.d("BgDB", "Login failed: "+jsonObject.getString(PARAM_RESULT_MSG));
+				return null;
+			}	
 		} catch (Exception e){
 			// Handle all exception
 			Log.d("BgDB", "Exception occured: "+e.getLocalizedMessage());
 		}
 		return null;
-	}*/
+	}
 }

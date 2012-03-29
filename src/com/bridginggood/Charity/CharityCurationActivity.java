@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
 import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
+import com.bridginggood.DB.StatsJSON;
 
 public class CharityCurationActivity extends Activity{
 	private ImageManager mImageManager;
@@ -52,6 +54,7 @@ public class CharityCurationActivity extends Activity{
 
 			initButtons();
 			initImageViews();
+			updateCharityData();
 
 			//Wait until everything is loaded
 			while(mImageViewCounter < TOTAL_IMAGEVIEWS){
@@ -67,6 +70,20 @@ public class CharityCurationActivity extends Activity{
 		protected void onPostExecute(final Boolean isSuccess)
 		{
 			toggleLayout(false);
+		}
+	}
+
+	private void updateCharityData(){
+		//TODO CHANGE CHARITY ID
+		String[] data = StatsJSON.getCharityDonation("3000000002");
+		if(data!=null){
+			TextView txtAmount = (TextView)findViewById(R.id.charity_donated_textview);
+			TextView txtPeople = (TextView)findViewById(R.id.charity_people_textview);
+			TextView txtDays = (TextView)findViewById(R.id.charity_daystogo_textview);
+
+			txtAmount.setText(data[0]);
+			txtPeople.setText(data[1]);
+			txtDays.setText(data[2]);
 		}
 	}
 
