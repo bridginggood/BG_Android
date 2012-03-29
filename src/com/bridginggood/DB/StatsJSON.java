@@ -19,9 +19,12 @@ public class StatsJSON {
 	private static final String PARAM_BUSINESS_NAME = "BusinessName";
 	private static final String PARAM_CHARITY_NAME = "CharityName";
 	private static final String PARAM_CHARITY_ID = "CharityId";
+	private static final String PARAM_BUSINESS_ID = "BusinessId";
 	private static final String PARAM_CHARITY_TOTAL_DONATION = "DonationAmount";
 	private static final String PARAM_CHARITY_PEOPLE = "People";
 	private static final String PARAM_CHARITY_REMAINING_DAYS = "RemainingDays";
+	private static final String PARAM_BUSINESS_DESCRIPTION = "BusinessDescription";
+
 
 	private static final int BY_CHARITY = 0;
 
@@ -86,10 +89,7 @@ public class StatsJSON {
 					else //By Place
 						name = jsonObject.getString(PARAM_BUSINESS_NAME);
 
-					String amount = jsonObject.getString(PARAM_TOTAL);
-
-					//Change amount format
-					amount = CONST.convToDollarFormat(amount);
+					String amount = "$"+jsonObject.getString(PARAM_TOTAL);
 
 					//Add to list
 					dataArrayList.add(new ValuePair<String, String>(name, amount));
@@ -126,12 +126,10 @@ public class StatsJSON {
 			JSONObject jsonObject = (JSONObject) jsonArray.get(0);
 
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-				String amount = jsonObject.getString(PARAM_CHARITY_TOTAL_DONATION);
-				amount = CONST.convToDollarFormat(amount);
-				resultArray[0] = amount;
+				resultArray[0] = "$"+jsonObject.getString(PARAM_CHARITY_TOTAL_DONATION);
 				resultArray[1] = jsonObject.getString(PARAM_CHARITY_PEOPLE);
 				resultArray[2] = jsonObject.getString(PARAM_CHARITY_REMAINING_DAYS);
-				
+
 				return resultArray;
 			} else {
 				Log.d("BgDB", "Login failed: "+jsonObject.getString(PARAM_RESULT_MSG));
@@ -140,6 +138,34 @@ public class StatsJSON {
 		} catch (Exception e){
 			// Handle all exception
 			Log.d("BgDB", "Exception occured: "+e.getLocalizedMessage());
+		}
+		return null;
+	}
+
+	public static String[] getThankyouDetail(String businessId){
+		String[] data = new String[4];
+		try{
+			String targetURL = CONST.API_STATS_THANKYOU_DETAIL_URL;
+			String[][] param = {{PARAM_BUSINESS_ID, businessId}};
+			String requestParam = BgHttpHelper.generateParamData(param);
+
+			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
+
+			JSONObject jsonObject = new JSONObject(jsonStr);
+
+			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
+				data[0] = jsonObject.getString(PARAM_BUSINESS_NAME);
+				data[1] = jsonObject.getString(PARAM_BUSINESS_DESCRIPTION);
+				data[2] = jsonObject.getString(PARAM_CHARITY_NAME);
+				data[3] = jsonObject.getString(PARAM_TOTAL);
+				return data;
+			} else {
+				Log.d("BgDB", "getThankyouDetail failed: "+jsonObject.getString(PARAM_RESULT_MSG));
+				return null;
+			}
+		}
+		catch(Exception e){
+			Log.d("BgDB", "getThankyouDetail Exception: "+e.getLocalizedMessage());
 		}
 		return null;
 	}

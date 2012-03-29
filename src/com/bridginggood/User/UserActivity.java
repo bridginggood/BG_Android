@@ -1,6 +1,5 @@
 package com.bridginggood.User;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -14,7 +13,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.bridginggood.CONST;
 import com.bridginggood.R;
 import com.bridginggood.ValuePair;
 import com.bridginggood.DB.StatsJSON;
@@ -62,9 +60,6 @@ public class UserActivity extends Activity{
 	private void loadData(){
 		//Load total donation amount
 		String total = StatsJSON.getUserTotalDonationAmount();
-		if(total != null){
-			total = CONST.convToDollarFormat(total);
-		}
 		TextView txtTotal = (TextView)findViewById(R.id.profile_main_header_textview);
 		txtTotal.setText(txtTotal.getText()+total);	//Appened total at the back of the existing string
 

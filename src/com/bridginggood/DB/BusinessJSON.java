@@ -20,14 +20,10 @@ public class BusinessJSON {
 	private static final String PARAM_BUSINESS_ID = "BusinessId";
 	private static final String PARAM_BUSINESS_NAME = "BusinessName";
 	private static final String PARAM_BUSINESS_ADDRESS = "BusinessAddress";
-	private static final String PARAM_BUSINESS_DESCRIPTION = "BusinessDescription";
 	private static final String PARAM_BUSINESS_LATITUDE = "Latitude";
 	private static final String PARAM_BUSINESS_LONGITUDE = "Longitude";
 	private static final String PARAM_BUSINESS_CHARITYID = "CharityId";
 	private static final String PARAM_BUSINESS_DISTANCE = "distance";
-	
-	private static final String PARAM_RESULT_CODE = "resultCode";
-	private static final String PARAM_RESULT_MSG = "resultMsg";
 
 	private float mMyLat, mMyLng, mDistance;
 	private int mPage;
@@ -116,35 +112,5 @@ public class BusinessJSON {
 			Log.d("BgDB", "getBizMapJSON Exception:"+e.getLocalizedMessage());
 		}
 		return bizList;
-	}
-	
-	public static Business getBusinessDetail(String businessId){
-		try{
-			String targetURL = CONST.API_GET_BUSINESS_DETAIL;
-			String[][] param = {{PARAM_BUSINESS_ID, businessId}};
-			String requestParam = BgHttpHelper.generateParamData(param);
-
-			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
-
-			JSONObject jsonObject = new JSONObject(jsonStr);
-
-			//TODO: Maybe this needs to be changed later on.
-			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-				//Registration success! 
-				Log.d("BgDB", "C2DM registration completed: "+jsonObject.getString(PARAM_RESULT_MSG));
-				Business b = new Business();
-				b.setBizName(jsonObject.getString(PARAM_BUSINESS_NAME));
-				b.setBizDescription(jsonObject.getString(PARAM_BUSINESS_DESCRIPTION));
-				return b;
-
-			} else {
-				Log.d("BgDB", "C2DM registration failed: "+jsonObject.getString(PARAM_RESULT_MSG));
-				return null;
-			}
-		}
-		catch(Exception e){
-			Log.d("BgDB", "sendC2DMRegistrationId Exception: "+e.getLocalizedMessage());
-		}
-		return null;
 	}
 }

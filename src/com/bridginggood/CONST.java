@@ -33,7 +33,6 @@ public class CONST {
 	//Business related
 	public static final String API_READ_BUSINESS_LIST_URL = API_URL+"/business_details/readlist.json";
 	public static final String API_READ_BUSINESS_MAP_URL = API_URL+"/business_details/readmap.json";
-	public static final String API_GET_BUSINESS_DETAIL = API_URL+"/business_details/BusinessDetail.json";
 
 	//Login related
 	public static final String API_LOGIN_BY_FACEBOOK_URL = API_URL+"/auth/LoginByFacebook.json";
@@ -52,6 +51,7 @@ public class CONST {
 	public static final String API_STATS_DONATION_BY_CHARITY_URL = API_URL+"/stats/UserDonationByCharity.json";
 	public static final String API_STATS_DONATION_BY_PLACE_URL = API_URL+"/stats/UserDonationByPlace.json";
 	public static final String API_STATS_CHARITY_DONATION_DETAIL_URL = API_URL+"/stats/CharityDonation.json";
+	public static final String API_STATS_THANKYOU_DETAIL_URL = API_URL+"/stats/ThankyouDetail.json";
 
 	//Curation/Charity related
 	public static final String API_CURATION_GET_LATEST_CHARITY_URL = API_URL+"/charity_details/GetCharityLatest.json";
@@ -61,17 +61,5 @@ public class CONST {
 	public static final String IMAGES_PREFIX_CHARITY = "https://s3.amazonaws.com/BG_S3/media/charity/";
 	public static final String IMAGES_PREFIX_BUSINESS = "https://s3.amazonaws.com/BG_S3/media/business/";
 	public static final String IMAGES_PREFIX_COMMON = "https://s3.amazonaws.com/BG_S3/media/common/";
-
-	public static String convToDollarFormat(String amount){
-		//Change amount format
-		DecimalFormat dFormat = new DecimalFormat("#0.00");
-		return "$" + dFormat.format(Float.parseFloat(amount));
-	}
-	
-	public static String convToDollarFormat(float amount){
-		//Change amount format
-		DecimalFormat dFormat = new DecimalFormat("#0.00");
-		return "$" + dFormat.format(amount);
-	}
 
 }

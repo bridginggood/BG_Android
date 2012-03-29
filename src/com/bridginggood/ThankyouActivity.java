@@ -18,14 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bridginggood.Biz.Business;
-import com.bridginggood.DB.BusinessJSON;
 import com.bridginggood.DB.LogJSON;
+import com.bridginggood.DB.StatsJSON;
 import com.facebook.android.R;
 
 public class ThankyouActivity extends Activity{
 
-	private ArrayList<ValuePair<String, Float>> mPushMessageArrayList;
+	private ArrayList<PushMessage> mPushMessageArrayList;
 	private Activity _this = this;
 	private boolean mPostOnFacebook;
 
@@ -44,18 +43,27 @@ public class ThankyouActivity extends Activity{
 		initButtons();
 	}
 
+	/**
+	 * Creates mPushMessageArrayList
+	 * @param pushMessage
+	 */
 	private void createPushMessageArrayListFromString(String pushMessage){
-		mPushMessageArrayList = new ArrayList<ValuePair<String, Float>>();
+		mPushMessageArrayList = new ArrayList<PushMessage>();
 		try{
 			StringTokenizer st = new StringTokenizer(pushMessage, "|");
 			StringTokenizer sub_st;
 			while(st.hasMoreTokens()){
 				String message = st.nextToken();
 				//Parse each c2dm message
-				sub_st = new StringTokenizer(message, ",");
-				sub_st.nextToken();	//DonationSuccess message
-				ValuePair<String, Float> vb = new ValuePair<String, Float>(sub_st.nextToken(), Float.parseFloat(sub_st.nextToken()));
-				mPushMessageArrayList.add(vb);
+				sub_st = new StringTokenizer(message, ";");
+				
+				String businessId = sub_st.nextToken();
+				Float donationAmount = Float.parseFloat(sub_st.nextToken());
+				String businessName = sub_st.nextToken();
+				
+				PushMessage pm = new PushMessage(businessId, donationAmount, businessName);
+				
+				mPushMessageArrayList.add(pm);
 			}
 		} catch (Exception e){
 			Log.d("BG_TU", "createPushMessageArrayListFromString exception:"+e.getLocalizedMessage());
@@ -132,17 +140,24 @@ public class ThankyouActivity extends Activity{
 
 				//Calculate sum, round to 2 decimal places
 				float sumTotalf = 0.0f;
-				for(ValuePair<String, Float> vb : mPushMessageArrayList){
-					sumTotalf += vb.getValue();
+				for(PushMessage pm : mPushMessageArrayList){
+					sumTotalf += pm.getDonationAmount();
 				}
-				String sumTotal = CONST.convToDollarFormat(sumTotalf);
+				String sumTotal = sumTotalf+"";
 
 				//Select random business
 				Random rnd = new Random();
 				int ind = rnd.nextInt(mPushMessageArrayList.size());
-				String businessId = mPushMessageArrayList.get(ind).getKey();
+				String businessId = mPushMessageArrayList.get(ind).getBusinessId();
 
-				Business b = BusinessJSON.getBusinessDetail(businessId);
+				String[] dataArray = StatsJSON.getThankyouDetail(businessId);
+				if(dataArray != null){
+					//Initialize thank you page note
+					TextView txtThankyou = (TextView)findViewById(R.id.thankyou_header_textview);
+					txtThankyou.setText(getThankyouHeaderText(sumTotal, dataArray[0], dataArray[2], dataArray[3]));
+					
+				}
+				/*Business b = BusinessJSON.getBusinessDetail(businessId);
 				if (b== null){
 					return false;	//How is this possible?
 				}
@@ -167,7 +182,7 @@ public class ThankyouActivity extends Activity{
 					if(response==null || response.equals("") || response.equals("false"))	//Error
 						return false;
 				}
-				
+				*/
 				//Log
 				String posted = (mPostOnFacebook)?"Y":"N";
 				LogJSON.createSNSLog(businessId, posted);
@@ -190,5 +205,20 @@ public class ThankyouActivity extends Activity{
 				_this.finish();	//Finish ThankyouActivity
 			}
 		}
+	}
+	
+	private String getThankyouHeaderText(String sumTotal, String businessName, String charityName, String totalRaised){
+		ArrayList<PushMessage> uniqueList = new ArrayList<PushMessage>();
+		/*
+		String content = "$"+sumTotal;
+		" of your purchase at ";
+		for(PushMessage pm : mPushMessageArrayList){
+			thankyouContent += pm.getBusinessName()+",";
+		}
+		
+		thankyouContent += "has successfully been converted into a donation."+
+		dataArray[2]+" has now raised $" +
+		dataArray[3]+" with your support and other do gooders like you. Keep on BridgingGood!";*/
+		return null;
 	}
 }
