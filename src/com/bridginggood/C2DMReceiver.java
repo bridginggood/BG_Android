@@ -107,17 +107,26 @@ public class C2DMReceiver extends BroadcastReceiver{
 
 		mCountNotification++;
 
+		notification = new Notification(R.drawable.icon, context.getResources().getString(R.string.c2dm_receive_message) , System.currentTimeMillis());
+		/*
 		if (mCountNotification == 1){
 			notification = new Notification(R.drawable.icon, context.getResources().getString(R.string.c2dm_receive_message) , System.currentTimeMillis());
 		}else{
 			notification = new Notification(R.drawable.icon, "You have "+mCountNotification+" donations" , System.currentTimeMillis());
-		}
+		}*/
+		
 		// Hide the notification after its selected
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
 		//Notificatino configuration
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-		notification.setLatestEventInfo(context, context.getResources().getString(R.string.app_name), "You have "+mCountNotification+" donations!", pendingIntent);
+		String notificationMessage;
+		if (mCountNotification == 1){
+			notificationMessage = "You made a donation!";
+		} else {
+			notificationMessage = "You made "+mCountNotification+" donations!";
+		}
+		notification.setLatestEventInfo(context, context.getResources().getString(R.string.app_name), notificationMessage, pendingIntent);
 		notificationManager.notify(0, notification);
 
 	}

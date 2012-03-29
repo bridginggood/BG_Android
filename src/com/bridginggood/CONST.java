@@ -1,6 +1,5 @@
 package com.bridginggood;
 
-import java.text.DecimalFormat;
 
 public class CONST {
 	private static final String API_URL = "http://api.bridginggood.com:8080";
