@@ -3,4 +3,9 @@
     <string name="qrcodeDescription">QRCode</string>
     <string name="qrcodeText">Scan QR Code to donate</string>
     
+    <string name="qrcodeCreateNewQrcode">Create new QR Code</string>
+    <string name="qrcodeRegisterQrcode">Register QR Code</string>
+    <string name="qrcodeEnterQrcode">Enter QR Code number</string>
+    
+    <string name="qrcodeOr">OR</string>
 </resources>
