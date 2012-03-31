@@ -7,12 +7,16 @@ package com.bridginggood.Biz;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -283,13 +287,21 @@ public class BizListActivity extends Activity implements OnScrollListener{
 
 				mBizListView.setVisibility(View.VISIBLE);
 			}
-			
+
 			//Change action bar state
 			findViewById(R.id.actionbar_loading).setVisibility(View.GONE);
 			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.VISIBLE);
 
 			//Temp code: display location
-			((TextView) findViewById(R.id.actionbar_txtheader)).setText(mUserLocation.getLatitude()+", "+mUserLocation.getLongitude());
+			try{
+				Geocoder gcd = new Geocoder(getParent(), Locale.getDefault());
+				List<Address> addresses = gcd.getFromLocation(mUserLocation.getLatitude(), mUserLocation.getLongitude(), 1);
+				if(addresses != null && addresses.size() > 0){
+					((TextView) findViewById(R.id.actionbar_txtheader)).setText(addresses.get(0).getLocality());
+				}
+			} catch(Exception e){
+				Log.d("BG", "Error occured while trying to get address of the user location"+e.getLocalizedMessage());
+			}
 		}
 	}
 

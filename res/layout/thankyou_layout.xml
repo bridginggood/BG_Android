@@ -12,8 +12,7 @@
         android:layout_weight="2"
         android:background="@drawable/background_sublayout"
         android:gravity="center"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical" >
 
         <FrameLayout
             android:layout_width="fill_parent"
@@ -22,18 +21,35 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
                 android:contentDescription="@string/hello"
                 android:scaleType="fitXY"
-                android:layout_gravity="bottom|center_horizontal"
                 android:src="@drawable/background_thankyou" />
 
-            <TextView
-                android:id="@+id/thankyou_header_textview"
-                style="@style/TextviewText"
+            <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/thankyou_header_text" />
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:padding="10dp"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/thankyou_header_textview"
+                    style="@style/thankyou_textbox_header_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/thankyou_header_text" />
+
+                <TextView
+                    android:id="@+id/thankyou_message_textview"
+                    style="@style/thankyou_textbox_message_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="30dp"
+                    android:text="@string/thankyou_header_text" />
+            </LinearLayout>
         </FrameLayout>
     </LinearLayout>
 
@@ -49,7 +65,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:hint="@string/thankyou_writecomment_hint_text" >
+            android:hint="@string/thankyou_writecomment_hint_text"
+            android:minLines="2"
+            android:maxLines="2"
+            android:inputType="textMultiLine" >
 
             <requestFocus />
         </EditText>

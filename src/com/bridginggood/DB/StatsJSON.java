@@ -150,8 +150,8 @@ public class StatsJSON {
 			String requestParam = BgHttpHelper.generateParamData(param);
 
 			String jsonStr = BgHttpHelper.requestHttpRequest(targetURL, requestParam, "POST");
-
-			JSONObject jsonObject = new JSONObject(jsonStr);
+			JSONArray jsonArray = new JSONArray(jsonStr);
+			JSONObject jsonObject = (JSONObject) jsonArray.get(0);
 
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
 				data[0] = jsonObject.getString(PARAM_BUSINESS_NAME);
