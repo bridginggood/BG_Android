@@ -1,11 +1,15 @@
 package com.bridginggood;
 
 
+import java.util.Calendar;
+
 import android.app.PendingIntent;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bridginggood.Biz.BizActivityGroup;
 import com.bridginggood.Charity.CharityActivityGroup;
@@ -24,6 +29,12 @@ import com.facebook.android.FacebookError;
 public class MainActivity extends TabActivity {
 	private TabHost mTabHost;
 	public static MainActivity _this;
+
+	private static final int MSG_TIMER_EXPIRED = 1;
+	private static final int BACKKEY_TIMEOUT = 2;
+	private static final int MILLIS_IN_SEC = CONST.BACK_BUTTON_TIMEOUT;
+	private boolean mIsBackKeyPressed = false;
+	private long mCurrTimeInMillis = 0;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -113,4 +124,37 @@ public class MainActivity extends TabActivity {
 			UserInfo.mFacebook.extendAccessToken(context, serviceListener);
 		}
 	}
+
+	@Override
+	public void onBackPressed() {
+		// super.onBackPressed();
+		if (mIsBackKeyPressed == false) {
+			mIsBackKeyPressed = true;
+			mCurrTimeInMillis = Calendar.getInstance().getTimeInMillis();
+			Toast.makeText(this,  R.string.application_backtoexit , Toast.LENGTH_SHORT).show();
+			startTimer();
+		} else {
+			mIsBackKeyPressed = false;
+			if (Calendar.getInstance().getTimeInMillis() <= (mCurrTimeInMillis + (BACKKEY_TIMEOUT * MILLIS_IN_SEC))) {
+				finish();
+			}
+		}
+	}
+
+	private void startTimer() {
+		mTimerHandler.sendEmptyMessageDelayed(MSG_TIMER_EXPIRED, BACKKEY_TIMEOUT * MILLIS_IN_SEC);
+	}
+
+	private Handler mTimerHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			// super.handleMessage(msg);
+			switch (msg.what) {
+			case MSG_TIMER_EXPIRED: {
+				mIsBackKeyPressed = false;
+			}
+			break;
+			}
+		}
+	};
 }

@@ -1,21 +1,30 @@
 package com.bridginggood.Biz;
 
 import java.util.ArrayList;
-
-import com.bridginggood.R;
+import java.util.Calendar;
 
 import android.app.ActivityGroup;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import com.bridginggood.CONST;
+import com.bridginggood.R;
 
 public class BizActivityGroup extends ActivityGroup {
 
 	private ArrayList<View> historyBizActivityGroup; 		// ArrayList to manage Views.
 	private BizActivityGroup bizActivityGroup; 				// BizActivityGroup that Activity can access.
-	private boolean mExitApplication = false;
+	
+	private static final int MSG_TIMER_EXPIRED = 1;
+	private static final int BACKKEY_TIMEOUT = 2;
+	private static final int MILLIS_IN_SEC = CONST.BACK_BUTTON_TIMEOUT;
+	private boolean mIsBackKeyPressed = false;
+	private long mCurrTimeInMillis = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +51,6 @@ public class BizActivityGroup extends ActivityGroup {
 	}
 
 	public void replaceView(View v) {   // Changing to new activity level.
-		mExitApplication = false;
 		historyBizActivityGroup.add(v);   
 		setContentView(v); 
 	}   
@@ -52,16 +60,36 @@ public class BizActivityGroup extends ActivityGroup {
 			historyBizActivityGroup.remove(historyBizActivityGroup.size()-1);   
 			setContentView(historyBizActivityGroup.get(historyBizActivityGroup.size()-1)); 
 		} else {   
-			if(mExitApplication){
-				finish(); // Finish tabactivity
-				Log.d("BgBiz", "onDestroy called from "+this.getClass().toString());
-				System.exit(0);
-			}else{
-				Toast.makeText(this,  R.string.application_backtoexit, Toast.LENGTH_SHORT).show();
-				mExitApplication = true;
+			if (!mIsBackKeyPressed) {
+				mIsBackKeyPressed = true;
+				mCurrTimeInMillis = Calendar.getInstance().getTimeInMillis();
+				Toast.makeText(this, R.string.application_backtoexit, Toast.LENGTH_SHORT).show();
+				startTimer();
+			} else {
+				mIsBackKeyPressed = false;
+				if (Calendar.getInstance().getTimeInMillis() <= (mCurrTimeInMillis + (BACKKEY_TIMEOUT * MILLIS_IN_SEC))) {
+					finish();
+				}
 			}
 		}   
 	}  
+	private void startTimer() {
+		mTimerHandler.sendEmptyMessageDelayed(MSG_TIMER_EXPIRED, BACKKEY_TIMEOUT * MILLIS_IN_SEC);
+	}
+	
+	private Handler mTimerHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			// super.handleMessage(msg);
+
+			switch (msg.what) {
+			case MSG_TIMER_EXPIRED: {
+				mIsBackKeyPressed = false;
+			}
+			break;
+			}
+		}
+	};
 
 	public void onBackPressed() { // Event Handler
 		Log.d("BgBiz", "Back Pressed from BizActivityGroup");

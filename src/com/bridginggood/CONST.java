@@ -10,6 +10,9 @@ public class CONST {
 
 	//SplashController: Splash time
 	public static final long SPLASH_DELAY = 1500;
+	
+	//Exit: back button timeout
+	public static final int BACK_BUTTON_TIMEOUT = 1000;
 
 	//Lazy Loading Image cache folder
 	public static final String LAZY_LOAD_IMAGE_CACHE = "data/BridgingGood";
