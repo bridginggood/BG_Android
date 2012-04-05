@@ -17,6 +17,7 @@ package com.bridginggood;
 
 import java.util.List;
 
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -252,4 +253,12 @@ public abstract class BalloonItemizedOverlay<Item extends OverlayItem> extends I
 		return isRecycled;
 	}
 
+	@Override
+    public void draw(Canvas canvas, MapView mapView, boolean shadow)
+    {
+        if(!shadow)
+        {
+            super.draw(canvas, mapView, false);
+        }
+    }
 }
