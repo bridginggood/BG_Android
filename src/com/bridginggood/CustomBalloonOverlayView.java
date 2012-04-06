@@ -30,11 +30,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bridginggood.Biz.CustomOverlayItem;
+import com.bridginggood.Biz.BizMapOverlayItem;
 import com.google.android.maps.OverlayItem;
 import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
-public class CustomBalloonOverlayView<Item extends OverlayItem> extends BalloonOverlayView<CustomOverlayItem> {
+public class CustomBalloonOverlayView<Item extends OverlayItem> extends BalloonOverlayView<BizMapOverlayItem> {
 
 	private TextView title;
 	private TextView snippet;
@@ -60,7 +60,7 @@ public class CustomBalloonOverlayView<Item extends OverlayItem> extends BalloonO
 	}
 
 	@Override
-	protected void setBalloonData(CustomOverlayItem item, ViewGroup parent) {
+	protected void setBalloonData(BizMapOverlayItem item, ViewGroup parent) {
 		
 		// map our custom item data to fields
 		title.setText(item.getTitle());

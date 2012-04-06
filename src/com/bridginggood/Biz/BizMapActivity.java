@@ -44,7 +44,7 @@ public class BizMapActivity extends MapActivity{
 	private boolean mIsLoadingBizLocation = false; 		//Lock
 	private boolean mIsLocationAvailable = false;	// Triggers when location becomes available
 
-	private BizMapOverlay<CustomOverlayItem> mItemizedOverlay;
+	private BizMapOverlay<BizMapOverlayItem> mItemizedOverlay;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -66,7 +66,7 @@ public class BizMapActivity extends MapActivity{
 		initMapView();
 
 		Drawable drawable = this.getResources().getDrawable(R.drawable.map_pin);
-		mItemizedOverlay = new BizMapOverlay<CustomOverlayItem>(drawable, mMapView, getParent());	//getParent() since alert only works on the upper-most context.
+		mItemizedOverlay = new BizMapOverlay<BizMapOverlayItem>(drawable, mMapView, getParent());	//getParent() since alert only works on the upper-most context.
 
 		retrieveUserLocation();	
 	}
@@ -208,7 +208,7 @@ public class BizMapActivity extends MapActivity{
 
 		//Create GeoPoints
 		GeoPoint point = null;
-		CustomOverlayItem overlayItem = null;
+		BizMapOverlayItem overlayItem = null;
 		boolean isNewGeopoint = true;
 		for(Business biz : businesArrayList){
 			if (biz==null) break;
@@ -227,7 +227,7 @@ public class BizMapActivity extends MapActivity{
 			//Add only new points to the map
 			if(isNewGeopoint){
 				Log.d("BgMap", "Added new point:"+biz.getBizName());
-				overlayItem = new CustomOverlayItem(point, biz.getBizName(), biz.getBizAddress(), biz.getBizLogoURL());					//Store name and address as descriptions of GeoPoint
+				overlayItem = new BizMapOverlayItem(point, biz.getBizName(), biz.getBizAddress(), biz.getBizLogoURL(), biz.getBizId());					//Store name and address as descriptions of GeoPoint
 				mItemizedOverlay.addOverlay(overlayItem);
 				mapOverlays.add(mItemizedOverlay);
 

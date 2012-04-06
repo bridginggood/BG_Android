@@ -18,17 +18,23 @@ package com.bridginggood.Biz;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
-public class CustomOverlayItem extends OverlayItem {
+public class BizMapOverlayItem extends OverlayItem {
 
 	protected String mImageURL;
+	protected String mBizId;
 	
-	public CustomOverlayItem(GeoPoint point, String title, String snippet, String imageURL) {
+	public BizMapOverlayItem(GeoPoint point, String title, String snippet, String imageURL, String bizId) {
 		super(point, title, snippet);
 		mImageURL = imageURL;
+		mBizId = bizId;
 	}
 
 	public String getImageURL() {
 		return mImageURL;
+	}
+	
+	public String getBizId(){
+		return mBizId;
 	}
 
 	public void setImageURL(String imageURL) {
