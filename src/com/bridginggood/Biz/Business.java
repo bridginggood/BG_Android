@@ -2,6 +2,8 @@ package com.bridginggood.Biz;
 
 import java.io.Serializable;
 
+import com.bridginggood.CONST;
+
 
 public class Business implements Serializable {
 	/**
@@ -9,9 +11,10 @@ public class Business implements Serializable {
 	 * serailVersionUID is generated automatically.
 	 */
 	private static final long serialVersionUID = -5579923920896416265L;
-	private int bizLogo, charityLogo;						//bizLogo: Business Logo, charityLogo: Charity Logo
+	private int bizLogo;						//bizLogo: Business Logo, charityLogo: Charity Logo
 	private String bizId, bizName, bizAddress, bizCharity; 	//bizCharity: Charity index - used to match charityLogo
 	private String bizDescription;
+	private String bizLogoURL;
 	private float bizLat, bizLng;
 	private float distanceAway;								//distanceAway: distance from current location
 
@@ -25,6 +28,7 @@ public class Business implements Serializable {
 		setBizLat(0.0f);
 		setBizLng(0.0f);
 		setDistanceAway(0.0f);
+		setBizLogoURL("");
 	}
 
 	public Business(String bizId, int bizLogo, String bizName, String bizAddress, float bizLat, float bizLng, String bizCharity, float distanceAway){
@@ -36,6 +40,7 @@ public class Business implements Serializable {
 		setBizLat(bizLat);
 		setBizLng(bizLng);
 		setDistanceAway(distanceAway);
+		setBizLogoURL(CONST.IMAGES_PREFIX_BUSINESS+this.getBizId()+"_thumbnail.png");
 	}
 
 	public String getBizId() {
@@ -108,19 +113,19 @@ public class Business implements Serializable {
 		this.distanceAway = distanceAway;
 	}
 
-	public int getCharityLogo() {
-		return charityLogo;
-	}
-
-	public void setCharityLogo(int charityLogo) {
-		this.charityLogo = charityLogo;
-	}
-
 	public String getBizDescription() {
 		return bizDescription;
 	}
 
 	public void setBizDescription(String bizDescription) {
 		this.bizDescription = bizDescription;
+	}
+
+	public String getBizLogoURL() {
+		return bizLogoURL;
+	}
+
+	public void setBizLogoURL(String bizLogoURL) {
+		this.bizLogoURL = bizLogoURL;
 	}
 }

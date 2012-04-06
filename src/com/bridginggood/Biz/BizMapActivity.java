@@ -30,7 +30,6 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 
 public class BizMapActivity extends MapActivity{ 
 	private BizExtendedMapView mMapView;			//MapView
@@ -44,6 +43,8 @@ public class BizMapActivity extends MapActivity{
 
 	private boolean mIsLoadingBizLocation = false; 		//Lock
 	private boolean mIsLocationAvailable = false;	// Triggers when location becomes available
+
+	private BizMapOverlay<CustomOverlayItem> mItemizedOverlay;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -63,7 +64,9 @@ public class BizMapActivity extends MapActivity{
 		//Initialize mapview
 		initButtonViews();
 		initMapView();
-		
+
+		Drawable drawable = this.getResources().getDrawable(R.drawable.map_pin);
+		mItemizedOverlay = new BizMapOverlay<CustomOverlayItem>(drawable, mMapView, getParent());	//getParent() since alert only works on the upper-most context.
 
 		retrieveUserLocation();	
 	}
@@ -113,7 +116,7 @@ public class BizMapActivity extends MapActivity{
 				bizActivityGroup.getBizActivityGroup().changeView(newView);	//Replace View
 			}
 		});
-		
+
 		ImageButton btnReloadLocation = (ImageButton) findViewById(R.id.actionbar_imgbtn_findlocation);
 		btnReloadLocation.setOnClickListener(new OnClickListener() {
 			@Override
@@ -131,7 +134,7 @@ public class BizMapActivity extends MapActivity{
 		mLoadUserLocationAndDisplayAsyncTask = new LoadUserLocationAndDisplayAsyncTask(getParent());
 		mLoadUserLocationAndDisplayAsyncTask.execute();
 	}
-	
+
 	private void toggleLayout(boolean isLoading){
 		if (isLoading){	
 			//Change action bar state
@@ -141,7 +144,7 @@ public class BizMapActivity extends MapActivity{
 			//Change action bar state
 			findViewById(R.id.actionbar_loading).setVisibility(View.GONE);
 			findViewById(R.id.actionbar_imgbtn_findlocation).setVisibility(View.VISIBLE);
-			
+
 			//Temp code: display location
 			try{
 				Geocoder gcd = new Geocoder(getParent(), Locale.getDefault());
@@ -192,7 +195,7 @@ public class BizMapActivity extends MapActivity{
 		mapMarker.setImageResource(R.drawable.map_pin_current_position);
 		mMapView.removeAllViews();	//Clean the location and then add new map view
 		mMapView.addView(mapMarker, mapMarkerParams);
-		
+
 		MapController mapController = mMapView.getController();
 		mapController.animateTo(myPoint); //Animate to the location
 	}
@@ -201,13 +204,11 @@ public class BizMapActivity extends MapActivity{
 	private void createBusinessOverlayOnMapView(ArrayList<Business> businesArrayList){
 		Log.d("BgMap", "CreateOverLay called");
 		List<Overlay> mapOverlays = mMapView.getOverlays();
-		
-		Drawable drawable = this.getResources().getDrawable(R.drawable.map_pin);
-		BizMapOverlay itemizedOverlay = new BizMapOverlay(drawable, mMapView, businesArrayList, getParent());	//getParent() since alert only works on the upper-most context.
+		mItemizedOverlay.setBizArrayList(businesArrayList);
 
 		//Create GeoPoints
 		GeoPoint point = null;
-		OverlayItem overlayItem = null;
+		CustomOverlayItem overlayItem = null;
 		boolean isNewGeopoint = true;
 		for(Business biz : businesArrayList){
 			if (biz==null) break;
@@ -226,9 +227,9 @@ public class BizMapActivity extends MapActivity{
 			//Add only new points to the map
 			if(isNewGeopoint){
 				Log.d("BgMap", "Added new point:"+biz.getBizName());
-				overlayItem = new OverlayItem(point, biz.getBizName(), biz.getBizAddress());					//Store name and address as descriptions of GeoPoint
-				itemizedOverlay.addOverlay(overlayItem);
-				mapOverlays.add(itemizedOverlay);
+				overlayItem = new CustomOverlayItem(point, biz.getBizName(), biz.getBizAddress(), biz.getBizLogoURL());					//Store name and address as descriptions of GeoPoint
+				mItemizedOverlay.addOverlay(overlayItem);
+				mapOverlays.add(mItemizedOverlay);
 
 				//Add this geopoint to the arraylist to mark it as used
 				mGeoPointArrayList.add(point);
@@ -398,7 +399,7 @@ public class BizMapActivity extends MapActivity{
 			{
 				mProgressDialog.dismiss();
 			}
-			*/
+			 */
 
 			if (mUserLocation != null)
 			{

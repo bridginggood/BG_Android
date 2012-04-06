@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bridginggood.CONST;
 import com.bridginggood.ImageManager;
 import com.bridginggood.ImageManager.ImageManagerResult;
 import com.bridginggood.R;
@@ -60,7 +59,7 @@ public class BizListAdapter extends ArrayAdapter<Business>{
             	holder.updateDistanceAway(biz.getDistanceAwayStr());
             	//holder.updateBizAddress(biz.getBizAddress());
             	//TODO: change the ICON URL!
-            	mImageManager.displayImage(CONST.IMAGES_PREFIX_BUSINESS+biz.getBizId()+"_thumbnail.png", mActivity, holder.bizLogo);
+            	mImageManager.displayImage(biz.getBizLogoURL(), mActivity, holder.bizLogo);
             }
         }
         

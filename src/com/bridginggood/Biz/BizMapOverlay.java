@@ -8,24 +8,29 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import com.bridginggood.BalloonItemizedOverlay;
+import com.bridginggood.CustomBalloonOverlayView;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
+import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
-public class BizMapOverlay extends BalloonItemizedOverlay<OverlayItem>{
+public class BizMapOverlay<Item extends OverlayItem> extends BalloonItemizedOverlay<CustomOverlayItem>{
 
-	private ArrayList<OverlayItem> mOverlayItemArrayList = new ArrayList<OverlayItem>();
+	private ArrayList<CustomOverlayItem> mOverlayItemArrayList = new ArrayList<CustomOverlayItem>();
 	private ArrayList<Business> mBizArrayList = new ArrayList<Business>();
 	private Context context;
 
-	public BizMapOverlay(Drawable defaultMarker, MapView mapView, ArrayList<Business> bizList, Context context) {
+	public BizMapOverlay(Drawable defaultMarker, MapView mapView, Context context) {
 		super(boundCenterBottom(defaultMarker), mapView);
 		this.context = context;
+	}
+	
+	public void setBizArrayList(ArrayList<Business> bizList){
 		this.mBizArrayList = bizList;
 	}
 
 	@Override
-	protected OverlayItem createItem(int i) {
+	protected CustomOverlayItem createItem(int i) {
 		return mOverlayItemArrayList.get(i);
 	}
 
@@ -35,7 +40,7 @@ public class BizMapOverlay extends BalloonItemizedOverlay<OverlayItem>{
 	}
 
 	@Override
-	protected boolean onBalloonTap(int index, OverlayItem item) {
+	protected boolean onBalloonTap(int index, CustomOverlayItem item) {
 		//Toast.makeText(this.context, "onBalloonTap for overlay index " + bizList.get(index).getBizName(), Toast.LENGTH_LONG).show();
 		Business biz = mBizArrayList.get(index);
 		// TODO Auto-generated method stub
@@ -49,8 +54,14 @@ public class BizMapOverlay extends BalloonItemizedOverlay<OverlayItem>{
 		return true;
 	}
 
-	public void addOverlay(OverlayItem overlay) {
+	public void addOverlay(CustomOverlayItem overlay) {
 		mOverlayItemArrayList.add(overlay);
 		this.populate();
+	}
+	
+	@Override
+	protected BalloonOverlayView<CustomOverlayItem> createBalloonOverlayView() {
+		// use our custom balloon view with our custom overlay item type:
+		return new CustomBalloonOverlayView<CustomOverlayItem>(getMapView().getContext(), getBalloonBottomOffset());
 	}
 }
