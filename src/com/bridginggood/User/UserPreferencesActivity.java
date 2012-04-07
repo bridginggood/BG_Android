@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.bridginggood.CONST;
 import com.bridginggood.LoginActivity;
 import com.bridginggood.MainActivity;
 import com.bridginggood.R;
@@ -51,6 +53,43 @@ public class UserPreferencesActivity extends Activity{
 				handleLogout();
 			}
 		});
+		
+		//Support
+		findViewById(R.id.profile_preferences_support).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleSupport();
+			}
+		});
+		
+		//Send feedback
+		findViewById(R.id.profile_preferences_sendfeedback).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleSendFeedback();
+			}
+		});
+		
+		//FAQ
+		findViewById(R.id.profile_preferences_faq).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleFAQ();
+			}
+		});
+	}
+	
+	private void handleSupport(){
+		
+	}
+	
+	private void handleSendFeedback(){
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CONST.URL_SENDFEEDBACK));
+		startActivity(browserIntent);
+	}
+	
+	private void handleFAQ(){
+		
 	}
 
 	private void handlePrivacyPolicy(){
