@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,7 +32,7 @@ public class ThankyouActivity extends Activity{
 	private ArrayList<PushMessage> mPushMessageArrayList;
 	private Activity _this = this;
 	private boolean mPostOnFacebook;
-	
+
 	private String mBusinessId = null, mSumTotal=null, mBusinessName=null, mBusinessDetail=null, mCharityName=null, mTotalRaised=null;
 
 	/** Called when the activity is first created. */
@@ -43,7 +45,7 @@ public class ThankyouActivity extends Activity{
 		LoadActivityAsyncTask loadAsyncTask = new LoadActivityAsyncTask(this);
 		loadAsyncTask.execute();
 	}
-	
+
 	//Loading async task
 	private class LoadActivityAsyncTask extends AsyncTask<Context, Boolean, Boolean>{
 		private ProgressDialog mProgressDialog = new ProgressDialog(ThankyouActivity.this);
@@ -60,7 +62,7 @@ public class ThankyouActivity extends Activity{
 			//Load stacked c2dm messages
 			String pushMessage = UserInfoStore.loadPushMessage(getApplicationContext());
 			createPushMessageArrayListFromString(pushMessage);
-			
+
 			//Calculate sum, round to 2 decimal places
 			float sumTotalf = 0.0f;
 			for(PushMessage pm : mPushMessageArrayList){
@@ -85,12 +87,12 @@ public class ThankyouActivity extends Activity{
 		protected void onPostExecute(final Boolean isSucc){
 			initThankyouTextViews();
 			initButtons();
-			
+
 			if (mProgressDialog.isShowing())
 				mProgressDialog.dismiss();
 		}
 	}
-	
+
 	/**
 	 * Creates mPushMessageArrayList
 	 * @param pushMessage
@@ -187,19 +189,53 @@ public class ThankyouActivity extends Activity{
 					//If empty string, assign a default message 
 					comment = "";
 				}
-				
+
 				//FACEBOOK post
 				if(mPostOnFacebook && UserInfo.mFacebook.isSessionValid()){
+					String fbMessage = UserInfo.getUserFirstName()+" donated $"+mSumTotal+" to "+mCharityName+" at "+mBusinessName+" on BridgingGood";
+					/*
+					JSONObject attachment = new JSONObject();
+					attachment.put("message", comment);
+					attachment.put("name", fbMessage);
+					attachment.put("href", "http://www.bridginggood.com/");
+					attachment.put("description", mBusinessDetail);
+
+					JSONObject properties = new JSONObject();
+
+					JSONObject prop1 = new JSONObject();
+					prop1.put("text", "Google");
+					prop1.put("href", "http://www.google.com");
+					properties.put("GoogleProperty", prop1);
+
+					JSONObject prop2 = new JSONObject();
+					prop2.put("text", "Yahoo");
+					prop2.put("href", "http://www.yahoo.com");
+					properties.put("YahooProperty",prop2);
+
+					attachment.put("properties", properties);
+					 */
 					Bundle bundle = new Bundle();
+					//bundle.putString("attachment", attachment.toString());
 					bundle.putString("message", comment);
 					bundle.putString("caption", "BridgingGood");
 					bundle.putString("description", mBusinessDetail);
 					bundle.putString("link", "http://www.bridginggood.com/");
 					bundle.putString("picture", CONST.FACEBOOK_POST_ICON);
-
-					String fbMessage = UserInfo.getUserFirstName()+" donated $"+mSumTotal+" to "+mCharityName+" at "+mBusinessName+" on BridgingGood";
 					bundle.putString("name", fbMessage);
-					
+
+					JSONObject properties = new JSONObject();
+
+					JSONObject prop1 = new JSONObject();
+					prop1.put("text", "Google");
+					prop1.put("href", "http://www.google.com");
+					properties.put("GoogleProperty", prop1);
+
+					JSONObject prop2 = new JSONObject();
+					prop2.put("text", "Yahoo");
+					prop2.put("href", "http://www.yahoo.com");
+					properties.put("YahooProperty",prop2);
+					bundle.putString("properties", properties.toString());
+
 					/* SHOULD I HAVE A SEPERATE MESSAGE FOR MULTIPLE DONATIONS?
 					if(mPushMessageArrayList.size()>1){
 						String fbMessage = UserInfo.getUserFirstName()+" donated $"+mSumTotal+" to "+mCharityName+" at "+mBusinessName+" on BridgingGood";
