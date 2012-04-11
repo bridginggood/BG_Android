@@ -74,9 +74,9 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
             android:background="@drawable/background_actionbar"
-            android:gravity="center"
+            
             android:padding="5dp" >
-
+<!-- 
             <Button
                 android:id="@+id/profile_btn_stat_today"
                 style="@style/ButtonText"
@@ -106,7 +106,7 @@
                 android:layout_toRightOf="@id/profile_btn_stat_week"
                 android:background="@drawable/selector_button"
                 android:text="@string/profile_stat_month" />
-
+ -->
             <Button
                 android:id="@+id/profile_btn_preferences"
                 style="@style/ButtonText"

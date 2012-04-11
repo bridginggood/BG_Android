@@ -1,5 +1,6 @@
 package com.bridginggood;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -65,7 +66,8 @@ public class ThankyouActivity extends Activity{
 			for(PushMessage pm : mPushMessageArrayList){
 				sumTotalf += pm.getDonationAmount();
 			}
-			mSumTotal = sumTotalf+"";
+			DecimalFormat dFormat = new DecimalFormat("#0.00");
+			mSumTotal = dFormat.format(sumTotalf);
 
 			//Select random business
 			Random rnd = new Random();
@@ -195,11 +197,17 @@ public class ThankyouActivity extends Activity{
 					bundle.putString("link", "http://www.bridginggood.com/");
 					bundle.putString("picture", CONST.FACEBOOK_POST_ICON);
 
+					String fbMessage = UserInfo.getUserFirstName()+" donated $"+mSumTotal+" to "+mCharityName+" at "+mBusinessName+" on BridgingGood";
+					bundle.putString("name", fbMessage);
+					
+					/* SHOULD I HAVE A SEPERATE MESSAGE FOR MULTIPLE DONATIONS?
 					if(mPushMessageArrayList.size()>1){
-						bundle.putString("name", "$"+mSumTotal+" @"+mBusinessName+" +"+(mPushMessageArrayList.size()-1)+"places");
+						String fbMessage = UserInfo.getUserFirstName()+" donated $"+mSumTotal+" to "+mCharityName+" at "+mBusinessName+" on BridgingGood";
+						//"$"+mSumTotal+" @"+mBusinessName+" +"+(mPushMessageArrayList.size()-1)+"places"
+						bundle.putString("name", fbMessage);
 					}else{
 						bundle.putString("name", "$"+mSumTotal+" @"+mBusinessName);
-					}
+					}*/
 
 					//Send facebook request
 					String response = UserInfo.mFacebook.request("me/feed", bundle, "POST");
@@ -232,24 +240,12 @@ public class ThankyouActivity extends Activity{
 	}
 
 	private String getThankyouHeaderText(){
-		ArrayList<PushMessage> uniqueList = new ArrayList<PushMessage>();
-
 		String content = "<B>$"+mSumTotal+"</B> of your purchase at " +
 				"<B>"+mBusinessName+"</B> has successfully been converted into a donation. <BR/><BR/>" +
 				"<B>"+mCharityName+"</B> has now raised " +
 				"<B>$"+mTotalRaised+"</B> with your support and other do gooders like you. <BR/><BR/>" +
 				"<I>Keep on BridgingGood!</I>";
 		return content;
-		/*
-		String content = "$"+sumTotal;
-		" of your purchase at ";
-		for(PushMessage pm : mPushMessageArrayList){
-			thankyouContent += pm.getBusinessName()+",";
-		}
-
-		thankyouContent += "has successfully been converted into a donation."+
-		dataArray[2]+" has now raised $" +
-		dataArray[3]+" with your support and other do gooders like you. Keep on BridgingGood!";*/
 	}
 
 	@Override

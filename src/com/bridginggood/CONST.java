@@ -32,7 +32,7 @@ public class CONST {
 	public static final int USER_SESSION_TYPE_FACEBOOK = 1;
 	
 	//Support
-	public static final String URL_SUPPORT = "http://bridginggood.wufoo.com/forms/send-feedback/";
+	public static final String URL_SUPPORT = "http://bridginggood.wufoo.com/forms/submit-a-request/";
 	public static final String URL_SENDFEEDBACK = "http://bridginggood.wufoo.com/forms/send-feedback/";
 
 	/** For BridgingGood Database API**/

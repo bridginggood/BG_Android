@@ -80,7 +80,8 @@ public class UserPreferencesActivity extends Activity{
 	}
 	
 	private void handleSupport(){
-		
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CONST.URL_SUPPORT));
+		startActivity(browserIntent);
 	}
 	
 	private void handleSendFeedback(){

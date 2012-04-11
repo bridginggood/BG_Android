@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:visibility="gone" >
+     >
 
         <TextView
             android:id="@+id/qrcode_textview"
@@ -51,7 +51,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:orientation="vertical" >
+        android:orientation="vertical"    android:visibility="gone" >
 
         <Button
             android:id="@+id/qrcode_btnCreateNewQrcode"
