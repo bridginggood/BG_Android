@@ -101,6 +101,9 @@ public class BizDetailActivity extends Activity{
 
 		TextView txtBusinessName = (TextView)findViewById(R.id.business_detail_name_textview);
 		txtBusinessName.setText(mBusiness.getBizName());
+		
+		TextView txtBusinessAddress = (TextView)findViewById(R.id.business_detail_address_textview);
+		txtBusinessAddress.setText(mBusiness.getBizAddress());
 	}
 
 	private void toggleLayout(boolean isLoading){
