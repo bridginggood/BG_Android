@@ -20,18 +20,18 @@ import com.bridginggood.R;
 public class CharityDetailActivity extends Activity{
 	private ImageManager mImageManager;
 	private ArrayList<String> mImageViewURLArrayList;
-	private final int TOTAL_IMAGEVIEWS = 1;		//Number of imageviews to load in this activity
+	private final int TOTAL_IMAGEVIEWS = 2;		//Number of imageviews to load in this activity
 	private int mImageViewCounter;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.charity_detail_layout);
-		
+
 		LoadPageAsyncTask loadAsyncTask = new LoadPageAsyncTask();
 		loadAsyncTask.execute();
 	}
-	
+
 	private class LoadPageAsyncTask extends AsyncTask<Context, Boolean, Boolean>{
 		//Display progress dialog
 		protected void onPreExecute()
@@ -68,7 +68,7 @@ public class CharityDetailActivity extends Activity{
 
 	private void updateCharityData(){
 		//TODO CHANGE CHARITY ID
-		String[] data = StatsJSON.getCharityDonation("3000000002");
+		String[] data = StatsJSON.getCharityDonation("3000000001"); //TODO: MUST CHANGE THIS!!!
 		if(data!=null){
 			TextView txtAmount = (TextView)findViewById(R.id.charity_detail_donated_textview);
 			TextView txtPeople = (TextView)findViewById(R.id.charity_detail_people_textview);
@@ -94,6 +94,11 @@ public class CharityDetailActivity extends Activity{
 		ImageView imgDetail = (ImageView) findViewById(R.id.charity_detail_img);
 		mImageViewURLArrayList.add(imgDetailURL);
 		mImageManager.displayImage(imgDetailURL, this, imgDetail);
+
+		String imgDescriptionURL = CONST.IMAGES_PREFIX_CHARITY+"charity_description.png";
+		ImageView imgDescription = (ImageView) findViewById(R.id.charity_description_img);
+		mImageViewURLArrayList.add(imgDescriptionURL);
+		mImageManager.displayImage(imgDescriptionURL, this, imgDescription);
 	}
 
 	public ImageManagerResult mImageDownloaded = new ImageManagerResult()

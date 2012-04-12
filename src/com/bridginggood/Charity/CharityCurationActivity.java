@@ -75,7 +75,7 @@ public class CharityCurationActivity extends Activity{
 
 	private void updateCharityData(){
 		//TODO CHANGE CHARITY ID
-		String[] data = StatsJSON.getCharityDonation("3000000002");
+		String[] data = StatsJSON.getCharityDonation("3000000001"); //TODO: MUST CHANGE THIS!!!
 		if(data!=null){
 			TextView txtAmount = (TextView)findViewById(R.id.charity_donated_textview);
 			TextView txtPeople = (TextView)findViewById(R.id.charity_people_textview);

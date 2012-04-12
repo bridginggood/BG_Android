@@ -25,6 +25,27 @@
             android:layout_centerVertical="true"
             android:text="@string/business_detail_header" />
     </RelativeLayout>
+
+    <!-- Footer -->
+
+    <RelativeLayout
+        android:id="@+id/business_detail_footer_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:background="@drawable/background_actionbar"
+        android:padding="5dp" >
+
+        <Button
+            android:id="@+id/business_detail_donate_button"
+            style="@style/ButtonText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/selector_button"
+            android:text="@string/business_detail_donate" />
+    </RelativeLayout>
     <!-- Loading -->
 
     <RelativeLayout
@@ -45,23 +66,26 @@
     <RelativeLayout
         android:id="@+id/business_detail_loaded_layout"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_below="@id/business_detail_header_layout"
+        android:layout_above="@id/business_detail_footer_layout"
         android:background="@color/white" >
 
         <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/charity_curation_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
                 <LinearLayout
+                    android:id="@+id/business_charity_curation_header_layout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:background="@color/white"
                     android:orientation="horizontal" >
 
@@ -99,6 +123,7 @@
                     android:id="@+id/business_detail_bridgedwith_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/business_charity_curation_header_layout"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/app_name"
                     android:scaleType="fitStart" />
@@ -107,33 +132,13 @@
                     android:id="@+id/business_detail_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_above="@id/business_detail_footer_layout"
+                    android:layout_below="@id/business_detail_bridgedwith_img"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/app_name"
                     android:scaleType="fitStart" />
-            </LinearLayout>
+            </RelativeLayout>
         </ScrollView>
-    </RelativeLayout>
-
-    <!-- Footer -->
-
-    <RelativeLayout
-        android:id="@+id/business_detail_footer_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:background="@drawable/background_actionbar"
-        android:orientation="horizontal"
-        android:padding="5dp" >
-
-        <Button
-            android:id="@+id/business_detail_donate_button"
-            style="@style/ButtonText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/selector_button"
-            android:text="@string/business_detail_donate" />
     </RelativeLayout>
 
 </RelativeLayout>

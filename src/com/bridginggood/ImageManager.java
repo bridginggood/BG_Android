@@ -84,7 +84,8 @@ public class ImageManager {
 
 		// Is the bitmap in our cache?
 		Bitmap bitmap = BitmapFactory.decodeFile(f.getPath());
-		if(bitmap != null) return bitmap;
+
+		//if(bitmap != null) return bitmap; [JS] SKIP CACHING!
 
 		// Nope, have to download it
 		try {

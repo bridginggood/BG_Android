@@ -126,7 +126,9 @@ public class StatsJSON {
 			JSONObject jsonObject = (JSONObject) jsonArray.get(0);
 
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-				resultArray[0] = "$"+jsonObject.getString(PARAM_CHARITY_TOTAL_DONATION);
+				String amount = jsonObject.getString(PARAM_CHARITY_TOTAL_DONATION);
+				amount = amount.equals("null")? "0.00":amount;
+				resultArray[0] = "$"+amount;
 				resultArray[1] = jsonObject.getString(PARAM_CHARITY_PEOPLE);
 				resultArray[2] = jsonObject.getString(PARAM_CHARITY_REMAINING_DAYS);
 

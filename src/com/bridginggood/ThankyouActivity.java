@@ -33,7 +33,7 @@ public class ThankyouActivity extends Activity{
 	private Activity _this = this;
 	private boolean mPostOnFacebook;
 
-	private String mBusinessId = null, mSumTotal=null, mBusinessName=null, mBusinessDetail=null, mCharityName=null, mTotalRaised=null;
+	private String mBusinessId = null, mSumTotal=null, mBusinessName=null, mBusinessDetail=null, mCharityName=null, mTotalRaised=null, mBusinessURL=null, mCharityURL=null;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -82,6 +82,8 @@ public class ThankyouActivity extends Activity{
 			mBusinessDetail = dataArray[1];
 			mCharityName = dataArray[2];
 			mTotalRaised = dataArray[3];
+			mBusinessURL = dataArray[4];
+			mCharityURL = dataArray[5];
 			return false;
 		}
 		protected void onPostExecute(final Boolean isSucc){
@@ -193,29 +195,8 @@ public class ThankyouActivity extends Activity{
 				//FACEBOOK post
 				if(mPostOnFacebook && UserInfo.mFacebook.isSessionValid()){
 					String fbMessage = UserInfo.getUserFirstName()+" donated $"+mSumTotal+" to "+mCharityName+" at "+mBusinessName+" on BridgingGood";
-					/*
-					JSONObject attachment = new JSONObject();
-					attachment.put("message", comment);
-					attachment.put("name", fbMessage);
-					attachment.put("href", "http://www.bridginggood.com/");
-					attachment.put("description", mBusinessDetail);
 
-					JSONObject properties = new JSONObject();
-
-					JSONObject prop1 = new JSONObject();
-					prop1.put("text", "Google");
-					prop1.put("href", "http://www.google.com");
-					properties.put("GoogleProperty", prop1);
-
-					JSONObject prop2 = new JSONObject();
-					prop2.put("text", "Yahoo");
-					prop2.put("href", "http://www.yahoo.com");
-					properties.put("YahooProperty",prop2);
-
-					attachment.put("properties", properties);
-					 */
 					Bundle bundle = new Bundle();
-					//bundle.putString("attachment", attachment.toString());
 					bundle.putString("message", comment);
 					bundle.putString("caption", "BridgingGood");
 					bundle.putString("description", mBusinessDetail);
@@ -225,16 +206,21 @@ public class ThankyouActivity extends Activity{
 
 					JSONObject properties = new JSONObject();
 
-					JSONObject prop1 = new JSONObject();
-					prop1.put("text", "Google");
-					prop1.put("href", "http://www.google.com");
-					properties.put("GoogleProperty", prop1);
+					if(mCharityURL!=null && mCharityURL.length()>0)
+					{
+						JSONObject prop1 = new JSONObject();
+						prop1.put("text", "Follow");
+						prop1.put("href", mCharityURL);
+						properties.put(mCharityName, prop1);
+					}
 
-					JSONObject prop2 = new JSONObject();
-					prop2.put("text", "Yahoo");
-					prop2.put("href", "http://www.yahoo.com");
-					properties.put("YahooProperty",prop2);
-					bundle.putString("properties", properties.toString());
+					if(mBusinessURL!=null && mBusinessURL.length()>0){
+						JSONObject prop2 = new JSONObject();
+						prop2.put("text", "Follow");
+						prop2.put("href", mBusinessURL);
+						properties.put(mBusinessName,prop2);
+						bundle.putString("properties", properties.toString());
+					}
 
 					/* SHOULD I HAVE A SEPERATE MESSAGE FOR MULTIPLE DONATIONS?
 					if(mPushMessageArrayList.size()>1){
