@@ -58,9 +58,7 @@ public class BizDetailActivity extends Activity{
 			mImageManager = new ImageManager(getApplicationContext(), false, mImageDownloaded);
 			mPopupview = View.inflate(BizDetailActivity.this,R.layout.popup_qrcode,null);
 			initImageViews();
-
 			initButtons();
-			
 
 			//Wait until everything is loaded
 			while(mImageViewCounter < TOTAL_IMAGEVIEWS){

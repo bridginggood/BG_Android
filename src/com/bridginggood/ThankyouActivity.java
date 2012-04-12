@@ -209,14 +209,14 @@ public class ThankyouActivity extends Activity{
 					if(mCharityURL!=null && mCharityURL.length()>0)
 					{
 						JSONObject prop1 = new JSONObject();
-						prop1.put("text", mCharityName);
+						prop1.put("text", "Follow");
 						prop1.put("href", mCharityURL);
 						properties.put(mCharityName, prop1);
 					}
 
 					if(mBusinessURL!=null && mBusinessURL.length()>0){
 						JSONObject prop2 = new JSONObject();
-						prop2.put("text", mBusinessName);
+						prop2.put("text", "Follow");
 						prop2.put("href", mBusinessURL);
 						properties.put(mBusinessName,prop2);
 						bundle.putString("properties", properties.toString());

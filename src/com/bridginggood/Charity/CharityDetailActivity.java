@@ -94,6 +94,11 @@ public class CharityDetailActivity extends Activity{
 		ImageView imgDetail = (ImageView) findViewById(R.id.charity_detail_img);
 		mImageViewURLArrayList.add(imgDetailURL);
 		mImageManager.displayImage(imgDetailURL, this, imgDetail);
+		
+		String imgDescriptionURL = CONST.IMAGES_PREFIX_CHARITY+"charity_description.png";
+		ImageView imgDescription = (ImageView) findViewById(R.id.charity_description_img);
+		mImageViewURLArrayList.add(imgDescriptionURL);
+		mImageManager.displayImage(imgDescriptionURL, this, imgDescription);
 	}
 
 	public ImageManagerResult mImageDownloaded = new ImageManagerResult()

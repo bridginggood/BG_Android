@@ -24,6 +24,7 @@ public class BusinessJSON {
 	private static final String PARAM_BUSINESS_LONGITUDE = "Longitude";
 	private static final String PARAM_BUSINESS_CHARITYID = "CharityId";
 	private static final String PARAM_BUSINESS_DISTANCE = "distance";
+	private static final String PARAM_BUSINESS_DESCRIPTION =  "BusinessDescription";
 
 	private float mMyLat, mMyLng, mDistance;
 	private int mPage;
@@ -62,12 +63,13 @@ public class BusinessJSON {
 				String bid = jsonObject.getString(PARAM_BUSINESS_ID);
 				String name = jsonObject.getString(PARAM_BUSINESS_NAME);
 				String address = jsonObject.getString(PARAM_BUSINESS_ADDRESS);
+				String description = jsonObject.getString(PARAM_BUSINESS_DESCRIPTION);
 				float lat = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_LATITUDE));
 				float lng = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_LONGITUDE));
 				String cid = jsonObject.getString(PARAM_BUSINESS_CHARITYID);
 				float distanceAway = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_DISTANCE));
 
-				biz = new Business(bid, 0, name, address, lat, lng, cid, distanceAway);
+				biz = new Business(bid, 0, name, address, description, lat, lng, cid, distanceAway);
 				bizList.add(biz); //add to ArrayList
 				Log.d("BgDB", "Business object created. BID: "+bid);
 			}
@@ -99,12 +101,13 @@ public class BusinessJSON {
 				String bid = jsonObject.getString(PARAM_BUSINESS_ID);
 				String name = jsonObject.getString(PARAM_BUSINESS_NAME);
 				String address = jsonObject.getString(PARAM_BUSINESS_ADDRESS);
+				String description = jsonObject.getString(PARAM_BUSINESS_DESCRIPTION);
 				float lat = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_LATITUDE));
 				float lng = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_LONGITUDE));
 				String cid = jsonObject.getString(PARAM_BUSINESS_CHARITYID);
 				float distanceAway = Float.parseFloat(jsonObject.getString(PARAM_BUSINESS_DISTANCE));
 
-				biz = new Business(bid, 0, name, address, lat, lng, cid, distanceAway);
+				biz = new Business(bid, 0, name, address, description, lat, lng, cid, distanceAway);
 				bizList.add(biz); //add to ArrayList
 				Log.d("BgDB", "Business object created. BID: "+bid);
 			}

@@ -31,12 +31,13 @@ public class Business implements Serializable {
 		setBizLogoURL("");
 	}
 
-	public Business(String bizId, int bizLogo, String bizName, String bizAddress, float bizLat, float bizLng, String bizCharity, float distanceAway){
+	public Business(String bizId, int bizLogo, String bizName, String bizAddress, String bizDescription, float bizLat, float bizLng, String bizCharity, float distanceAway){
 		setBizId(bizId);
 		setBizLogo(bizLogo);
 		setBizName(bizName);
 		setBizAddress(bizAddress);
 		setBizCharity(bizCharity);
+		setBizDescription(bizDescription);
 		setBizLat(bizLat);
 		setBizLng(bizLng);
 		setDistanceAway(distanceAway);
