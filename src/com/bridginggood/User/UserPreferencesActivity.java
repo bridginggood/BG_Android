@@ -34,7 +34,8 @@ public class UserPreferencesActivity extends Activity{
 		findViewById(R.id.profile_preferences_menu_privacypolicy_textview).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handlePrivacyPolicy();
+				//handlePrivacyPolicy();
+				Toast.makeText(UserPreferencesActivity.this, "Coming soon...", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -42,7 +43,8 @@ public class UserPreferencesActivity extends Activity{
 		findViewById(R.id.profile_preferences_menu_termsofservice_textview).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handleTermsOfService();
+				//handleTermsOfService();
+				Toast.makeText(UserPreferencesActivity.this, "Coming soon...", Toast.LENGTH_SHORT).show();
 			}
 		});
 
@@ -74,7 +76,8 @@ public class UserPreferencesActivity extends Activity{
 		findViewById(R.id.profile_preferences_faq).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handleFAQ();
+				//handleFAQ();
+				Toast.makeText(UserPreferencesActivity.this, "Coming soon...", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -94,7 +97,7 @@ public class UserPreferencesActivity extends Activity{
 	}
 
 	private void handlePrivacyPolicy(){
-
+		
 	}
 
 	private void handleTermsOfService(){
