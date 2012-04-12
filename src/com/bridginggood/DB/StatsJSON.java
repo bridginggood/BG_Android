@@ -24,6 +24,8 @@ public class StatsJSON {
 	private static final String PARAM_CHARITY_PEOPLE = "People";
 	private static final String PARAM_CHARITY_REMAINING_DAYS = "RemainingDays";
 	private static final String PARAM_BUSINESS_DESCRIPTION = "BusinessDescription";
+	private static final String PARAM_BUSINESS_URL = "BusinessURL";
+	private static final String PARAM_CHARITY_URL = "CharityURL";
 
 
 	private static final int BY_CHARITY = 0;
@@ -126,9 +128,7 @@ public class StatsJSON {
 			JSONObject jsonObject = (JSONObject) jsonArray.get(0);
 
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
-				String amount = jsonObject.getString(PARAM_CHARITY_TOTAL_DONATION);
-				amount = amount.equals("null")? "0.00":amount;
-				resultArray[0] = "$"+amount;
+				resultArray[0] = "$"+jsonObject.getString(PARAM_CHARITY_TOTAL_DONATION);
 				resultArray[1] = jsonObject.getString(PARAM_CHARITY_PEOPLE);
 				resultArray[2] = jsonObject.getString(PARAM_CHARITY_REMAINING_DAYS);
 
@@ -145,7 +145,7 @@ public class StatsJSON {
 	}
 
 	public static String[] getThankyouDetail(String businessId){
-		String[] data = new String[4];
+		String[] data = new String[6];
 		try{
 			String targetURL = CONST.API_STATS_THANKYOU_DETAIL_URL;
 			String[][] param = {{PARAM_BUSINESS_ID, businessId}};
@@ -160,6 +160,8 @@ public class StatsJSON {
 				data[1] = jsonObject.getString(PARAM_BUSINESS_DESCRIPTION);
 				data[2] = jsonObject.getString(PARAM_CHARITY_NAME);
 				data[3] = jsonObject.getString(PARAM_TOTAL);
+				data[4] = jsonObject.getString(PARAM_BUSINESS_URL);
+				data[5] = jsonObject.getString(PARAM_CHARITY_URL);
 				return data;
 			} else {
 				Log.d("BgDB", "getThankyouDetail failed: "+jsonObject.getString(PARAM_RESULT_MSG));
