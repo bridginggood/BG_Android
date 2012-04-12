@@ -219,8 +219,10 @@ public class ThankyouActivity extends Activity{
 						prop2.put("text", "Follow");
 						prop2.put("href", mBusinessURL);
 						properties.put(mBusinessName,prop2);
-						bundle.putString("properties", properties.toString());
 					}
+					
+					bundle.putString("properties", properties.toString());
+					Log.d("BGT", "Properties: "+properties.toString());
 
 					/* SHOULD I HAVE A SEPERATE MESSAGE FOR MULTIPLE DONATIONS?
 					if(mPushMessageArrayList.size()>1){
