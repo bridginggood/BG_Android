@@ -10,6 +10,8 @@
     	Home: "0Xl-E6OnUWprJYt6D4dhvh-Ub-A3Fq2SC3-u8mw"
     	APK:  "0Xl-E6OnUWpoddXOp2rwyxqXXLOyuYl-Di_M7RQ"
     	TEST: "0Xl-E6OnUWpokeeWcCdHPv43VV1HhKX7g54BVAw"
+    	
+    	OFFICIAL: "0Xl-E6OnUWprqzq0Pzyy545ObTTi1dVfgbqTxtg"
     -->
 
     <LinearLayout
@@ -23,7 +25,7 @@
             android:id="@+id/bizMapView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:apiKey="0Xl-E6OnUWprJYt6D4dhvh-Ub-A3Fq2SC3-u8mw"
+            android:apiKey="0Xl-E6OnUWprqzq0Pzyy545ObTTi1dVfgbqTxtg"
             android:clickable="true"
             android:enabled="true" />
     </LinearLayout>
