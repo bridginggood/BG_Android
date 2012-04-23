@@ -43,7 +43,7 @@ public class QRCodeJSON {
 		return false;
 	}
 	
-	public static boolean registerQRCode(String qrId){
+	public static String registerQRCode(String qrId){
 		try {
 			String targetURL = CONST.API_REGISTER_QRCODE_URL;
 			String requestParam = "";
@@ -58,15 +58,17 @@ public class QRCodeJSON {
 			if(jsonObject.getString(PARAM_RESULT_CODE).charAt(0) == 'S'){
 				//QRCode generated! 
 				UserInfo.setQRCodeURL(jsonObject.getString(PARAM_QR_ID));
-				return true;
-			} else {
+				return "Success";
+			} else if (jsonObject.getString(PARAM_RESULT_CODE).equals("E001")){
+				return "Exist";
+			} else{
 				Log.d("BgDB", "Login failed: "+jsonObject.getString(PARAM_RESULT_MSG));
-				return false;
+				return "Failed";
 			}
 		} catch (Exception e){
 			// Handle all exception
 			Log.d("BgDB", "Exception occured: "+e.getLocalizedMessage());
 		}
-		return false;
+		return "Failed";
 	}
 }

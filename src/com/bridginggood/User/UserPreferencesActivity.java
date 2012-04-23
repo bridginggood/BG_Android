@@ -3,12 +3,17 @@ package com.bridginggood.User;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bridginggood.CONST;
@@ -18,6 +23,7 @@ import com.bridginggood.R;
 import com.bridginggood.UserInfo;
 import com.bridginggood.UserInfoStore;
 import com.bridginggood.DB.AuthJSON;
+import com.bridginggood.DB.QRCodeJSON;
 
 public class UserPreferencesActivity extends Activity{
 
@@ -29,6 +35,14 @@ public class UserPreferencesActivity extends Activity{
 	}
 
 	private void initMenu(){
+
+		//Register QR Code
+		findViewById(R.id.profile_preferences_menu_registerqrcode_textview).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleRegisterQRCode();
+			}
+		});
 
 		//Privacy policy
 		findViewById(R.id.profile_preferences_menu_privacypolicy_textview).setOnClickListener(new OnClickListener() {
@@ -53,7 +67,7 @@ public class UserPreferencesActivity extends Activity{
 				handleLogout();
 			}
 		});
-		
+
 		//Support
 		findViewById(R.id.profile_preferences_support).setOnClickListener(new OnClickListener() {
 			@Override
@@ -61,7 +75,7 @@ public class UserPreferencesActivity extends Activity{
 				handleSupport();
 			}
 		});
-		
+
 		//Send feedback
 		findViewById(R.id.profile_preferences_sendfeedback).setOnClickListener(new OnClickListener() {
 			@Override
@@ -69,7 +83,7 @@ public class UserPreferencesActivity extends Activity{
 				handleSendFeedback();
 			}
 		});
-		
+
 		//FAQ
 		findViewById(R.id.profile_preferences_faq).setOnClickListener(new OnClickListener() {
 			@Override
@@ -78,19 +92,43 @@ public class UserPreferencesActivity extends Activity{
 			}
 		});
 	}
-	
+
+	private void handleRegisterQRCode(){
+		LayoutInflater factory = LayoutInflater.from(this);
+		final View textEntryView = factory.inflate(R.layout.qrcode_register_dialog_layout, null);
+		AlertDialog.Builder registerDialog = new AlertDialog.Builder(UserPreferencesActivity.this);
+		registerDialog.setTitle("Register QR Code").setView(textEntryView);
+		registerDialog.setPositiveButton("Register", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				//Register QR
+				EditText edtQRCode = (EditText) textEntryView.findViewById(R.id.qrcode_register_dialog_qrcode_edittext);
+				String qrcode = "";
+				if (edtQRCode.getText() != null)
+					qrcode = edtQRCode.getText().toString();
+
+				registerQrcode(qrcode);
+			}
+		});
+		registerDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				dialog.dismiss();
+			}
+		});
+		registerDialog.show();
+	}
+
 	private void handleSupport(){
 		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CONST.URL_SUPPORT));
 		startActivity(browserIntent);
 	}
-	
+
 	private void handleSendFeedback(){
 		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CONST.URL_SENDFEEDBACK));
 		startActivity(browserIntent);
 	}
-	
+
 	private void handleFAQ(){
-		
+
 	}
 
 	private void handlePrivacyPolicy(){
@@ -155,5 +193,50 @@ public class UserPreferencesActivity extends Activity{
 		});
 		final AlertDialog alert = builder.create();
 		alert.show();
+	}
+
+	private void registerQrcode(String qrId){
+		RegisterQrcodeAsyncTask registerQrcodeAsyncTask =  new RegisterQrcodeAsyncTask(UserPreferencesActivity.this, qrId);
+		registerQrcodeAsyncTask.execute(this);
+	}
+
+	private class RegisterQrcodeAsyncTask extends AsyncTask<Context, Void, String>
+	{
+		private Context mContext;
+		private ProgressDialog mProgressDialog;
+		private String mQrId;
+
+		public RegisterQrcodeAsyncTask(Context context, String qrId){
+			this.mContext = context;
+			this.mQrId = qrId;
+		}
+
+		//Display progress dialog
+		protected void onPreExecute()
+		{
+			mProgressDialog = ProgressDialog.show(this.mContext, "", "Please wait...", true, false);
+		}
+
+		//Load current location
+		protected String doInBackground(Context... contexts)
+		{
+			return QRCodeJSON.registerQRCode(this.mQrId);
+		}
+		protected void onPostExecute(final String strSuccess)
+		{
+			if(mProgressDialog.isShowing())
+			{
+				mProgressDialog.dismiss();
+			}
+
+			if(strSuccess.equals("Success")){
+				Toast.makeText(this.mContext, "QR Code Registered!", Toast.LENGTH_LONG).show();
+			}else if (strSuccess.equals("Exist")){
+				Toast.makeText(this.mContext, "You have already registered QR Code", Toast.LENGTH_LONG).show();
+			}
+			else{
+				Toast.makeText(this.mContext, "Invalid QR Code. Please check again.", Toast.LENGTH_SHORT).show();
+			}
+		}
 	}
 }

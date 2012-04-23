@@ -28,6 +28,7 @@
     <string name="profile_preferences_menu_clearimagecache">Clear image cache</string>
      -->
      <string name="profile_preferences_menu_socialnetwork">Facebook Twitter</string>
+     <string name="profile_preferences_menu_registerqrcode">Register QR Code</string>
     <string name="profile_preferences_menu_logout">Logout</string>
     <string name="profile_preferences_menu_termsofservice">Terms of Service</string>
     <string name="profile_preferences_menu_privacypolicy">Privacy Policy</string>

@@ -99,20 +99,26 @@ public class QRMainActivity extends Activity{
 		LinearLayout linearLayoutQRUndefined = (LinearLayout)findViewById(R.id.qrcode_undefined_layout);
 
 		//QR exists
-		if (UserInfo.getQRCodeURL() != null){
-			linearLayoutQRDefined.setVisibility(View.VISIBLE);
-			linearLayoutQRUndefined.setVisibility(View.GONE);
-
-			//Load image 
-			ImageView imgView = (ImageView)findViewById(R.id.qrcode_imgview);
-			initQRCode (UserInfo.getQRCodeURL(), imgView);
-		}else{
+		if (UserInfo.getQRCodeURL() == null){
+			/*
 			//If QrCode is blank (no url), hide QrCode image view
 			linearLayoutQRDefined.setVisibility(View.GONE);
 			linearLayoutQRUndefined.setVisibility(View.VISIBLE);
 
 			initButtons();
+			*/
+			
+			//Create new QR automatically
+			QRCodeJSON.createQRCode();
 		}
+		
+		//Show QR layout and load QR
+		linearLayoutQRDefined.setVisibility(View.VISIBLE);
+		linearLayoutQRUndefined.setVisibility(View.GONE);
+
+		//Load image 
+		ImageView imgView = (ImageView)findViewById(R.id.qrcode_imgview);
+		initQRCode (UserInfo.getQRCodeURL(), imgView);
 	}
 
 	//Creates new qrcode
@@ -200,7 +206,7 @@ public class QRMainActivity extends Activity{
 		}
 	}
 
-	private class RegisterQrcodeAsyncTask extends AsyncTask<Context, Void, Boolean>
+	private class RegisterQrcodeAsyncTask extends AsyncTask<Context, Void, String>
 	{
 		private Context mContext;
 		private ProgressDialog mProgressDialog;
@@ -218,17 +224,19 @@ public class QRMainActivity extends Activity{
 		}
 
 		//Load current location
-		protected Boolean doInBackground(Context... contexts)
+		protected String doInBackground(Context... contexts)
 		{
 			return QRCodeJSON.registerQRCode(this.mQrId);
 		}
-		protected void onPostExecute(final Boolean isSuccess)
+		protected void onPostExecute(final String strSuccess)
 		{
 			if(mProgressDialog.isShowing())
 			{
 				mProgressDialog.dismiss();
 			}
 
+			boolean isSuccess = (strSuccess.equals("Success"))?true:false;
+			
 			if(isSuccess){
 				toggleLayout();
 			}

@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <TextView
+        android:id="@+id/qrcode_register_dialog_qrcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/qr_dialog_qrcode" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/qrcode_register_dialog_qrcode_edittext"
+        android:layout_width="fill_parent"
+        android:hint="@string/qr_dialog_qrcode_hint"
+        android:layout_height="50dip"
+        android:padding="5dp"
+        android:layout_margin="2dp" />
+
+</LinearLayout>

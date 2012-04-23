@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="qr_dialog_qrcode">Enter QR Code</string>
+    <string name="qr_dialog_qrcode_hint">Enter 16 digits QR Code</string>
+</resources>

@@ -60,7 +60,11 @@ public class UserActivity extends Activity{
 	private void loadData(){
 		//Load total donation amount
 		String total = StatsJSON.getUserTotalDonationAmount();
-		total = (total.equals("0.0"))?"0.00":total;	//Display two decimal places
+		
+		//Display $0.00
+		if (total == null || total.equals("0.0") || total.equalsIgnoreCase("null"))
+			total = "0.00";
+		
 		TextView txtTotal = (TextView)findViewById(R.id.profile_main_header_textview);
 		txtTotal.setText(txtTotal.getText()+total);	//Appened total at the back of the existing string
 
